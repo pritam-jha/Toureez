@@ -1,0 +1,45 @@
+{
+  "name": "xyz-backend",
+  "version": "1.0.0",
+  "description": "Node.js backend for XYZ travel package comparison app.",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test:api-client": "npm run build && node dist/scripts/testApiClient.js"
+  },
+  "keywords": [
+    "travel",
+    "express",
+    "typescript",
+    "supabase"
+  ],
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "cloudinary": "^2.5.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.3",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^7.1.0",
+    "morgan": "^1.10.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.5.5",
+    "@typescript-eslint/eslint-plugin": "^8.4.0",
+    "@typescript-eslint/parser": "^8.4.0",
+    "eslint": "^9.9.1",
+    "prettier": "^3.3.3",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.5.4"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

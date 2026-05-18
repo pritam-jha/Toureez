@@ -1,0 +1,79 @@
+import { AppError, ERROR_MESSAGES } from '../constants/errors';
+import { supabase } from '../lib/supabase';
+import type { Location } from '../types';
+
+const isRecord = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+};
+
+const readString = (record: Record<string, unknown>, key: string, fallback = ''): string => {
+  const value = record[key];
+  return typeof value === 'string' ? value : fallback;
+};
+
+const readNullableNumber = (record: Record<string, unknown>, key: string): number | null => {
+  const value = record[key];
+
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === 'string') {
+    const parsed = Number.parseFloat(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  return null;
+};
+
+const readBoolean = (record: Record<string, unknown>, key: string): boolean => {
+  const value = record[key];
+  return typeof value === 'boolean' ? value : false;
+};
+
+const throwDatabaseError = (operation: string, dbError: unknown): never => {
+  console.error(`[locationService.${operation}]`, dbError);
+  throw new AppError(ERROR_MESSAGES.DATABASE_ERROR, 500);
+};
+
+const mapLocation = (value: unknown): Location => {
+  const record = isRecord(value) ? value : {};
+
+  return {
+    id: readString(record, 'id'),
+    city: readString(record, 'city'),
+    state: readString(record, 'state'),
+    region: readString(record, 'region'),
+    country: readString(record, 'country', 'India'),
+    latitude: readNullableNumber(record, 'latitude'),
+    longitude: readNullableNumber(record, 'longitude'),
+    is_popular: readBoolean(record, 'is_popular'),
+    is_active: readBoolean(record, 'is_active'),
+    created_at: readString(record, 'created_at'),
+  };
+};
+
+/**
+ * Fetches active locations, optionally restricted to popular destinations.
+ */
+export const getLocations = async (popular?: boolean): Promise<Location[]> => {
+  let query = supabase
+    .from('locations')
+    .select('id, city, state, region, country, latitude, longitude, is_popular, is_active, created_at')
+    .eq('is_active', true);
+
+  if (popular === true) {
+    query = query.eq('is_popular', true);
+  }
+
+  const { data, error } = await query
+    .order('is_popular', { ascending: false })
+    .order('state', { ascending: true })
+    .order('city', { ascending: true });
+
+  if (error !== null) {
+    throwDatabaseError('getLocations', error);
+  }
+
+  return ((data as unknown[] | null) ?? []).map(mapLocation);
+};
