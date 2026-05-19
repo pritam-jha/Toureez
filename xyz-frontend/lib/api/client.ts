@@ -14,6 +14,7 @@
 
 import { Config } from '../../constants/config';
 import { useAuthStore } from '../../store/authStore';
+import { supabase } from '../supabase';
 import type { BackendApiResponse } from '../../types';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -97,6 +98,13 @@ async function request<T>(
         typeof (parsed as Record<string, unknown>).error === 'string'
           ? (parsed as { error: string }).error
           : `Request failed with status ${response.status}`;
+
+      // Auto sign-out on 401 — token expired or invalid
+      if (response.status === 401) {
+        void supabase.auth.signOut().then(() => {
+          useAuthStore.getState().clearUser();
+        });
+      }
 
       return { success: false, data: null, error: message };
     }

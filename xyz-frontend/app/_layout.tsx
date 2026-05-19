@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect } from 'react';
-import { Stack, useRouter, useSegments } from 'expo-router';
+import { Stack } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
@@ -38,11 +38,7 @@ function AppLayout(): React.ReactElement {
   const setSession = useAuthStore((state) => state.setSession);
   const setLoading = useAuthStore((state) => state.setLoading);
   const isLoading = useAuthStore((state) => state.isLoading);
-  const user = useAuthStore((state) => state.user);
   const setWishlist = useWishlistStore((state) => state.setWishlist);
-  const router = useRouter();
-  const segments = useSegments();
-  const rootSegment = segments[0];
 
   useEffect(() => {
     async function resolveInitialSession(): Promise<void> {
@@ -95,21 +91,6 @@ function AppLayout(): React.ReactElement {
     };
   }, [setLoading, setSession, setWishlist]);
 
-  useEffect(() => {
-    if (isLoading) return;
-
-    const isInAuthGroup = rootSegment === '(auth)';
-
-    if (user && isInAuthGroup) {
-      router.replace('/(tabs)');
-      return;
-    }
-
-    if (!user && rootSegment === '(tabs)') {
-      router.replace('/(auth)/login');
-    }
-  }, [isLoading, rootSegment, router, user]);
-
   if (isLoading) {
     return <FullScreenLoader message="Loading XYZ..." />;
   }
@@ -121,6 +102,8 @@ function AppLayout(): React.ReactElement {
         <Stack.Screen name="index" />
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="package" />
+        <Stack.Screen name="compare" />
       </Stack>
     </>
   );

@@ -42,7 +42,7 @@ export function useLocations(
 
       return assertData(response.data, response.error);
     },
-    staleTime: Config.queryStaleTimeMs,
+    staleTime: 10 * 60 * 1000, // 10 min — locations rarely change
     gcTime: Config.queryCacheTimeMs,
   });
 }
@@ -54,7 +54,7 @@ export function useCategories(): UseQueryResult<Category[], Error> {
       const response = await apiClient.get<Category[]>('/categories');
       return assertData(response.data, response.error);
     },
-    staleTime: Config.queryStaleTimeMs,
+    staleTime: 10 * 60 * 1000, // 10 min — categories rarely change
     gcTime: Config.queryCacheTimeMs,
   });
 }
@@ -71,7 +71,7 @@ export function useFeaturedPackages(): UseQueryResult<
 
       return assertData(response.data, response.error);
     },
-    staleTime: Config.queryStaleTimeMs,
+    staleTime: 5 * 60 * 1000, // 5 min — featured packages
     gcTime: Config.queryCacheTimeMs,
   });
 }

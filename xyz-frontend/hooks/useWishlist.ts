@@ -56,7 +56,7 @@ export function useWishlistIds(): UseQueryResult<Set<string>, Error> {
 
       return new Set(ids);
     },
-    staleTime: Config.queryStaleTimeMs,
+    staleTime: 1 * 60 * 1000, // 1 min — user-specific, changes often
     gcTime: Config.queryCacheTimeMs,
   });
 }
@@ -129,9 +129,6 @@ export function useToggleWishlist(): UseMutationResult<
 
       setWishlist([...context.previousIds]);
       queryClient.setQueryData(wishlistQueryKeys.all, context.previousIds);
-
-      // Log the actual error so it's visible during development
-      console.warn('[useToggleWishlist] Failed:', _error?.message);
     },
     onSettled: () => {
       void queryClient.invalidateQueries({
