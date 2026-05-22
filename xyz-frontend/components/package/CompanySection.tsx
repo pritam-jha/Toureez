@@ -74,7 +74,7 @@ export function CompanySection({
             />
           ) : (
             <View style={styles.logoFallback}>
-              <Ionicons name="business-outline" size={24} color={Colors.muted} />
+              <Ionicons name="business-outline" size={24} color={Colors.textTertiary} />
             </View>
           )}
 
@@ -88,7 +88,7 @@ export function CompanySection({
                   <Ionicons
                     name="checkmark-circle"
                     size={14}
-                    color={Colors.secondary}
+                    color={Colors.primary}
                   />
                   <Text style={styles.verifiedText} numberOfLines={1}>
                     Verified
@@ -171,36 +171,42 @@ export function CompanySection({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.surface,
-    borderTopColor: Colors.border,
+    backgroundColor: Colors.surfacePrimary,
+    borderTopColor: Colors.surfaceBorder,
     borderTopWidth: 1,
-    paddingBottom: 20,
-    paddingHorizontal: 16,
-    paddingTop: 20,
+    paddingBottom: 24,
+    paddingHorizontal: 20,
+    paddingTop: 24,
   },
   sectionTitle: {
     color: Colors.textPrimary,
     fontSize: 18,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 24,
-    marginBottom: 14,
+    marginBottom: 16,
+    letterSpacing: -0.3,
   },
   card: {
-    backgroundColor: Colors.background,
-    borderColor: Colors.border,
-    borderRadius: 12,
+    backgroundColor: Colors.backgroundLayer2,
+    borderColor: Colors.surfaceBorder,
+    borderRadius: 18,
     borderWidth: 1,
     overflow: 'hidden',
+    shadowColor: '#0F1535',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.07,
+    shadowRadius: 14,
+    elevation: 4,
   },
   topRow: {
     alignItems: 'center',
     flexDirection: 'row',
-    padding: 14,
+    padding: 16,
   },
   logo: {
-    backgroundColor: Colors.surface,
-    borderColor: Colors.border,
-    borderRadius: 8,
+    backgroundColor: Colors.surfacePrimary,
+    borderColor: Colors.surfaceBorder,
+    borderRadius: 12,
     borderWidth: 1,
     height: 56,
     marginRight: 14,
@@ -208,9 +214,9 @@ const styles = StyleSheet.create({
   },
   logoFallback: {
     alignItems: 'center',
-    backgroundColor: Colors.surface,
-    borderColor: Colors.border,
-    borderRadius: 8,
+    backgroundColor: Colors.surfacePrimary,
+    borderColor: Colors.surfaceBorder,
+    borderRadius: 12,
     borderWidth: 1,
     height: 56,
     justifyContent: 'center',
@@ -225,74 +231,81 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginBottom: 5,
+    gap: 6,
   },
   companyName: {
     color: Colors.textPrimary,
     fontSize: 16,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 22,
-    marginRight: 8,
+    letterSpacing: -0.2,
   },
   verifiedBadge: {
     alignItems: 'center',
     flexDirection: 'row',
+    backgroundColor: Colors.successLight,
+    borderRadius: 999,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    gap: 3,
   },
   verifiedText: {
-    color: Colors.secondary,
-    fontSize: 12,
-    fontWeight: '800',
+    color: Colors.success,
+    fontSize: 11,
+    fontWeight: '700',
     lineHeight: 16,
-    marginLeft: 3,
   },
   ratingRow: {
     alignItems: 'center',
     flexDirection: 'row',
+    gap: 2,
   },
   ratingScore: {
     color: Colors.textPrimary,
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: '700',
     lineHeight: 18,
     marginLeft: 5,
   },
   reviewCount: {
     color: Colors.textTertiary,
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 18,
     marginLeft: 3,
   },
   aboutBlock: {
-    borderTopColor: Colors.border,
+    borderTopColor: Colors.surfaceBorder,
     borderTopWidth: 1,
-    padding: 14,
+    padding: 16,
   },
   aboutText: {
     color: Colors.textSecondary,
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '400',
     lineHeight: 22,
   },
   readMoreText: {
     color: Colors.primary,
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: '600',
     lineHeight: 18,
     marginTop: 6,
   },
   viewAllButton: {
     alignItems: 'center',
-    borderTopColor: Colors.border,
+    borderTopColor: Colors.surfaceBorder,
     borderTopWidth: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 14,
+    padding: 16,
+    backgroundColor: Colors.primaryGlow,
   },
   viewAllText: {
     color: Colors.primary,
     flex: 1,
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '600',
     lineHeight: 20,
     marginRight: 8,
   },

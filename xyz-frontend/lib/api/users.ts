@@ -274,12 +274,18 @@ export const signInWithEmail = signIn;
  * @param email - New user's email address.
  * @param password - New user's password (min 6 chars enforced by Supabase).
  * @param fullName - New user's display name.
+ * @param phone - Optional Indian mobile number.
+ * @param city - Optional city.
+ * @param state - Optional state.
  * @returns Typed ApiResponse containing the new User profile on success.
  */
 export async function signUp(
   email: string,
   password: string,
-  fullName: string
+  fullName: string,
+  phone?: string,
+  city?: string,
+  state?: string,
 ): Promise<ApiResponse<User>> {
   try {
     if (!email || !password || !fullName) {
@@ -321,9 +327,9 @@ export async function signUp(
       id: authData.user.id,
       full_name: fullName,
       avatar_url: null,
-      phone: null,
-      city: null,
-      state: null,
+      phone: phone ?? null,
+      city: city ?? null,
+      state: state ?? null,
       created_at: authData.user.created_at,
     };
 

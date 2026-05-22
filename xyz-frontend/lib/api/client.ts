@@ -91,6 +91,7 @@ async function request<T>(
     }
 
     if (!response.ok) {
+      // Extract top-level error message
       const message =
         typeof parsed === 'object' &&
         parsed !== null &&
@@ -99,6 +100,14 @@ async function request<T>(
           ? (parsed as { error: string }).error
           : `Request failed with status ${response.status}`;
 
+      // Extract and append validation details so callers can show them
+      let fullMessage = message;
+      if (typeof parsed === 'object' && parsed !== null && 'details' in parsed) {
+        const details = (parsed as Record<string, unknown>).details;
+        console.error('[apiClient] Validation details:', JSON.stringify(details, null, 2));
+        fullMessage = `${message}\n\n${JSON.stringify(details, null, 2)}`;
+      }
+
       // Auto sign-out on 401 — token expired or invalid
       if (response.status === 401) {
         void supabase.auth.signOut().then(() => {
@@ -106,7 +115,7 @@ async function request<T>(
         });
       }
 
-      return { success: false, data: null, error: message };
+      return { success: false, data: null, error: fullMessage };
     }
 
     // Backend always wraps in { success, data, error }

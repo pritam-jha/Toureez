@@ -75,7 +75,7 @@ export function SearchHeader({
         <Ionicons
           name="search-outline"
           size={18}
-          color={Colors.muted}
+          color={Colors.textTertiary}
           style={styles.searchIcon}
         />
 
@@ -86,7 +86,7 @@ export function SearchHeader({
           onChangeText={onChangeText}
           onSubmitEditing={onSubmit}
           placeholder="Search destinations, packages…"
-          placeholderTextColor={Colors.muted}
+          placeholderTextColor={Colors.textTertiary}
           returnKeyType="search"
           autoCapitalize="words"
           autoCorrect={false}
@@ -102,7 +102,7 @@ export function SearchHeader({
             accessibilityLabel="Clear search"
             hitSlop={8}
           >
-            <Ionicons name="close-circle" size={18} color={Colors.muted} />
+            <Ionicons name="close-circle" size={18} color={Colors.textTertiary} />
           </Pressable>
         )}
 
@@ -112,7 +112,7 @@ export function SearchHeader({
             <Ionicons
               name="mic-outline"
               size={18}
-              color={Colors.muted}
+              color={Colors.textTertiary}
             />
           </View>
         )}
@@ -165,14 +165,19 @@ const styles = StyleSheet.create({
   },
   inputWrap: {
     alignItems: 'center',
-    backgroundColor: Colors.surface,
-    borderColor: Colors.border,
-    borderRadius: 10,
+    backgroundColor: Colors.surfacePrimary,
+    borderColor: Colors.surfaceBorderStrong,
+    borderRadius: 14,
     borderWidth: 1.5,
     flex: 1,
     flexDirection: 'row',
-    minHeight: 46,
-    paddingHorizontal: 10,
+    minHeight: 48,
+    paddingHorizontal: 12,
+    shadowColor: '#0F1535',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.07,
+    shadowRadius: 10,
+    elevation: 4,
   },
   searchIcon: {
     marginRight: 6,
@@ -181,7 +186,7 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
     flex: 1,
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 20,
     paddingVertical: 0,
   },
@@ -199,22 +204,27 @@ const styles = StyleSheet.create({
   },
   filterButton: {
     alignItems: 'center',
-    backgroundColor: Colors.surface,
-    borderColor: Colors.border,
-    borderRadius: 10,
+    backgroundColor: Colors.surfacePrimary,
+    borderColor: Colors.surfaceBorderStrong,
+    borderRadius: 14,
     borderWidth: 1.5,
-    height: 46,
+    height: 48,
     justifyContent: 'center',
     marginLeft: 10,
     position: 'relative',
-    width: 46,
+    width: 48,
+    shadowColor: '#0F1535',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.07,
+    shadowRadius: 10,
+    elevation: 4,
   },
   badge: {
     alignItems: 'center',
     backgroundColor: Colors.primary,
-    borderColor: Colors.surface,
+    borderColor: Colors.backgroundBase,
     borderRadius: 9,
-    borderWidth: 1.5,
+    borderWidth: 2,
     height: 18,
     justifyContent: 'center',
     minWidth: 18,
@@ -226,7 +236,7 @@ const styles = StyleSheet.create({
   badgeText: {
     color: Colors.white,
     fontSize: 10,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 12,
   },
 });

@@ -43,6 +43,9 @@ export interface SignUpVariables {
   email: string;
   password: string;
   fullName: string;
+  phone?: string;
+  city?: string;
+  state?: string;
 }
 
 interface SignInErrors {
@@ -52,6 +55,9 @@ interface SignInErrors {
 
 interface SignUpErrors {
   fullName?: string;
+  phone?: string;
+  city?: string;
+  state?: string;
   email?: string;
   password?: string;
   confirmPassword?: string;
@@ -74,6 +80,9 @@ export interface UseSignInReturn
 export interface UseSignUpReturn
   extends Omit<UseMutationResult<User, Error, SignUpVariables>, 'mutate'> {
   fullName: string;
+  phone: string;
+  city: string;
+  state: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -81,6 +90,9 @@ export interface UseSignUpReturn
   formError: string | null;
   passwordStrength: PasswordStrength;
   setFullName: (value: string) => void;
+  setPhone: (value: string) => void;
+  setCity: (value: string) => void;
+  setState: (value: string) => void;
   setEmail: (value: string) => void;
   setPassword: (value: string) => void;
   setConfirmPassword: (value: string) => void;
@@ -123,8 +135,13 @@ function validateSignInForm(email: string, password: string): SignInErrors {
   return errors;
 }
 
+const INDIAN_PHONE_REGEX = /^(?:\+91|91)?[6-9]\d{9}$/;
+
 function validateSignUpForm(
   fullName: string,
+  phone: string,
+  city: string,
+  state: string,
   email: string,
   password: string,
   confirmPassword: string
@@ -136,6 +153,20 @@ function validateSignUpForm(
     errors.fullName = 'Full name is required.';
   } else if (fullName.trim().length < 2) {
     errors.fullName = 'Full name must be at least 2 characters.';
+  }
+
+  if (!phone.trim()) {
+    errors.phone = 'Phone number is required.';
+  } else if (!INDIAN_PHONE_REGEX.test(phone.trim())) {
+    errors.phone = 'Enter a valid 10-digit Indian mobile number.';
+  }
+
+  if (!city.trim()) {
+    errors.city = 'City is required.';
+  }
+
+  if (!state.trim()) {
+    errors.state = 'State is required.';
   }
 
   if (emailError) errors.email = emailError;
@@ -390,6 +421,9 @@ export function useSignIn(): UseSignInReturn {
 export function useSignUp(): UseSignUpReturn {
   const setUser = useAuthStore((state) => state.setUser);
   const [fullName, setFullNameValue] = useState('');
+  const [phone, setPhoneValue] = useState('');
+  const [city, setCityValue] = useState('');
+  const [state, setStateValue] = useState('');
   const [email, setEmailValue] = useState('');
   const [password, setPasswordValue] = useState('');
   const [confirmPassword, setConfirmPasswordValue] = useState('');
@@ -400,11 +434,17 @@ export function useSignUp(): UseSignUpReturn {
       email: nextEmail,
       password: nextPassword,
       fullName: nextFullName,
+      phone: nextPhone,
+      city: nextCity,
+      state: nextState,
     }) => {
       const { data, error } = await signUp(
         nextEmail,
         nextPassword,
-        nextFullName
+        nextFullName,
+        nextPhone,
+        nextCity,
+        nextState,
       );
 
       if (error) throw new Error(error);
@@ -426,18 +466,27 @@ export function useSignUp(): UseSignUpReturn {
   );
 
   const setFullName = useCallback(
-    (value: string) => {
-      setFullNameValue(value);
-      clearFieldError('fullName');
-    },
+    (value: string) => { setFullNameValue(value); clearFieldError('fullName'); },
+    [clearFieldError]
+  );
+
+  const setPhone = useCallback(
+    (value: string) => { setPhoneValue(value); clearFieldError('phone'); },
+    [clearFieldError]
+  );
+
+  const setCity = useCallback(
+    (value: string) => { setCityValue(value); clearFieldError('city'); },
+    [clearFieldError]
+  );
+
+  const setState = useCallback(
+    (value: string) => { setStateValue(value); clearFieldError('state'); },
     [clearFieldError]
   );
 
   const setEmail = useCallback(
-    (value: string) => {
-      setEmailValue(value);
-      clearFieldError('email');
-    },
+    (value: string) => { setEmailValue(value); clearFieldError('email'); },
     [clearFieldError]
   );
 
@@ -451,10 +500,7 @@ export function useSignUp(): UseSignUpReturn {
   );
 
   const setConfirmPassword = useCallback(
-    (value: string) => {
-      setConfirmPasswordValue(value);
-      clearFieldError('confirmPassword');
-    },
+    (value: string) => { setConfirmPasswordValue(value); clearFieldError('confirmPassword'); },
     [clearFieldError]
   );
 
@@ -466,6 +512,9 @@ export function useSignUp(): UseSignUpReturn {
   const submit = useCallback(() => {
     const nextErrors = validateSignUpForm(
       fullName,
+      phone,
+      city,
+      state,
       email,
       password,
       confirmPassword
@@ -481,12 +530,18 @@ export function useSignUp(): UseSignUpReturn {
       email: email.trim().toLowerCase(),
       password,
       fullName: fullName.trim(),
+      phone: phone.trim() || undefined,
+      city: city.trim() || undefined,
+      state: state.trim() || undefined,
     });
-  }, [confirmPassword, email, fullName, mutation, password]);
+  }, [city, confirmPassword, email, fullName, mutation, password, phone, state]);
 
   return {
     ...mutation,
     fullName,
+    phone,
+    city,
+    state,
     email,
     password,
     confirmPassword,
@@ -494,6 +549,9 @@ export function useSignUp(): UseSignUpReturn {
     formError: mutation.error?.message ?? null,
     passwordStrength,
     setFullName,
+    setPhone,
+    setCity,
+    setState,
     setEmail,
     setPassword,
     setConfirmPassword,

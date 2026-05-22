@@ -71,7 +71,7 @@ export function ResultsHeader({
             <Ionicons name="list-outline" size={18} color={Colors.primary} />
           </View>
           <View style={[styles.toggleButton, styles.toggleButtonDisabled]}>
-            <Ionicons name="grid-outline" size={18} color={Colors.muted} />
+            <Ionicons name="grid-outline" size={18} color={Colors.textTertiary} />
           </View>
         </View>
       </View>
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
     flex: 1,
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '600',
     lineHeight: 18,
     marginRight: 12,
   },
@@ -105,13 +105,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     marginRight: 10,
+    backgroundColor: Colors.primaryGlow,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    gap: 4,
   },
   sortText: {
     color: Colors.primary,
-    fontSize: 13,
-    fontWeight: '800',
+    fontSize: 12,
+    fontWeight: '700',
     lineHeight: 18,
-    marginHorizontal: 4,
     maxWidth: 120,
   },
   viewToggle: {
@@ -119,19 +123,19 @@ const styles = StyleSheet.create({
   },
   toggleButton: {
     alignItems: 'center',
-    borderRadius: 6,
+    borderRadius: 8,
     height: 32,
     justifyContent: 'center',
     width: 32,
   },
   toggleButtonActive: {
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.primaryGlow,
     borderColor: Colors.primary,
-    borderWidth: 1,
+    borderWidth: 1.5,
   },
   toggleButtonDisabled: {
-    backgroundColor: Colors.background,
-    borderColor: Colors.border,
+    backgroundColor: Colors.backgroundLayer2,
+    borderColor: Colors.surfaceBorder,
     borderWidth: 1,
     marginLeft: 6,
     opacity: 0.5,

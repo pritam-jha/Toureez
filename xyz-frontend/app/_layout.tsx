@@ -8,6 +8,7 @@ import { Stack } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
+import { router } from 'expo-router';
 
 import { supabase } from '../lib/supabase';
 import { getProfile } from '../lib/api/users';
@@ -38,7 +39,22 @@ function AppLayout(): React.ReactElement {
   const setSession = useAuthStore((state) => state.setSession);
   const setLoading = useAuthStore((state) => state.setLoading);
   const isLoading = useAuthStore((state) => state.isLoading);
+  const user = useAuthStore((state) => state.user);
   const setWishlist = useWishlistStore((state) => state.setWishlist);
+
+  // ── Navigate when auth state changes ──────────────────────────────────────
+  // index.tsx only runs once on mount. After that, navigation must be
+  // triggered imperatively whenever user logs in or out.
+  useEffect(() => {
+    // Don't navigate while the initial session check is still running
+    if (isLoading) return;
+
+    if (user) {
+      router.replace('/(tabs)');
+    } else {
+      router.replace('/(auth)/login');
+    }
+  }, [user, isLoading]);
 
   useEffect(() => {
     async function resolveInitialSession(): Promise<void> {
@@ -69,16 +85,20 @@ function AppLayout(): React.ReactElement {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        const { data: profile } = await getProfile();
-
-        if (profile) {
-          setSession(profile, session);
-          void getWishlistIds().then(({ data: ids }) => {
-            if (ids) setWishlist(ids);
+        // Supabase auth callbacks run synchronously; defer Supabase queries
+        // until this callback finishes so sign-in can resolve normally.
+        setTimeout(() => {
+          void getProfile().then(({ data: profile }) => {
+            if (profile) {
+              setSession(profile, session);
+              void getWishlistIds().then(({ data: ids }) => {
+                if (ids) setWishlist(ids);
+              });
+            }
           });
-        }
+        }, 0);
       } else if (event === 'SIGNED_OUT') {
         setSession(null, null);
         setWishlist([]);
@@ -97,13 +117,16 @@ function AppLayout(): React.ReactElement {
 
   return (
     <>
-      <StatusBar style="dark" backgroundColor={Colors.background} />
+      <StatusBar style="dark" backgroundColor={Colors.backgroundBase} />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="package" />
+        <Stack.Screen name="booking" />
+        <Stack.Screen name="review" />
         <Stack.Screen name="compare" />
+        <Stack.Screen name="notifications" />
       </Stack>
     </>
   );

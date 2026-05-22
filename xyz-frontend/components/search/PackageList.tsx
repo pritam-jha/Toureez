@@ -139,7 +139,7 @@ function EmptyState({
         style={styles.emptyIllustration}
         accessibilityLabel="Illustration of an empty search result"
       >
-        <Ionicons name="search-outline" size={36} color={Colors.muted} />
+        <Ionicons name="search-outline" size={36} color={Colors.textTertiary} />
       </View>
       <Text style={styles.emptyTitle} numberOfLines={1}>
         No packages found
@@ -174,7 +174,7 @@ interface ErrorStateProps {
 function ErrorState({ onRetry }: ErrorStateProps): React.ReactElement {
   return (
     <View style={styles.errorContainer}>
-      <Ionicons name="cloud-offline-outline" size={36} color={Colors.muted} />
+      <Ionicons name="cloud-offline-outline" size={36} color={Colors.textTertiary} />
       <Text style={styles.errorTitle} numberOfLines={1}>
         Something went wrong
       </Text>
@@ -324,37 +324,42 @@ const styles = StyleSheet.create({
   },
   // ── Skeleton ──────────────────────────────────────────────
   skeletonCard: {
-    backgroundColor: Colors.surface,
-    borderColor: Colors.border,
-    borderRadius: 12,
+    backgroundColor: Colors.surfacePrimary,
+    borderColor: Colors.surfaceBorder,
+    borderRadius: 16,
     borderWidth: 1,
     marginBottom: 14,
     overflow: 'hidden',
+    shadowColor: '#0F1535',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 4,
   },
   skeletonImage: {
     aspectRatio: 16 / 9,
-    backgroundColor: Colors.border,
+    backgroundColor: Colors.backgroundLayer2,
     width: '100%',
   },
   skeletonBody: {
     padding: 14,
   },
   skeletonLineShort: {
-    backgroundColor: Colors.border,
+    backgroundColor: Colors.backgroundLayer2,
     borderRadius: 6,
     height: 12,
     marginBottom: 10,
     width: '40%',
   },
   skeletonLineLong: {
-    backgroundColor: Colors.border,
+    backgroundColor: Colors.backgroundLayer2,
     borderRadius: 6,
     height: 16,
     marginBottom: 10,
     width: '90%',
   },
   skeletonLineMedium: {
-    backgroundColor: Colors.border,
+    backgroundColor: Colors.backgroundLayer2,
     borderRadius: 6,
     height: 12,
     marginBottom: 10,
@@ -370,11 +375,11 @@ const styles = StyleSheet.create({
   footerText: {
     color: Colors.textTertiary,
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 18,
   },
   footerDivider: {
-    backgroundColor: Colors.border,
+    backgroundColor: Colors.surfaceBorder,
     flex: 1,
     height: 1,
     marginHorizontal: 12,
@@ -382,7 +387,7 @@ const styles = StyleSheet.create({
   footerEndText: {
     color: Colors.textTertiary,
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 16,
   },
   // ── Empty ─────────────────────────────────────────────────
@@ -395,8 +400,8 @@ const styles = StyleSheet.create({
   },
   emptyIllustration: {
     alignItems: 'center',
-    backgroundColor: Colors.background,
-    borderRadius: 32,
+    backgroundColor: Colors.primaryGlow,
+    borderRadius: 20,
     height: 64,
     justifyContent: 'center',
     marginBottom: 16,
@@ -405,29 +410,35 @@ const styles = StyleSheet.create({
   emptyTitle: {
     color: Colors.textPrimary,
     fontSize: 18,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 24,
     marginBottom: 8,
     textAlign: 'center',
+    letterSpacing: -0.3,
   },
   emptySubtitle: {
     color: Colors.textSecondary,
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 20,
     marginBottom: 20,
     textAlign: 'center',
   },
   clearFiltersButton: {
     backgroundColor: Colors.primary,
-    borderRadius: 10,
+    borderRadius: 12,
     paddingHorizontal: 24,
     paddingVertical: 12,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.30,
+    shadowRadius: 10,
+    elevation: 6,
   },
   clearFiltersText: {
     color: Colors.white,
     fontSize: 14,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 20,
   },
   // ── Error ─────────────────────────────────────────────────
@@ -441,7 +452,7 @@ const styles = StyleSheet.create({
   errorTitle: {
     color: Colors.textPrimary,
     fontSize: 17,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 22,
     marginBottom: 6,
     marginTop: 14,
@@ -450,14 +461,14 @@ const styles = StyleSheet.create({
   errorSubtitle: {
     color: Colors.textSecondary,
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 18,
     marginBottom: 20,
     textAlign: 'center',
   },
   retryButton: {
     borderColor: Colors.primary,
-    borderRadius: 10,
+    borderRadius: 12,
     borderWidth: 1.5,
     paddingHorizontal: 24,
     paddingVertical: 10,
@@ -465,7 +476,7 @@ const styles = StyleSheet.create({
   retryText: {
     color: Colors.primary,
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '600',
     lineHeight: 20,
   },
 });

@@ -62,7 +62,7 @@ export interface PhotoGalleryProps {
 function GalleryFallback(): React.ReactElement {
   return (
     <View style={styles.fallback}>
-      <Ionicons name="image-outline" size={48} color={Colors.muted} />
+      <Ionicons name="image-outline" size={48} color={Colors.textTertiary} />
       <Text style={styles.fallbackText} numberOfLines={1}>
         No photos available
       </Text>
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
   container: {
     height: GALLERY_HEIGHT,
     width: '100%',
-    backgroundColor: Colors.border,
+    backgroundColor: Colors.backgroundLayer2,
     position: 'relative',
   },
   pager: {
@@ -310,14 +310,14 @@ const styles = StyleSheet.create({
   },
   fallback: {
     alignItems: 'center',
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.backgroundLayer2,
     flex: 1,
     justifyContent: 'center',
   },
   fallbackText: {
-    color: Colors.muted,
+    color: Colors.textTertiary,
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 18,
     marginTop: 8,
   },
@@ -331,14 +331,14 @@ const styles = StyleSheet.create({
   },
   overlayButton: {
     alignItems: 'center',
-    backgroundColor: Colors.overlay,
+    backgroundColor: 'rgba(15,21,53,0.55)',
     borderRadius: 20,
     height: 40,
     justifyContent: 'center',
     width: 40,
   },
   counter: {
-    backgroundColor: Colors.overlay,
+    backgroundColor: 'rgba(15,21,53,0.55)',
     borderRadius: 12,
     paddingHorizontal: 10,
     paddingVertical: 4,
@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
   counterText: {
     color: Colors.white,
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '700',
     lineHeight: 16,
   },
   dotsRow: {
@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
     right: 0,
   },
   dot: {
-    backgroundColor: Colors.overlayLight,
+    backgroundColor: 'rgba(255,255,255,0.45)',
     borderRadius: 4,
     height: 6,
     marginHorizontal: 3,
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
   },
   fullscreenCounter: {
-    backgroundColor: Colors.overlay,
+    backgroundColor: 'rgba(15,21,53,0.55)',
     borderRadius: 12,
     paddingHorizontal: 10,
     paddingVertical: 4,
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
   },
   fullscreenClose: {
     alignItems: 'center',
-    backgroundColor: Colors.overlay,
+    backgroundColor: 'rgba(15,21,53,0.55)',
     borderRadius: 20,
     height: 40,
     justifyContent: 'center',

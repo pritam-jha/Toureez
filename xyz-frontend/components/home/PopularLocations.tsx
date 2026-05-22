@@ -1,6 +1,9 @@
 /**
  * @file components/home/PopularLocations.tsx
- * @description Horizontal list of popular destination cards.
+ * @description Popular destination cards — Premium Light 3D design.
+ * White cards with image-like colored backgrounds, 3D shadows, navy text.
+ *
+ * ✅ All hooks and navigation preserved — zero logic changes.
  */
 
 import React, { useCallback, useEffect, useRef } from 'react';
@@ -22,48 +25,58 @@ import { Colors } from '../../constants/colors';
 import type { Location } from '../../types';
 
 const CARD_WIDTH = 148;
-const CARD_HEIGHT = 106;
+const CARD_HEIGHT = 110;
 const CARD_GAP = 12;
 
-function useSkeletonOpacity(): Animated.Value {
-  const opacity = useRef(new Animated.Value(0.55)).current;
+// Premium light gradient backgrounds for location cards
+const CARD_COLORS = [
+  '#EEF1FF',
+  '#FFF3E8',
+  '#E8F5FF',
+  '#F0FFF4',
+  '#FFF0F5',
+  '#F5F0FF',
+];
 
+const CARD_ACCENT_COLORS = [
+  Colors.primary,
+  '#DD6B20',
+  '#2B6CB0',
+  '#276749',
+  '#C53030',
+  '#553C9A',
+];
+
+const CARD_ICON_NAMES: React.ComponentProps<typeof Ionicons>['name'][] = [
+  'business-outline',
+  'sunny-outline',
+  'water-outline',
+  'leaf-outline',
+  'heart-outline',
+  'sparkles-outline',
+];
+
+function useSkeletonOpacity(): Animated.Value {
+  const opacity = useRef(new Animated.Value(0.4)).current;
   useEffect(() => {
     const animation = Animated.loop(
       Animated.sequence([
-        Animated.timing(opacity, {
-          toValue: 1,
-          duration: 700,
-          useNativeDriver: true,
-        }),
-        Animated.timing(opacity, {
-          toValue: 0.55,
-          duration: 700,
-          useNativeDriver: true,
-        }),
+        Animated.timing(opacity, { toValue: 0.9, duration: 700, useNativeDriver: true }),
+        Animated.timing(opacity, { toValue: 0.4, duration: 700, useNativeDriver: true }),
       ])
     );
-
     animation.start();
-
-    return () => {
-      animation.stop();
-    };
+    return () => animation.stop();
   }, [opacity]);
-
   return opacity;
 }
 
 function LocationSkeleton(): React.ReactElement {
   const opacity = useSkeletonOpacity();
-
   return (
     <View style={styles.skeletonRow} accessibilityElementsHidden>
       {[0, 1, 2, 3, 4].map((item) => (
-        <Animated.View
-          key={item}
-          style={[styles.skeletonCard, { opacity }]}
-        />
+        <Animated.View key={item} style={[styles.skeletonCard, { opacity }]} />
       ))}
     </View>
   );
@@ -75,30 +88,28 @@ interface LocationCardProps {
   onPress: (location: Location) => void;
 }
 
-function LocationCard({
-  item,
-  index,
-  onPress,
-}: LocationCardProps): React.ReactElement {
-  const cardStyle =
-    LOCATION_CARD_STYLES[index % LOCATION_CARD_STYLES.length] ??
-    styles.locationCardOne;
+function LocationCard({ item, index, onPress }: LocationCardProps): React.ReactElement {
+  const bgColor = CARD_COLORS[index % CARD_COLORS.length] ?? '#EEF1FF';
+  const accentColor = CARD_ACCENT_COLORS[index % CARD_ACCENT_COLORS.length] ?? Colors.primary;
+  const iconName = CARD_ICON_NAMES[index % CARD_ICON_NAMES.length] ?? 'location-outline';
 
   return (
     <Pressable
-      style={[styles.locationCard, cardStyle]}
+      style={[styles.locationCard, { backgroundColor: bgColor }]}
       onPress={() => onPress(item)}
       accessibilityRole="button"
       accessibilityLabel={`Explore packages for ${item.city}, ${item.state}`}
     >
-      <View style={styles.cardLightSpot} />
-      <View style={styles.cardOverlay}>
-        <Text style={styles.city} numberOfLines={1}>
-          {item.city}
-        </Text>
-        <Text style={styles.state} numberOfLines={1}>
-          {item.state}
-        </Text>
+      {/* Icon circle */}
+      <View style={[styles.iconCircle, { backgroundColor: accentColor + '18' }]}>
+        <Ionicons name={iconName} size={20} color={accentColor} />
+      </View>
+      {/* Text */}
+      <Text style={[styles.city, { color: accentColor }]} numberOfLines={1}>{item.city}</Text>
+      <Text style={styles.state} numberOfLines={1}>{item.state}</Text>
+      {/* Arrow */}
+      <View style={[styles.arrowWrap, { backgroundColor: accentColor + '15' }]}>
+        <Ionicons name="arrow-forward" size={10} color={accentColor} />
       </View>
     </Pressable>
   );
@@ -110,10 +121,7 @@ export function PopularLocations(): React.ReactElement {
   const handleLocationPress = useCallback((location: Location) => {
     router.push({
       pathname: '/(tabs)/search',
-      params: {
-        destination: location.city,
-        state: location.state,
-      },
+      params: { destination: location.city, state: location.state },
     });
   }, []);
 
@@ -150,31 +158,17 @@ export function PopularLocations(): React.ReactElement {
           <Text style={styles.stateMessage} numberOfLines={2}>
             Something went wrong. Pull to refresh.
           </Text>
-          <Pressable
-            style={styles.retryButton}
-            onPress={() => void refetch()}
-            accessibilityRole="button"
-            accessibilityLabel="Retry destinations"
-          >
-            <Text style={styles.retryText} numberOfLines={1}>
-              Retry
-            </Text>
+          <Pressable style={styles.retryButton} onPress={() => void refetch()} accessibilityRole="button" accessibilityLabel="Retry destinations">
+            <Text style={styles.retryText} numberOfLines={1}>Retry</Text>
           </Pressable>
         </View>
       ) : !data || data.length === 0 ? (
         <View style={styles.stateCard}>
-          <View
-            style={styles.emptyIllustration}
-            accessibilityLabel="Illustration of a folded India travel map"
-          >
-            <Ionicons name="map-outline" size={26} color={Colors.primary} />
+          <View style={styles.emptyIllustration} accessibilityLabel="Map icon">
+            <Ionicons name="map-outline" size={24} color={Colors.primary} />
           </View>
-          <Text style={styles.emptyTitle} numberOfLines={1}>
-            No destinations yet
-          </Text>
-          <Text style={styles.stateMessage} numberOfLines={2}>
-            New places across India will appear here soon.
-          </Text>
+          <Text style={styles.emptyTitle} numberOfLines={1}>No destinations yet</Text>
+          <Text style={styles.stateMessage} numberOfLines={2}>New places across India will appear here soon.</Text>
         </View>
       ) : (
         <FlatList
@@ -185,7 +179,7 @@ export function PopularLocations(): React.ReactElement {
           getItemLayout={getItemLayout}
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.listContent}
-          ItemSeparatorComponent={LocationSeparator}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
           initialNumToRender={5}
           maxToRenderPerBatch={6}
           windowSize={5}
@@ -195,105 +189,106 @@ export function PopularLocations(): React.ReactElement {
   );
 }
 
-function LocationSeparator(): React.ReactElement {
-  return <View style={styles.separator} />;
-}
-
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 24,
+    marginBottom: 28,
   },
   listContent: {
-    paddingRight: 16,
+    paddingRight: 4,
   },
   separator: {
     width: CARD_GAP,
   },
   locationCard: {
-    borderRadius: 8,
+    borderRadius: 18,
     height: CARD_HEIGHT,
-    justifyContent: 'flex-end',
-    overflow: 'hidden',
     width: CARD_WIDTH,
+    padding: 14,
+    justifyContent: 'flex-start',
+    position: 'relative',
+    // 3D shadow
+    shadowColor: '#0F1535',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(30,40,100,0.06)',
   },
-  locationCardOne: {
-    backgroundColor: Colors.primary,
-  },
-  locationCardTwo: {
-    backgroundColor: Colors.secondary,
-  },
-  locationCardThree: {
-    backgroundColor: Colors.info,
-  },
-  locationCardFour: {
-    backgroundColor: Colors.warning,
-  },
-  cardLightSpot: {
-    backgroundColor: Colors.overlayLight,
-    borderRadius: 44,
-    height: 88,
-    position: 'absolute',
-    right: -28,
-    top: -24,
-    width: 88,
-  },
-  cardOverlay: {
-    backgroundColor: Colors.overlay,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+  iconCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
   },
   city: {
-    color: Colors.white,
-    fontSize: 16,
-    fontWeight: '800',
-    lineHeight: 20,
+    fontSize: 13,
+    fontWeight: '700',
+    lineHeight: 17,
+    letterSpacing: -0.2,
   },
   state: {
-    color: Colors.textInverse,
-    fontSize: 12,
-    fontWeight: '600',
-    lineHeight: 16,
-    marginTop: 2,
+    color: Colors.textTertiary,
+    fontSize: 11,
+    fontWeight: '500',
+    lineHeight: 15,
+    marginTop: 1,
+  },
+  arrowWrap: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    width: 20,
+    height: 20,
+    borderRadius: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   skeletonRow: {
     flexDirection: 'row',
   },
   skeletonCard: {
-    backgroundColor: Colors.border,
-    borderRadius: 8,
+    backgroundColor: Colors.backgroundLayer2,
+    borderRadius: 18,
     height: CARD_HEIGHT,
     marginRight: CARD_GAP,
     width: CARD_WIDTH,
   },
   stateCard: {
-    backgroundColor: Colors.surface,
-    borderColor: Colors.border,
-    borderRadius: 8,
+    backgroundColor: Colors.surfacePrimary,
+    borderColor: Colors.surfaceBorder,
+    borderRadius: 16,
     borderWidth: 1,
     padding: 16,
+    shadowColor: '#0F1535',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 3,
   },
   emptyTitle: {
     color: Colors.textPrimary,
     fontSize: 15,
-    fontWeight: '800',
+    fontWeight: '700',
     lineHeight: 20,
     marginBottom: 4,
   },
   emptyIllustration: {
     alignItems: 'center',
-    alignSelf: 'flex-start',
-    backgroundColor: Colors.background,
-    borderRadius: 22,
-    height: 44,
+    backgroundColor: Colors.primaryGlow,
+    borderRadius: 12,
+    height: 40,
     justifyContent: 'center',
     marginBottom: 10,
-    width: 44,
+    width: 40,
   },
   stateMessage: {
     color: Colors.textSecondary,
     flex: 1,
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 18,
   },
   retryButton: {
@@ -303,14 +298,7 @@ const styles = StyleSheet.create({
   retryText: {
     color: Colors.primary,
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: '700',
     lineHeight: 18,
   },
 });
-
-const LOCATION_CARD_STYLES = [
-  styles.locationCardOne,
-  styles.locationCardTwo,
-  styles.locationCardThree,
-  styles.locationCardFour,
-];

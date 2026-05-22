@@ -73,7 +73,7 @@ const BADGE_CONFIG: Record<BadgeType, BadgeConfig> = {
   },
   BESTSELLER: {
     label: 'BESTSELLER',
-    bgColor: Colors.secondary,
+    bgColor: Colors.primary,
     textColor: Colors.white,
   },
   best_value: {
@@ -203,7 +203,7 @@ export function PackageListCard({
           />
         ) : (
           <View style={styles.imageFallback}>
-            <Ionicons name="image-outline" size={40} color={Colors.muted} />
+            <Ionicons name="image-outline" size={40} color={Colors.textTertiary} />
           </View>
         )}
 
@@ -264,7 +264,7 @@ export function PackageListCard({
               <Ionicons
                 name="checkmark-circle"
                 size={13}
-                color={Colors.secondary}
+                color={Colors.primary}
               />
               <Text style={styles.verifiedText} numberOfLines={1}>
                 Verified
@@ -344,7 +344,7 @@ export function PackageListCard({
                 <Ionicons
                   name="checkmark"
                   size={11}
-                  color={Colors.secondary}
+                  color={Colors.primary}
                 />
                 <Text style={styles.inclusionText} numberOfLines={1}>
                   {inclusion}
@@ -446,21 +446,21 @@ export function PackageListCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: Colors.surface,
-    borderColor: Colors.border,
-    borderRadius: 12,
+    backgroundColor: Colors.surfacePrimary,
+    borderColor: Colors.surfaceBorder,
+    borderRadius: 18,
     borderWidth: 1,
-    elevation: 3,
-    marginBottom: 14,
+    elevation: 6,
+    marginBottom: 16,
     overflow: 'hidden',
-    shadowColor: Colors.textPrimary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
+    shadowColor: '#0F1535',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.09,
+    shadowRadius: 18,
   },
   imageWrap: {
     aspectRatio: 16 / 9,
-    backgroundColor: Colors.border,
+    backgroundColor: Colors.backgroundLayer2,
     position: 'relative',
     width: '100%',
   },
@@ -470,166 +470,178 @@ const styles = StyleSheet.create({
   },
   imageFallback: {
     alignItems: 'center',
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.backgroundLayer2,
     flex: 1,
     justifyContent: 'center',
   },
   badgesRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    left: 10,
+    left: 12,
     position: 'absolute',
-    top: 10,
+    top: 12,
+    gap: 6,
   },
   badge: {
-    borderRadius: 6,
-    marginBottom: 4,
-    marginRight: 6,
-    paddingHorizontal: 8,
+    borderRadius: 999,
+    paddingHorizontal: 10,
     paddingVertical: 4,
   },
   badgeText: {
     fontSize: 10,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 12,
+    letterSpacing: 0.3,
   },
   wishlistButton: {
     alignItems: 'center',
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.white,
     borderRadius: 18,
     height: 36,
     justifyContent: 'center',
     position: 'absolute',
-    right: 10,
-    top: 10,
+    right: 12,
+    top: 12,
     width: 36,
+    shadowColor: '#0F1535',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 4,
   },
   body: {
-    padding: 14,
+    padding: 16,
   },
   companyRow: {
     alignItems: 'center',
     flexDirection: 'row',
     marginBottom: 6,
+    gap: 6,
   },
   companyName: {
     color: Colors.textTertiary,
     flex: 1,
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '600',
     lineHeight: 16,
   },
   verifiedBadge: {
     alignItems: 'center',
     flexDirection: 'row',
-    marginLeft: 8,
+    backgroundColor: Colors.successLight,
+    borderRadius: 999,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    gap: 3,
   },
   verifiedText: {
-    color: Colors.secondary,
+    color: Colors.success,
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: '700',
     lineHeight: 14,
-    marginLeft: 3,
   },
   title: {
     color: Colors.textPrimary,
     fontSize: 16,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 22,
     marginBottom: 8,
+    letterSpacing: -0.2,
   },
   metaRow: {
     alignItems: 'center',
     flexDirection: 'row',
     marginBottom: 8,
+    gap: 4,
   },
   metaText: {
     color: Colors.textSecondary,
     flex: 1,
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 18,
-    marginLeft: 4,
   },
   detailRow: {
     flexDirection: 'row',
     marginBottom: 8,
+    gap: 16,
   },
   detailItem: {
     alignItems: 'center',
     flexDirection: 'row',
-    marginRight: 16,
+    gap: 4,
   },
   detailText: {
     color: Colors.textSecondary,
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 16,
-    marginLeft: 4,
   },
   ratingRow: {
     alignItems: 'center',
     flexDirection: 'row',
-    marginBottom: 10,
+    marginBottom: 12,
+    gap: 2,
   },
   ratingValue: {
     color: Colors.textPrimary,
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: '700',
     lineHeight: 18,
     marginLeft: 5,
   },
   reviewCount: {
     color: Colors.textTertiary,
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 18,
     marginLeft: 3,
   },
   inclusionsRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginBottom: 12,
+    marginBottom: 14,
+    gap: 6,
   },
   inclusionChip: {
     alignItems: 'center',
-    backgroundColor: Colors.background,
-    borderRadius: 6,
+    backgroundColor: Colors.successLight,
+    borderRadius: 8,
     flexDirection: 'row',
-    marginBottom: 6,
-    marginRight: 6,
     paddingHorizontal: 8,
     paddingVertical: 4,
+    gap: 4,
   },
   inclusionText: {
-    color: Colors.textSecondary,
+    color: Colors.success,
     fontSize: 11,
     fontWeight: '600',
     lineHeight: 14,
-    marginLeft: 4,
     maxWidth: 100,
   },
   inclusionChipMore: {
     alignItems: 'center',
-    backgroundColor: Colors.background,
-    borderColor: Colors.border,
-    borderRadius: 6,
+    backgroundColor: Colors.backgroundLayer2,
+    borderColor: Colors.surfaceBorder,
+    borderRadius: 8,
     borderWidth: 1,
     justifyContent: 'center',
-    marginBottom: 6,
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
   inclusionMoreText: {
     color: Colors.textTertiary,
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: '600',
     lineHeight: 14,
   },
   footerRow: {
     alignItems: 'flex-end',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    borderTopWidth: 1,
+    borderTopColor: Colors.surfaceBorder,
+    paddingTop: 14,
   },
   priceBlock: {
     flex: 1,
@@ -638,26 +650,27 @@ const styles = StyleSheet.create({
   priceOnRequest: {
     color: Colors.textSecondary,
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '600',
     lineHeight: 20,
   },
   basePrice: {
-    color: Colors.muted,
+    color: Colors.textTertiary,
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 16,
     textDecorationLine: 'line-through',
   },
   finalPrice: {
     color: Colors.primary,
-    fontSize: 20,
-    fontWeight: '900',
-    lineHeight: 26,
+    fontSize: 22,
+    fontWeight: '800',
+    lineHeight: 28,
+    letterSpacing: -0.5,
   },
   savingsBadge: {
     alignSelf: 'flex-start',
     backgroundColor: Colors.successLight,
-    borderRadius: 6,
+    borderRadius: 8,
     marginTop: 3,
     paddingHorizontal: 7,
     paddingVertical: 3,
@@ -665,41 +678,42 @@ const styles = StyleSheet.create({
   savingsText: {
     color: Colors.success,
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: '700',
     lineHeight: 14,
   },
   perPerson: {
     color: Colors.textTertiary,
     fontSize: 11,
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 14,
     marginTop: 2,
   },
   actionButtons: {
     alignItems: 'flex-end',
     flexShrink: 0,
+    gap: 8,
   },
   compareButton: {
     alignItems: 'center',
-    borderColor: Colors.primary,
-    borderRadius: 8,
-    borderWidth: 1,
+    borderColor: Colors.surfaceBorderStrong,
+    borderRadius: 10,
+    borderWidth: 1.5,
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 8,
     minHeight: 34,
     paddingHorizontal: 10,
+    backgroundColor: Colors.backgroundLayer2,
+    gap: 4,
   },
   compareButtonActive: {
-    backgroundColor: Colors.secondary,
-    borderColor: Colors.secondary,
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
   },
   compareText: {
-    color: Colors.primary,
+    color: Colors.textSecondary,
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '600',
     lineHeight: 16,
-    marginLeft: 4,
   },
   compareTextActive: {
     color: Colors.white,
@@ -707,15 +721,20 @@ const styles = StyleSheet.create({
   viewButton: {
     alignItems: 'center',
     backgroundColor: Colors.primary,
-    borderRadius: 8,
+    borderRadius: 10,
     justifyContent: 'center',
     minHeight: 38,
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.30,
+    shadowRadius: 8,
+    elevation: 5,
   },
   viewButtonText: {
     color: Colors.white,
     fontSize: 13,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 18,
   },
 });

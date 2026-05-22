@@ -62,7 +62,7 @@ function PackageColumn({ pkg, onRemove }: PackageColumnProps): React.ReactElemen
         />
       ) : (
         <View style={styles.imageFallback}>
-          <Ionicons name="image-outline" size={30} color={Colors.muted} />
+          <Ionicons name="image-outline" size={30} color={Colors.textTertiary} />
         </View>
       )}
 
@@ -80,7 +80,7 @@ function PackageColumn({ pkg, onRemove }: PackageColumnProps): React.ReactElemen
           <Ionicons
             name="checkmark-circle"
             size={13}
-            color={Colors.secondary}
+            color={Colors.primary}
             style={styles.verifiedIcon}
           />
         )}
@@ -141,19 +141,19 @@ export function CompareHeader({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.surface,
-    borderBottomColor: Colors.border,
-    borderBottomWidth: 2,
+    backgroundColor: Colors.surfacePrimary,
+    borderBottomColor: Colors.surfaceBorder,
+    borderBottomWidth: 1,
     flexDirection: 'row',
-    shadowColor: Colors.textPrimary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowColor: '#0F1535',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.07,
+    shadowRadius: 8,
+    elevation: 4,
   },
   labelSpacer: {
-    backgroundColor: Colors.background,
-    borderRightColor: Colors.border,
+    backgroundColor: Colors.backgroundLayer2,
+    borderRightColor: Colors.surfaceBorder,
     borderRightWidth: 1,
     justifyContent: 'flex-end',
     paddingBottom: 12,
@@ -163,8 +163,8 @@ const styles = StyleSheet.create({
   labelSpacerText: {
     color: Colors.textTertiary,
     fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 0.5,
+    fontWeight: '700',
+    letterSpacing: 0.8,
     lineHeight: 14,
     textTransform: 'uppercase',
   },
@@ -190,16 +190,16 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   image: {
-    borderRadius: 10,
+    borderRadius: 12,
     height: 110,
     marginBottom: 10,
     width: COLUMN_WIDTH,
   },
   imageFallback: {
     alignItems: 'center',
-    backgroundColor: Colors.background,
-    borderColor: Colors.border,
-    borderRadius: 10,
+    backgroundColor: Colors.backgroundLayer2,
+    borderColor: Colors.surfaceBorder,
+    borderRadius: 12,
     borderWidth: 1,
     height: 110,
     justifyContent: 'center',
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   title: {
     color: Colors.textPrimary,
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: '700',
     lineHeight: 18,
     marginBottom: 4,
   },
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     color: Colors.textTertiary,
     flex: 1,
     fontSize: 11,
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 15,
   },
   verifiedIcon: {
@@ -231,16 +231,16 @@ const styles = StyleSheet.create({
   ratingPill: {
     alignItems: 'center',
     alignSelf: 'flex-start',
-    backgroundColor: Colors.warningLight,
+    backgroundColor: 'rgba(245,158,11,0.12)',
     borderRadius: 10,
     flexDirection: 'row',
     paddingHorizontal: 7,
     paddingVertical: 3,
   },
   ratingText: {
-    color: Colors.warning,
+    color: Colors.gold,
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: '700',
     lineHeight: 15,
     marginLeft: 3,
   },

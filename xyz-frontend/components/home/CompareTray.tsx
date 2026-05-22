@@ -1,6 +1,6 @@
 /**
  * @file components/home/CompareTray.tsx
- * @description Persistent floating compare tray rendered above all tabs.
+ * @description Persistent floating compare tray — Premium Light 3D design.
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -20,26 +20,16 @@ import { useCompare } from '../../hooks/useCompare';
 import { Colors } from '../../constants/colors';
 
 const TRAY_HEIGHT = 74;
-const TAB_BAR_HEIGHT = 64;
+const TAB_BAR_HEIGHT = 68;
 const HIDDEN_OFFSET = TRAY_HEIGHT + 24;
 const MAX_THUMBNAILS = 4;
 const ANIMATION_DURATION_MS = 260;
 
 function getCloudinaryThumbnail(url: string | null): string | null {
-  if (!url) {
-    return null;
-  }
-
+  if (!url) return null;
   const marker = '/image/upload/';
-
-  if (!url.includes(marker)) {
-    return url;
-  }
-
-  if (url.includes('f_auto') || url.includes('q_auto')) {
-    return url;
-  }
-
+  if (!url.includes(marker)) return url;
+  if (url.includes('f_auto') || url.includes('q_auto')) return url;
   return url.replace(marker, `${marker}c_fill,w_96,h_96,f_auto,q_auto/`);
 }
 
@@ -76,43 +66,35 @@ export function CompareTray(): React.ReactElement | null {
       duration: ANIMATION_DURATION_MS,
       useNativeDriver: true,
     }).start(({ finished }) => {
-      if (finished) {
-        setShouldRender(false);
-      }
+      if (finished) setShouldRender(false);
     });
   }, [isVisible, translateY]);
 
   const handleCompareNow = useCallback(() => {
     router.push({
       pathname: '/compare' as never,
-      params: {
-        ids: compareItems.map((item) => item.id).join(','),
-      },
+      params: { ids: compareItems.map((item) => item.id).join(',') },
     });
   }, [compareItems]);
 
   const thumbnails = compareItems.slice(0, MAX_THUMBNAILS);
 
-  if (!shouldRender) {
-    return null;
-  }
+  if (!shouldRender) return null;
 
   return (
     <Animated.View
       style={[
         styles.tray,
         positionStyle,
-        {
-          transform: [{ translateY }],
-        },
+        { transform: [{ translateY }] },
       ]}
       accessibilityRole="toolbar"
       accessibilityLabel={`${compareCount} packages selected for comparison`}
     >
+      {/* Thumbnails */}
       <View style={styles.thumbnailRow}>
         {thumbnails.map((pkg) => {
           const thumbnail = getCloudinaryThumbnail(pkg.cover_image);
-
           return (
             <View key={pkg.id} style={styles.thumbnail}>
               {thumbnail ? (
@@ -124,7 +106,7 @@ export function CompareTray(): React.ReactElement | null {
                 />
               ) : (
                 <View style={styles.thumbnailFallback}>
-                  <Ionicons name="image-outline" size={14} color={Colors.white} />
+                  <Ionicons name="image-outline" size={14} color={Colors.textTertiary} />
                 </View>
               )}
             </View>
@@ -144,9 +126,7 @@ export function CompareTray(): React.ReactElement | null {
           accessibilityLabel="Clear compare tray"
           hitSlop={8}
         >
-          <Text style={styles.clearText} numberOfLines={1}>
-            Clear
-          </Text>
+          <Text style={styles.clearText} numberOfLines={1}>Clear</Text>
         </Pressable>
 
         <Pressable
@@ -155,9 +135,7 @@ export function CompareTray(): React.ReactElement | null {
           accessibilityRole="button"
           accessibilityLabel="Compare selected packages"
         >
-          <Text style={styles.compareText} numberOfLines={1}>
-            Compare Now
-          </Text>
+          <Text style={styles.compareText} numberOfLines={1}>Compare Now</Text>
         </Pressable>
       </View>
     </Animated.View>
@@ -168,21 +146,18 @@ const styles = StyleSheet.create({
   tray: {
     alignItems: 'center',
     backgroundColor: Colors.textPrimary,
-    borderRadius: 8,
-    elevation: 12,
+    borderRadius: 18,
+    elevation: 16,
     flexDirection: 'row',
     height: TRAY_HEIGHT,
-    left: 14,
-    paddingHorizontal: 12,
+    left: 16,
+    paddingHorizontal: 14,
     position: 'absolute',
-    right: 14,
-    shadowColor: Colors.textPrimary,
-    shadowOffset: {
-      height: 8,
-      width: 0,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 16,
+    right: 16,
+    shadowColor: '#0F1535',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 20,
     zIndex: 50,
   },
   thumbnailRow: {
@@ -190,7 +165,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   thumbnail: {
-    backgroundColor: Colors.muted,
+    backgroundColor: Colors.backgroundLayer3,
     borderColor: Colors.white,
     borderRadius: 17,
     borderWidth: 2,
@@ -205,7 +180,7 @@ const styles = StyleSheet.create({
   },
   thumbnailFallback: {
     alignItems: 'center',
-    backgroundColor: Colors.secondary,
+    backgroundColor: Colors.backgroundLayer2,
     flex: 1,
     justifyContent: 'center',
   },
@@ -213,7 +188,7 @@ const styles = StyleSheet.create({
     color: Colors.white,
     flex: 1,
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: '600',
     lineHeight: 18,
   },
   actions: {
@@ -223,27 +198,32 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     justifyContent: 'center',
-    marginRight: 8,
+    marginRight: 10,
     minHeight: 38,
   },
   clearText: {
-    color: Colors.muted,
+    color: 'rgba(255,255,255,0.55)',
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '600',
     lineHeight: 16,
   },
   compareButton: {
     alignItems: 'center',
     backgroundColor: Colors.primary,
-    borderRadius: 8,
+    borderRadius: 12,
     justifyContent: 'center',
     minHeight: 38,
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.35,
+    shadowRadius: 8,
+    elevation: 6,
   },
   compareText: {
     color: Colors.white,
     fontSize: 12,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 16,
   },
 });

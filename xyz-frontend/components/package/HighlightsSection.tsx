@@ -43,19 +43,20 @@ export function HighlightsSection({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.surface,
-    borderTopColor: Colors.border,
+    backgroundColor: Colors.surfacePrimary,
+    borderTopColor: Colors.surfaceBorder,
     borderTopWidth: 1,
-    paddingBottom: 16,
-    paddingHorizontal: 16,
-    paddingTop: 20,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    paddingTop: 24,
   },
   sectionTitle: {
     color: Colors.textPrimary,
     fontSize: 18,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 24,
-    marginBottom: 14,
+    marginBottom: 16,
+    letterSpacing: -0.3,
   },
   row: {
     alignItems: 'flex-start',
@@ -65,6 +66,12 @@ const styles = StyleSheet.create({
   iconWrap: {
     marginRight: 10,
     marginTop: 1,
+    width: 24,
+    height: 24,
+    borderRadius: 8,
+    backgroundColor: Colors.primaryGlow,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   textWrap: {
     flex: 1,
@@ -74,7 +81,7 @@ const styles = StyleSheet.create({
   number: {
     color: Colors.primary,
     fontSize: 11,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 20,
     marginRight: 8,
     minWidth: 22,
@@ -83,7 +90,7 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
     flex: 1,
     fontSize: 14,
-    fontWeight: '600',
-    lineHeight: 20,
+    fontWeight: '500',
+    lineHeight: 22,
   },
 });

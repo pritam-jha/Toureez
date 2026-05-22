@@ -1,6 +1,8 @@
 /**
  * @file app/(tabs)/index.tsx
- * @description Home screen for XYZ package discovery.
+ * @description Home screen — Premium Light 3D design.
+ * Warm white background, deep navy headings, gold accents, 3D card depth.
+ * All hooks, stores, and API calls preserved.
  */
 
 import React, { useCallback, useMemo, useState } from 'react';
@@ -19,19 +21,20 @@ import { router } from 'expo-router';
 import { CategoryRow } from '../../components/home/CategoryRow';
 import { FeaturedPackages } from '../../components/home/FeaturedPackages';
 import { PopularLocations } from '../../components/home/PopularLocations';
-import { SearchBar } from '../../components/home/SearchBar';
 import {
   useCategories,
   useFeaturedPackages,
   useLocations,
 } from '../../hooks/useHomeData';
 import { useAuth } from '../../hooks/useAuth';
+import { useUnreadCount } from '../../hooks/useNotifications';
 import { useWishlistIds } from '../../hooks/useWishlist';
 import { Colors } from '../../constants/colors';
 import { Config } from '../../constants/config';
 
 export default function HomeScreen(): React.ReactElement {
   const { user } = useAuth();
+  const unreadCount = useUnreadCount();
   const { refetch: refetchLocations } = useLocations(true);
   const { refetch: refetchCategories } = useCategories();
   const { refetch: refetchFeaturedPackages } = useFeaturedPackages();
@@ -39,17 +42,20 @@ export default function HomeScreen(): React.ReactElement {
 
   useWishlistIds();
 
-  const locationLabel = useMemo(() => {
-    if (user?.city && user.state) {
-      return `${user.city}, ${user.state}`;
-    }
+  const greeting = useMemo(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
+  }, []);
 
-    return user?.city ?? null;
-  }, [user?.city, user?.state]);
+  const firstName = useMemo(() => {
+    if (!user?.full_name) return null;
+    return user.full_name.split(' ')[0] ?? null;
+  }, [user?.full_name]);
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
-
     try {
       await Promise.all([
         refetchLocations(),
@@ -63,6 +69,10 @@ export default function HomeScreen(): React.ReactElement {
 
   const handleNotificationsPress = useCallback(() => {
     router.push('/notifications' as never);
+  }, []);
+
+  const handleSearchFocus = useCallback(() => {
+    router.push('/(tabs)/search');
   }, []);
 
   return (
@@ -81,34 +91,27 @@ export default function HomeScreen(): React.ReactElement {
           />
         }
       >
+        {/* ── Top Header ── */}
         <View style={styles.header}>
-          <View style={styles.headerTextWrap}>
-            <Text style={styles.logo} numberOfLines={1}>
-              {Config.appName}
+          <View style={styles.headerLeft}>
+            <Text style={styles.greeting} numberOfLines={1}>
+              {greeting}{firstName ? `, ${firstName}` : ''} 👋
             </Text>
-            {locationLabel ? (
-              <View style={styles.locationRow}>
-                <Ionicons
-                  name="location-outline"
-                  size={15}
-                  color={Colors.textSecondary}
-                />
-                <Text style={styles.locationText} numberOfLines={1}>
-                  {locationLabel}
-                </Text>
-              </View>
-            ) : (
-              <Text style={styles.locationFallback} numberOfLines={1}>
-                Compare travel packages across India
-              </Text>
-            )}
+            <Text style={styles.heading} numberOfLines={2}>
+              Discover India's{'\n'}Best Trips
+            </Text>
           </View>
 
+          {/* Notification bell */}
           <Pressable
-            style={styles.notificationButton}
+            style={styles.notifButton}
             onPress={handleNotificationsPress}
             accessibilityRole="button"
-            accessibilityLabel="Open notifications"
+            accessibilityLabel={
+              unreadCount > 0
+                ? `Notifications, ${unreadCount} unread`
+                : 'Notifications'
+            }
             hitSlop={8}
           >
             <Ionicons
@@ -116,12 +119,41 @@ export default function HomeScreen(): React.ReactElement {
               size={22}
               color={Colors.textPrimary}
             />
+            {unreadCount > 0 ? (
+              <View style={styles.notifBadge}>
+                <Text style={styles.notifBadgeText} numberOfLines={1}>
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </Text>
+              </View>
+            ) : null}
           </Pressable>
         </View>
 
-        <SearchBar />
+        {/* ── Search Bar — 3D elevated pill ── */}
+        <Pressable
+          style={styles.searchBar}
+          onPress={handleSearchFocus}
+          accessibilityRole="button"
+          accessibilityLabel="Search destinations"
+        >
+          <View style={styles.searchIconWrap}>
+            <Ionicons name="search-outline" size={18} color={Colors.primary} />
+          </View>
+          <Text style={styles.searchPlaceholder}>
+            Where do you want to go?
+          </Text>
+          <View style={styles.searchCta}>
+            <Text style={styles.searchCtaText}>Search</Text>
+          </View>
+        </Pressable>
+
+        {/* ── Popular Destinations ── */}
         <PopularLocations />
+
+        {/* ── Browse by Category ── */}
         <CategoryRow />
+
+        {/* ── Trending Packages ── */}
         <FeaturedPackages />
 
         <View style={styles.bottomSpacer} />
@@ -132,7 +164,7 @@ export default function HomeScreen(): React.ReactElement {
 
 const styles = StyleSheet.create({
   safeArea: {
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.backgroundBase,
     flex: 1,
   },
   scrollView: {
@@ -141,55 +173,126 @@ const styles = StyleSheet.create({
   content: {
     flexGrow: 1,
     paddingBottom: 16,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
   },
+
+  // ── Header ──────────────────────────────────────────────────
   header: {
-    alignItems: 'center',
     flexDirection: 'row',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
-    paddingBottom: 18,
-    paddingTop: 18,
+    paddingTop: 24,
+    paddingBottom: 24,
   },
-  headerTextWrap: {
+  headerLeft: {
     flex: 1,
     marginRight: 12,
   },
-  logo: {
-    color: Colors.primary,
-    fontSize: 28,
-    fontWeight: '900',
-    lineHeight: 34,
-  },
-  locationRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginTop: 4,
-  },
-  locationText: {
+  greeting: {
+    fontSize: 14,
+    fontWeight: '500',
     color: Colors.textSecondary,
-    flex: 1,
-    fontSize: 13,
-    fontWeight: '700',
-    lineHeight: 18,
-    marginLeft: 4,
+    marginBottom: 6,
+    letterSpacing: 0.2,
   },
-  locationFallback: {
-    color: Colors.textSecondary,
-    fontSize: 13,
-    fontWeight: '700',
-    lineHeight: 18,
-    marginTop: 4,
+  heading: {
+    fontSize: 30,
+    fontWeight: '800',
+    color: Colors.textPrimary,
+    lineHeight: 38,
+    letterSpacing: -0.5,
   },
-  notificationButton: {
-    alignItems: 'center',
-    backgroundColor: Colors.surface,
-    borderColor: Colors.border,
-    borderRadius: 22,
+  notifButton: {
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    backgroundColor: Colors.surfacePrimary,
     borderWidth: 1,
-    height: 44,
+    borderColor: Colors.surfaceBorder,
+    alignItems: 'center',
     justifyContent: 'center',
-    width: 44,
+    position: 'relative',
+    marginTop: 6,
+    // 3D shadow
+    shadowColor: '#0F1535',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.10,
+    shadowRadius: 12,
+    elevation: 6,
   },
+  notifBadge: {
+    position: 'absolute',
+    top: -3,
+    right: -3,
+    backgroundColor: Colors.error,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: Colors.backgroundBase,
+    minWidth: 18,
+    minHeight: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 3,
+  },
+  notifBadgeText: {
+    color: Colors.white,
+    fontSize: 9,
+    fontWeight: '700',
+    lineHeight: 12,
+  },
+
+  // ── Search Bar ───────────────────────────────────────────────
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.surfacePrimary,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: Colors.surfaceBorder,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    marginBottom: 28,
+    // 3D depth shadow
+    shadowColor: '#0F1535',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.10,
+    shadowRadius: 20,
+    elevation: 8,
+  },
+  searchIconWrap: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: Colors.primaryGlow,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  searchPlaceholder: {
+    flex: 1,
+    fontSize: 15,
+    color: Colors.textTertiary,
+    fontWeight: '400',
+  },
+  searchCta: {
+    backgroundColor: Colors.primary,
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    // Button glow
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
+    elevation: 6,
+  },
+  searchCtaText: {
+    color: Colors.white,
+    fontSize: 13,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+
   bottomSpacer: {
     height: 104,
   },

@@ -75,7 +75,7 @@ export function SearchBar({
           onChangeText={search.setDestination}
           onFocus={search.focusDestinationSearch}
           placeholder="Search destination"
-          placeholderTextColor={Colors.muted}
+          placeholderTextColor={Colors.textTertiary}
           returnKeyType="search"
           autoCapitalize="words"
           autoCorrect={false}
@@ -229,8 +229,8 @@ export function SearchBar({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: Colors.surface,
-    borderColor: Colors.border,
+    backgroundColor: Colors.surfacePrimary,
+    borderColor: Colors.surfaceBorder,
     borderRadius: 8,
     borderWidth: 1,
     marginBottom: 24,
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
   divider: {
-    backgroundColor: Colors.border,
+    backgroundColor: Colors.surfaceBorder,
     height: 1,
   },
   optionRow: {
@@ -298,8 +298,8 @@ const styles = StyleSheet.create({
   },
   stepperButton: {
     alignItems: 'center',
-    backgroundColor: Colors.background,
-    borderColor: Colors.border,
+    backgroundColor: Colors.backgroundBase,
+    borderColor: Colors.surfaceBorder,
     borderRadius: 18,
     borderWidth: 1,
     height: 36,
@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   calendarCard: {
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.surfacePrimary,
     borderRadius: 8,
     padding: 16,
     width: '100%',
@@ -350,7 +350,7 @@ const styles = StyleSheet.create({
   },
   calendarNavButton: {
     alignItems: 'center',
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.backgroundBase,
     borderRadius: 18,
     height: 36,
     justifyContent: 'center',
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
     color: Colors.textTertiary,
   },
   calendarDayTextDisabled: {
-    color: Colors.border,
+    color: Colors.surfaceBorder,
   },
   calendarDayTextSelected: {
     color: Colors.white,

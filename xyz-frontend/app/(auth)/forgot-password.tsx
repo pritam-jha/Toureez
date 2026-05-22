@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   backLinkText: {
-    color: Colors.textInverse,
+    color: Colors.white,
     fontSize: 15,
     fontWeight: '700',
   },

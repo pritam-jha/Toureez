@@ -537,6 +537,193 @@ export interface BackendApiResponse<T> {
   meta?: Record<string, unknown>;
 }
 
+// ============================================================
+// NOTIFICATION TYPES
+// ============================================================
+
+/**
+ * Notification events supported by the notifications table and mobile UI.
+ */
+export type AppNotificationType =
+  | 'booking_confirmed'
+  | 'payment_received'
+  | 'review_received'
+  | 'package_approved'
+  | 'wishlist_price_drop';
+
+/**
+ * Entity types that can be opened from a notification.
+ */
+export type AppNotificationRelatedType = 'booking' | 'package' | 'review';
+
+/**
+ * User-facing notification returned by GET /api/v1/notifications.
+ */
+export interface AppNotification {
+  id: string;
+  user_id: string;
+  type: AppNotificationType;
+  title: string;
+  body: string;
+  data: Record<string, unknown>;
+  related_id: string | null;
+  related_type: AppNotificationRelatedType | null;
+  is_read: boolean;
+  created_at: string;
+}
+
+/**
+ * Date bucket shown on the notifications screen.
+ */
+export interface NotificationSection {
+  key: 'today' | 'yesterday' | 'earlier';
+  title: 'Today' | 'Yesterday' | 'Earlier';
+  notifications: AppNotification[];
+}
+
+// ============================================================
+// BOOKING TYPES
+// ============================================================
+
+/**
+ * Individual traveler details collected during booking.
+ */
+export interface TravelerDetail {
+  name: string;
+  age: number;
+  gender: 'male' | 'female' | 'other';
+  id_type: 'aadhaar' | 'passport' | 'driving_license';
+  id_number: string;
+  is_primary: boolean;
+}
+
+/**
+ * Full booking entity as returned by GET /api/v1/bookings/:id
+ */
+export interface Booking {
+  id: string;
+  user_id: string;
+  package_id: string;
+  company_id: string;
+  pricing_id: string;
+  booking_reference: string;
+  travel_date: string;
+  num_travelers: number;
+  total_amount: number;
+  advance_amount: number;
+  balance_amount: number;
+  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
+  payment_status: 'pending' | 'paid' | 'refunded' | 'failed';
+  special_requests: string | null;
+  traveler_details: TravelerDetail[];
+  created_at: string;
+  updated_at: string;
+  package?: {
+    id: string;
+    title: string;
+    cover_image: string | null;
+    duration_days: number;
+    duration_nights: number;
+    location: { city: string; state: string };
+  };
+  company?: {
+    id: string;
+    name: string;
+    logo_url: string | null;
+    is_verified: boolean;
+  };
+  payment?: {
+    amount_paid: number;
+    payment_method: string | null;
+    paid_at: string | null;
+    payment_type: 'full' | 'advance';
+  };
+}
+
+/**
+ * Compact booking shape for the bookings list screen.
+ */
+export interface BookingSummary {
+  id: string;
+  booking_reference: string;
+  travel_date: string;
+  num_travelers: number;
+  total_amount: number;
+  status: Booking['status'];
+  payment_status: Booking['payment_status'];
+  package: {
+    id: string;
+    title: string;
+    cover_image: string | null;
+    duration_days: number;
+    location: { city: string; state: string };
+  };
+  company: { name: string; logo_url: string | null };
+  created_at: string;
+}
+
+/**
+ * Input payload for POST /api/v1/bookings/create
+ */
+export interface CreateBookingInput {
+  package_id: string;
+  pricing_id: string;
+  travel_date: string;
+  num_travelers: number;
+  special_requests?: string;
+  traveler_details: TravelerDetail[];
+  payment_type: 'full' | 'advance';
+  primary_contact: {
+    full_name: string;
+    email: string;
+    phone: string;
+    city: string;
+    state: string;
+  };
+}
+
+/**
+ * Client-side price calculation result.
+ * Mirrors the backend calculation for display before the API call.
+ */
+export interface PriceCalculation {
+  base_price: number;
+  num_travelers: number;
+  subtotal: number;
+  group_discount: number;
+  gst: number;
+  total_amount: number;
+  advance_amount: number;
+  balance_amount: number;
+  payment_type: 'full' | 'advance';
+}
+
+/**
+ * Primary contact details collected on the booking form.
+ */
+export interface PrimaryContact {
+  full_name: string;
+  email: string;
+  phone: string;
+  city: string;
+  state: string;
+  special_requests: string;
+}
+
+/**
+ * Complete booking form state passed between booking screens.
+ */
+export interface BookingFormState {
+  packageId: string;
+  pricingId: string;
+  travelDate: string;
+  numTravelers: number;
+  primaryContact: PrimaryContact;
+  travelers: TravelerDetail[];
+  paymentType: 'full' | 'advance';
+  priceCalculation: PriceCalculation | null;
+}
+
 /**
  * Standard pagination wrapper returned by list endpoints on the Node.js backend.
  * Mirrors the backend's PaginatedResponse<T> type exactly.
@@ -547,6 +734,88 @@ export interface PaginatedResponse<T> {
   page: number;
   limit: number;
   has_more: boolean;
+}
+
+// ============================================================
+// REVIEW TYPES
+// ============================================================
+
+/**
+ * A single review submitted by a verified traveler after a completed booking.
+ * Sub-ratings are optional — at least one must be provided.
+ */
+export interface Review {
+  /** UUID primary key */
+  id: string;
+  /** UUID of the booking this review is tied to */
+  booking_id: string;
+  /** UUID of the reviewer */
+  user_id: string;
+  /** UUID of the reviewed package */
+  package_id: string;
+  /** Guide / Tour Manager rating (1–5) */
+  rating_guide: number | null;
+  /** Hotel / Accommodation rating (1–5) */
+  rating_hotel: number | null;
+  /** Food & Meals rating (1–5) */
+  rating_food: number | null;
+  /** Transport rating (1–5) */
+  rating_transport: number | null;
+  /** Value for Money rating (1–5) */
+  rating_value: number | null;
+  /** Computed average of all provided sub-ratings (DB trigger) */
+  overall_rating: number;
+  /** Optional short title for the review */
+  title: string | null;
+  /** Optional detailed review body */
+  body: string | null;
+  /** True when the booking was confirmed by the platform */
+  is_verified: boolean;
+  /** True when an admin has approved the review for display */
+  is_published: boolean;
+  /** ISO timestamp of submission */
+  created_at: string;
+  /** Denormalised reviewer info */
+  user: {
+    display_name: string;
+    avatar_url: string | null;
+  };
+}
+
+/**
+ * Aggregated rating breakdown for a package's review summary card.
+ */
+export interface RatingSummary {
+  overall: number;
+  review_count: number;
+  guide: number;
+  hotel: number;
+  food: number;
+  transport: number;
+  value: number;
+}
+
+/**
+ * Input payload for POST /api/v1/reviews
+ */
+export interface CreateReviewInput {
+  booking_id: string;
+  package_id: string;
+  rating_guide?: number;
+  rating_hotel?: number;
+  rating_food?: number;
+  rating_transport?: number;
+  rating_value?: number;
+  title?: string;
+  body?: string;
+}
+
+/**
+ * Response from GET /api/v1/reviews/eligible/:packageId
+ */
+export interface ReviewEligibility {
+  can_review: boolean;
+  booking_id?: string;
 }
 
 // ============================================================

@@ -1,6 +1,8 @@
 /**
  * @file components/home/FeaturedPackages.tsx
- * @description Horizontal carousel of featured travel packages.
+ * @description Horizontal carousel of featured packages — Glassmorphism Dark.
+ *
+ * ✅ All hooks and navigation preserved — zero logic changes.
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -25,41 +27,26 @@ import { Colors } from '../../constants/colors';
 import type { PackageListItem } from '../../types';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const CARD_WIDTH = Math.round(SCREEN_WIDTH * 0.75);
+const CARD_WIDTH = Math.round(SCREEN_WIDTH * 0.78);
 const CARD_GAP = 12;
 
 function useSkeletonOpacity(): Animated.Value {
-  const opacity = useRef(new Animated.Value(0.55)).current;
-
+  const opacity = useRef(new Animated.Value(0.35)).current;
   useEffect(() => {
     const animation = Animated.loop(
       Animated.sequence([
-        Animated.timing(opacity, {
-          toValue: 1,
-          duration: 700,
-          useNativeDriver: true,
-        }),
-        Animated.timing(opacity, {
-          toValue: 0.55,
-          duration: 700,
-          useNativeDriver: true,
-        }),
+        Animated.timing(opacity, { toValue: 0.75, duration: 700, useNativeDriver: true }),
+        Animated.timing(opacity, { toValue: 0.35, duration: 700, useNativeDriver: true }),
       ])
     );
-
     animation.start();
-
-    return () => {
-      animation.stop();
-    };
+    return () => animation.stop();
   }, [opacity]);
-
   return opacity;
 }
 
 function FeaturedSkeleton(): React.ReactElement {
   const opacity = useSkeletonOpacity();
-
   return (
     <View style={styles.skeletonRow} accessibilityElementsHidden>
       {[0, 1, 2].map((item) => (
@@ -83,9 +70,7 @@ export function FeaturedPackages(): React.ReactElement {
   const handleSeeAll = useCallback(() => {
     router.push({
       pathname: '/(tabs)/search',
-      params: {
-        is_featured: 'true',
-      },
+      params: { is_featured: 'true' },
     });
   }, []);
 
@@ -121,7 +106,7 @@ export function FeaturedPackages(): React.ReactElement {
 
   return (
     <View style={styles.container}>
-      <SectionHeader title="Featured Packages" onActionPress={handleSeeAll} />
+      <SectionHeader title="Trending Packages" onActionPress={handleSeeAll} />
 
       {isLoading ? (
         <FeaturedSkeleton />
@@ -136,22 +121,15 @@ export function FeaturedPackages(): React.ReactElement {
             accessibilityRole="button"
             accessibilityLabel="Retry featured packages"
           >
-            <Text style={styles.retryText} numberOfLines={1}>
-              Retry
-            </Text>
+            <Text style={styles.retryText} numberOfLines={1}>Retry</Text>
           </Pressable>
         </View>
       ) : !data || data.length === 0 ? (
         <View style={styles.emptyCard}>
-          <View
-            style={styles.emptyIllustration}
-            accessibilityLabel="Illustration of an empty suitcase beside a folded map"
-          >
+          <View style={styles.emptyIllustration} accessibilityLabel="Empty packages icon">
             <Ionicons name="map-outline" size={30} color={Colors.primary} />
           </View>
-          <Text style={styles.emptyTitle} numberOfLines={1}>
-            No featured packages yet
-          </Text>
+          <Text style={styles.emptyTitle} numberOfLines={1}>No featured packages yet</Text>
           <Text style={styles.stateMessage} numberOfLines={2}>
             Curated trips from verified operators will appear here soon.
           </Text>
@@ -194,7 +172,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   listContent: {
-    paddingRight: 16,
+    paddingRight: 4,
   },
   separator: {
     width: CARD_GAP,
@@ -203,53 +181,64 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   skeletonCard: {
-    backgroundColor: Colors.surface,
-    borderColor: Colors.border,
-    borderRadius: 8,
+    backgroundColor: Colors.surfacePrimary,
+    borderColor: Colors.surfaceBorder,
+    borderRadius: 20,
     borderWidth: 1,
     marginRight: CARD_GAP,
     overflow: 'hidden',
     width: CARD_WIDTH,
+    shadowColor: '#0F1535',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 4,
   },
   skeletonImage: {
-    aspectRatio: 16 / 9,
-    backgroundColor: Colors.border,
+    height: 200,
+    backgroundColor: Colors.backgroundLayer2,
     width: '100%',
   },
   skeletonBody: {
-    padding: 12,
+    padding: 14,
+    backgroundColor: Colors.surfacePrimary,
   },
   skeletonLineLarge: {
-    backgroundColor: Colors.border,
+    backgroundColor: Colors.backgroundLayer2,
     borderRadius: 6,
     height: 14,
     marginBottom: 10,
     width: '88%',
   },
   skeletonLineMedium: {
-    backgroundColor: Colors.border,
+    backgroundColor: Colors.backgroundLayer2,
     borderRadius: 6,
     height: 12,
     marginBottom: 10,
     width: '68%',
   },
   skeletonLineSmall: {
-    backgroundColor: Colors.border,
+    backgroundColor: Colors.backgroundLayer2,
     borderRadius: 6,
     height: 12,
     width: '48%',
   },
   stateCard: {
-    backgroundColor: Colors.surface,
-    borderColor: Colors.border,
-    borderRadius: 8,
+    backgroundColor: Colors.surfacePrimary,
+    borderColor: Colors.surfaceBorder,
+    borderRadius: 20,
     borderWidth: 1,
     padding: 16,
+    shadowColor: '#0F1535',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
+    elevation: 3,
   },
   stateMessage: {
     color: Colors.textSecondary,
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 18,
     textAlign: 'center',
   },
@@ -260,21 +249,26 @@ const styles = StyleSheet.create({
   retryText: {
     color: Colors.primary,
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: '700',
     lineHeight: 18,
   },
   emptyCard: {
     alignItems: 'center',
-    backgroundColor: Colors.surface,
-    borderColor: Colors.border,
-    borderRadius: 8,
+    backgroundColor: Colors.surfacePrimary,
+    borderColor: Colors.surfaceBorder,
+    borderRadius: 20,
     borderWidth: 1,
     padding: 20,
+    shadowColor: '#0F1535',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
+    elevation: 3,
   },
   emptyIllustration: {
     alignItems: 'center',
-    backgroundColor: Colors.background,
-    borderRadius: 24,
+    backgroundColor: Colors.primaryGlow,
+    borderRadius: 16,
     height: 48,
     justifyContent: 'center',
     marginBottom: 10,
@@ -283,7 +277,7 @@ const styles = StyleSheet.create({
   emptyTitle: {
     color: Colors.textPrimary,
     fontSize: 15,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 20,
     marginBottom: 4,
     textAlign: 'center',

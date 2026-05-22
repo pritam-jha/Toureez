@@ -1,16 +1,7 @@
 /**
  * @file app/(auth)/signup.tsx
- * @description Account creation screen.
- *
- * Architecture rules enforced:
- * - Zero direct API calls — all logic delegated to useSignUp hook
- * - KeyboardAvoidingView handled by ScreenWrapper internally
- * - All colours from constants/colors.ts — zero hardcoded hex values
- * - StyleSheet.create for all styles — zero inline style objects
- * - Expo Router <Link> for navigation between auth screens
- * - Inline field-level error messages — no alert() calls
- * - Password strength indicator (weak / medium / strong)
- * - On success → authStore updated → _layout.tsx auth gate redirects to (tabs)
+ * @description Signup screen — sage green design system.
+ * All hooks, password strength indicator, and functionality preserved.
  */
 
 import React, { useRef, useState } from 'react';
@@ -44,17 +35,18 @@ export default function SignUpScreen(): React.ReactElement {
   const isWeak = hasPassword && auth.passwordStrength === 'weak';
   const isMedium = auth.passwordStrength === 'medium';
   const isStrong = auth.passwordStrength === 'strong';
-
   const strengthLabel = isStrong ? 'Strong' : isMedium ? 'Medium' : 'Weak';
 
   return (
     <ScreenWrapper scrollable contentStyle={styles.screenContent}>
       {/* ── Header ── */}
       <View style={styles.header}>
-        <Text style={styles.appName} accessibilityRole="header">
-          {Config.appName}
+        <View style={styles.logoWrap}>
+          <Text style={styles.logoText}>{Config.appName}</Text>
+        </View>
+        <Text style={styles.title} accessibilityRole="header">
+          Create account
         </Text>
-        <Text style={styles.title}>Create account</Text>
         <Text style={styles.subtitle}>
           Save packages, compare prices, and plan your next trip.
         </Text>
@@ -62,7 +54,6 @@ export default function SignUpScreen(): React.ReactElement {
 
       {/* ── Form ── */}
       <View style={styles.form}>
-        {/* Full name */}
         <Input
           label="Full name"
           value={auth.fullName}
@@ -77,7 +68,6 @@ export default function SignUpScreen(): React.ReactElement {
           editable={!auth.isPending}
         />
 
-        {/* Email */}
         <Input
           ref={emailRef}
           label="Email"
@@ -94,7 +84,6 @@ export default function SignUpScreen(): React.ReactElement {
           editable={!auth.isPending}
         />
 
-        {/* Password */}
         <Input
           ref={passwordRef}
           label="Password"
@@ -117,7 +106,7 @@ export default function SignUpScreen(): React.ReactElement {
           onRightIconPress={() => setShowPassword((prev) => !prev)}
         />
 
-        {/* Password strength indicator */}
+        {/* Password strength */}
         {hasPassword ? (
           <View
             style={styles.strengthBlock}
@@ -138,17 +127,14 @@ export default function SignUpScreen(): React.ReactElement {
               </Text>
             </View>
             <View style={styles.strengthMeter}>
-              {/* Segment 1 — always filled when password has content */}
               <View
                 style={[
                   styles.strengthSegment,
-                  styles.strengthSegmentFirst,
                   isWeak && styles.strengthWeak,
                   isMedium && styles.strengthMedium,
                   isStrong && styles.strengthStrong,
                 ]}
               />
-              {/* Segment 2 — filled for medium and strong */}
               <View
                 style={[
                   styles.strengthSegment,
@@ -156,11 +142,9 @@ export default function SignUpScreen(): React.ReactElement {
                   isStrong && styles.strengthStrong,
                 ]}
               />
-              {/* Segment 3 — filled only for strong */}
               <View
                 style={[
                   styles.strengthSegment,
-                  styles.strengthSegmentLast,
                   isStrong && styles.strengthStrong,
                 ]}
               />
@@ -168,7 +152,6 @@ export default function SignUpScreen(): React.ReactElement {
           </View>
         ) : null}
 
-        {/* Confirm password */}
         <Input
           ref={confirmPasswordRef}
           label="Confirm password"
@@ -191,22 +174,17 @@ export default function SignUpScreen(): React.ReactElement {
           onRightIconPress={() => setShowConfirmPassword((prev) => !prev)}
         />
 
-        {/* Inline form-level error (e.g. email already in use) */}
         {auth.formError ? (
-          <View
-            style={styles.errorPanel}
-            accessibilityRole="alert"
-            accessibilityLiveRegion="polite"
-          >
+          <View style={styles.errorPanel} accessibilityRole="alert" accessibilityLiveRegion="polite">
             <Text style={styles.errorText}>{auth.formError}</Text>
           </View>
         ) : null}
 
-        {/* Submit */}
         <Button
           label="Create account"
           onPress={auth.submit}
           loading={auth.isPending}
+          fullWidth
           style={styles.primaryButton}
         />
       </View>
@@ -220,7 +198,7 @@ export default function SignUpScreen(): React.ReactElement {
             accessibilityLabel="Sign in"
             disabled={auth.isPending}
           >
-            <Text style={styles.footerLink}>Sign in</Text>
+            <Text style={styles.footerLink}> Sign in</Text>
           </TouchableOpacity>
         </Link>
       </View>
@@ -236,24 +214,42 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingTop: 24,
-    paddingBottom: 26,
+    paddingBottom: 24,
+    alignItems: 'center',
   },
-  appName: {
-    color: Colors.primary,
-    fontSize: 30,
+  logoWrap: {
+    width: 76,
+    height: 76,
+    borderRadius: 22,
+    backgroundColor: Colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.35,
+    shadowRadius: 20,
+    elevation: 12,
+  },
+  logoText: {
+    fontSize: 22,
     fontWeight: '800',
-    marginBottom: 18,
+    color: Colors.white,
+    letterSpacing: -0.5,
   },
   title: {
     color: Colors.textPrimary,
     fontSize: 28,
     fontWeight: '800',
     marginBottom: 8,
+    textAlign: 'center',
+    letterSpacing: -0.5,
   },
   subtitle: {
     color: Colors.textSecondary,
     fontSize: 15,
     lineHeight: 22,
+    textAlign: 'center',
   },
   form: {
     flexGrow: 1,
@@ -261,7 +257,7 @@ const styles = StyleSheet.create({
   passwordToggle: {
     color: Colors.primary,
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '600',
   },
 
   // ── Password strength ──────────────────────────────────────
@@ -283,46 +279,33 @@ const styles = StyleSheet.create({
   strengthValue: {
     color: Colors.textTertiary,
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '700',
   },
-  strengthValueWeak: {
-    color: Colors.error,
-  },
-  strengthValueMedium: {
-    color: Colors.warning,
-  },
-  strengthValueStrong: {
-    color: Colors.success,
-  },
+  strengthValueWeak: { color: Colors.error },
+  strengthValueMedium: { color: Colors.warning },
+  strengthValueStrong: { color: Colors.success },
   strengthMeter: {
     flexDirection: 'row',
     gap: 6,
   },
   strengthSegment: {
-    backgroundColor: Colors.border,
+    backgroundColor: Colors.backgroundLayer2,
     borderRadius: 8,
     flex: 1,
     height: 6,
   },
-  // Aliases for first/last to allow future margin overrides without duplication
-  strengthSegmentFirst: {},
-  strengthSegmentLast: {},
-  strengthWeak: {
-    backgroundColor: Colors.error,
-  },
-  strengthMedium: {
-    backgroundColor: Colors.warning,
-  },
-  strengthStrong: {
-    backgroundColor: Colors.success,
-  },
+  strengthWeak: { backgroundColor: Colors.error },
+  strengthMedium: { backgroundColor: Colors.warning },
+  strengthStrong: { backgroundColor: Colors.success },
 
   // ── Error panel ───────────────────────────────────────────
   errorPanel: {
     backgroundColor: Colors.errorLight,
-    borderRadius: 8,
+    borderRadius: 12,
     marginBottom: 14,
     padding: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(229,62,62,0.20)',
   },
   errorText: {
     color: Colors.error,
@@ -339,16 +322,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     paddingBottom: 24,
-    paddingTop: 28,
+    paddingTop: 24,
   },
   footerText: {
     color: Colors.textSecondary,
     fontSize: 14,
-    marginRight: 4,
   },
   footerLink: {
     color: Colors.primary,
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '700',
   },
 });

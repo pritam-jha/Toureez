@@ -44,7 +44,7 @@ export function EmptyCompare({ compareItems }: EmptyCompareProps): React.ReactEl
               />
             ) : (
               <View style={styles.singleImageFallback}>
-                <Ionicons name="image-outline" size={28} color={Colors.muted} />
+                <Ionicons name="image-outline" size={28} color={Colors.textTertiary} />
               </View>
             )}
             <Text style={styles.singleTitle} numberOfLines={2}>
@@ -56,7 +56,7 @@ export function EmptyCompare({ compareItems }: EmptyCompareProps): React.ReactEl
         {/* Dashed slot(s) */}
         {Array.from({ length: singleItem ? 1 : 2 }, (_, i) => (
           <View key={i} style={styles.dashedSlot}>
-            <Ionicons name="add" size={28} color={Colors.muted} />
+            <Ionicons name="add" size={28} color={Colors.textTertiary} />
           </View>
         ))}
       </View>
@@ -105,15 +105,15 @@ const styles = StyleSheet.create({
     width: 100,
   },
   singleImage: {
-    borderRadius: 10,
+    borderRadius: 14,
     height: 100,
     marginBottom: 8,
     width: 100,
   },
   singleImageFallback: {
     alignItems: 'center',
-    backgroundColor: Colors.border,
-    borderRadius: 10,
+    backgroundColor: Colors.backgroundLayer2,
+    borderRadius: 14,
     height: 100,
     justifyContent: 'center',
     marginBottom: 8,
@@ -122,14 +122,14 @@ const styles = StyleSheet.create({
   singleTitle: {
     color: Colors.textSecondary,
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: '600',
     lineHeight: 15,
     textAlign: 'center',
   },
   dashedSlot: {
     alignItems: 'center',
-    borderColor: Colors.muted,
-    borderRadius: 10,
+    borderColor: Colors.surfaceBorderStrong,
+    borderRadius: 14,
     borderStyle: 'dashed',
     borderWidth: 2,
     height: 100,
@@ -140,15 +140,16 @@ const styles = StyleSheet.create({
   heading: {
     color: Colors.textPrimary,
     fontSize: 20,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 26,
     marginBottom: 10,
     textAlign: 'center',
+    letterSpacing: -0.3,
   },
   subtitle: {
     color: Colors.textSecondary,
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '400',
     lineHeight: 22,
     marginBottom: 28,
     textAlign: 'center',
@@ -156,15 +157,20 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     backgroundColor: Colors.primary,
-    borderRadius: 10,
+    borderRadius: 14,
     flexDirection: 'row',
     paddingHorizontal: 28,
     paddingVertical: 14,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.30,
+    shadowRadius: 10,
+    elevation: 6,
   },
   buttonText: {
     color: Colors.white,
     fontSize: 15,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 20,
     marginLeft: 8,
   },

@@ -41,8 +41,8 @@ export function AddPackageSlot(): React.ReactElement {
 const styles = StyleSheet.create({
   slot: {
     alignItems: 'center',
-    borderColor: Colors.border,
-    borderRadius: 12,
+    borderColor: Colors.surfaceBorderStrong,
+    borderRadius: 16,
     borderStyle: 'dashed',
     borderWidth: 2,
     height: 160,
@@ -51,8 +51,8 @@ const styles = StyleSheet.create({
   },
   iconCircle: {
     alignItems: 'center',
-    backgroundColor: Colors.background,
-    borderRadius: 26,
+    backgroundColor: Colors.primaryGlow,
+    borderRadius: 18,
     height: 52,
     justifyContent: 'center',
     marginBottom: 10,
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   label: {
     color: Colors.textSecondary,
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '600',
     lineHeight: 18,
   },
 });

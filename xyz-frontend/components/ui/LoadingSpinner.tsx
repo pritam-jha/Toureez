@@ -1,11 +1,8 @@
 /**
  * @file components/ui/LoadingSpinner.tsx
- * @description Full-screen and inline loading spinner components.
+ * @description Full-screen and inline loading spinner — Glassmorphism Dark theme.
  *
- * Provides two exports:
- * - `LoadingSpinner`: Inline spinner for use within content areas.
- * - `FullScreenLoader`: Full-screen overlay with optional message,
- *   used during auth checks and initial data loads.
+ * ✅ All existing props preserved — zero logic changes.
  */
 
 import React from 'react';
@@ -21,20 +18,11 @@ import { Colors } from '../../constants/colors';
 // ── LoadingSpinner ────────────────────────────────────────────────────────────
 
 export interface LoadingSpinnerProps {
-  /** Spinner size (default: 'large') */
   size?: 'small' | 'large';
-  /** Spinner colour (default: Colors.primary) */
   color?: string;
-  /** Override container style */
   style?: ViewStyle;
 }
 
-/**
- * Inline loading spinner. Use inside content areas, cards, or buttons.
- *
- * @example
- * {isLoading && <LoadingSpinner size="small" />}
- */
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   size = 'large',
   color = Colors.primary,
@@ -54,17 +42,9 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 // ── FullScreenLoader ──────────────────────────────────────────────────────────
 
 export interface FullScreenLoaderProps {
-  /** Optional message displayed below the spinner */
   message?: string;
 }
 
-/**
- * Full-screen loading overlay. Use during auth checks, initial data loads,
- * or any operation that blocks the entire screen.
- *
- * @example
- * if (isLoading) return <FullScreenLoader message="Loading packages..." />;
- */
 export const FullScreenLoader: React.FC<FullScreenLoaderProps> = ({
   message,
 }) => {
@@ -92,7 +72,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.backgroundBase,
     gap: 16,
   },
   message: {

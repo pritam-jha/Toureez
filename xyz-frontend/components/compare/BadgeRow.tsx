@@ -62,16 +62,16 @@ export function BadgeCells({ packages }: BadgeCellsProps): React.ReactElement {
 
 const styles = StyleSheet.create({
   none: {
-    color: Colors.muted,
+    color: Colors.textTertiary,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   badgeStack: {
     gap: 6,
   },
   badge: {
     alignItems: 'center',
-    borderRadius: 8,
+    borderRadius: 10,
     flexDirection: 'row',
     paddingHorizontal: 8,
     paddingVertical: 5,
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   },
   badgeLabel: {
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: '700',
     lineHeight: 14,
   },
 });

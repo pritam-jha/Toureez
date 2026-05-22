@@ -45,9 +45,9 @@ export function HighlightsCells({ packages }: HighlightsCellsProps): React.React
 
 const styles = StyleSheet.create({
   none: {
-    color: Colors.muted,
+    color: Colors.textTertiary,
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   list: {
     gap: 5,
@@ -68,13 +68,13 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
     flex: 1,
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 18,
   },
   more: {
     color: Colors.textTertiary,
     fontSize: 10,
-    fontWeight: '700',
+    fontWeight: '600',
     lineHeight: 14,
     marginTop: 2,
   },

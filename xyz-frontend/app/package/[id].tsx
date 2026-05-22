@@ -40,6 +40,7 @@ import { InclusionsSection } from '../../components/package/InclusionsSection';
 import { AmenitiesSection } from '../../components/package/AmenitiesSection';
 import { CompanySection } from '../../components/package/CompanySection';
 import { StickyActionBar } from '../../components/package/StickyActionBar';
+import { ReviewsList } from '../../components/reviews/ReviewsList';
 import { Toast } from '../../components/ui/Toast';
 import { usePackageDetail } from '../../hooks/usePackage';
 import { useCompare } from '../../hooks/useCompare';
@@ -129,11 +130,11 @@ function DetailSkeleton(): React.ReactElement {
 const skeletonStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.backgroundBase,
   },
   section: {
-    backgroundColor: Colors.surface,
-    borderTopColor: Colors.border,
+    backgroundColor: Colors.surfacePrimary,
+    borderTopColor: Colors.surfaceBorder,
     borderTopWidth: 1,
     padding: 16,
     paddingTop: 20,
@@ -142,7 +143,7 @@ const skeletonStyles = StyleSheet.create({
     flexDirection: 'row',
   },
   block: {
-    backgroundColor: Colors.border,
+    backgroundColor: Colors.backgroundLayer2,
   },
 });
 
@@ -152,7 +153,7 @@ function NotFoundState(): React.ReactElement {
   return (
     <SafeAreaView style={errorStyles.safeArea} edges={['top', 'left', 'right']}>
       <View style={errorStyles.container}>
-        <Ionicons name="map-outline" size={48} color={Colors.muted} />
+        <Ionicons name="map-outline" size={48} color={Colors.textTertiary} />
         <Text style={errorStyles.title} numberOfLines={1}>
           Package not found
         </Text>
@@ -176,7 +177,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }): React.ReactElement {
   return (
     <SafeAreaView style={errorStyles.safeArea} edges={['top', 'left', 'right']}>
       <View style={errorStyles.container}>
-        <Ionicons name="cloud-offline-outline" size={48} color={Colors.muted} />
+        <Ionicons name="cloud-offline-outline" size={48} color={Colors.textTertiary} />
         <Text style={errorStyles.title} numberOfLines={1}>
           Something went wrong
         </Text>
@@ -207,7 +208,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }): React.ReactElement {
 
 const errorStyles = StyleSheet.create({
   safeArea: {
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.backgroundBase,
     flex: 1,
   },
   container: {
@@ -219,7 +220,7 @@ const errorStyles = StyleSheet.create({
   title: {
     color: Colors.textPrimary,
     fontSize: 20,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 26,
     marginBottom: 8,
     marginTop: 16,
@@ -228,7 +229,7 @@ const errorStyles = StyleSheet.create({
   subtitle: {
     color: Colors.textSecondary,
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 22,
     marginBottom: 24,
     textAlign: 'center',
@@ -236,14 +237,19 @@ const errorStyles = StyleSheet.create({
   button: {
     alignItems: 'center',
     backgroundColor: Colors.primary,
-    borderRadius: 10,
+    borderRadius: 14,
     paddingHorizontal: 32,
     paddingVertical: 14,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.30,
+    shadowRadius: 12,
+    elevation: 8,
   },
   buttonText: {
     color: Colors.white,
     fontSize: 15,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 20,
   },
   backLink: {
@@ -252,7 +258,7 @@ const errorStyles = StyleSheet.create({
   backLinkText: {
     color: Colors.primary,
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '600',
     lineHeight: 20,
   },
 });
@@ -385,12 +391,19 @@ function DetailContent({ pkg }: DetailContentProps): React.ReactElement {
   }, [addToCompare, inCompare, pkg, removeFromCompare]);
 
   const handleEnquirePress = useCallback(() => {
-    setToast({
-      visible: true,
-      message: 'Enquiry feature coming soon. Stay tuned!',
-      type: 'info',
+    if (!selectedTier) {
+      setToast({
+        visible: true,
+        message: 'Please select a pricing tier first.',
+        type: 'info',
+      });
+      return;
+    }
+    router.push({
+      pathname: '/booking/[packageId]' as never,
+      params: { packageId: pkg.id },
     });
-  }, []);
+  }, [pkg.id, selectedTier]);
 
   const handleToastHide = useCallback(() => {
     setToast((prev) => ({ ...prev, visible: false }));
@@ -448,6 +461,9 @@ function DetailContent({ pkg }: DetailContentProps): React.ReactElement {
 
         {/* 8. Company */}
         <CompanySection company={pkg.company} />
+
+        {/* 9. Reviews & Ratings */}
+        <ReviewsList packageId={pkg.id} />
 
         {/* Bottom padding so last section clears the sticky bar */}
         <View style={styles.bottomPadding} />
@@ -514,7 +530,7 @@ export default function PackageDetailScreen(): React.ReactElement {
 
 const styles = StyleSheet.create({
   safeArea: {
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.backgroundBase,
     flex: 1,
   },
   flex: {

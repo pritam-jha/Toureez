@@ -1,14 +1,16 @@
 /**
  * @file components/ui/Input.tsx
- * @description Reusable, accessible text input component.
+ * @description Premium Light 3D input field.
  *
- * - Label rendered above the field
- * - Red border + inline error message when `error` prop is set
- * - Focus state border highlight
- * - Left/right icon slots with optional press handler on right icon
- * - Forwards ref to the underlying TextInput for programmatic focus
- * - All colours from constants/colors.ts — zero hardcoded hex values
- * - Pure presentational — no form library coupling
+ * - White surface with subtle border
+ * - Focus: navy border + soft blue glow shadow
+ * - Error: red border + error text below
+ * - Label: 12px semibold with navy required asterisk
+ * - Left/right icon slots
+ * - 3D depth: inner top highlight + bottom shadow strip
+ * - Forwards ref for programmatic focus
+ *
+ * ✅ All existing props preserved — zero logic changes.
  */
 
 import React, { useState, forwardRef } from 'react';
@@ -26,46 +28,18 @@ import { Colors } from '../../constants/colors';
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 export interface InputProps extends TextInputProps {
-  /** Label displayed above the input */
   label?: string;
-  /**
-   * Error message displayed below the input.
-   * Also applies red border styling when set.
-   */
   error?: string;
-  /** Helper text displayed below the input when no error is present */
   helperText?: string;
-  /** Icon rendered on the left side of the input */
   leftIcon?: React.ReactNode;
-  /** Icon rendered on the right side of the input (e.g. password toggle) */
   rightIcon?: React.ReactNode;
-  /** Called when the right icon is pressed */
   onRightIconPress?: () => void;
-  /** Override the outer container style */
   containerStyle?: ViewStyle;
-  /** Whether the field is required — adds an asterisk to the label */
   required?: boolean;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-/**
- * Labelled text input with error and helper text support.
- *
- * Forwards the ref to the underlying TextInput so parent components
- * can call .focus() / .blur() programmatically (e.g. for form tab navigation).
- *
- * @example
- * <Input
- *   label="Email"
- *   placeholder="you@example.com"
- *   keyboardType="email-address"
- *   autoCapitalize="none"
- *   error={errors.email}
- *   value={email}
- *   onChangeText={setEmail}
- * />
- */
 export const Input = forwardRef<TextInput, InputProps>(
   (
     {
@@ -89,7 +63,6 @@ export const Input = forwardRef<TextInput, InputProps>(
 
     return (
       <View style={[styles.container, containerStyle]}>
-        {/* Label */}
         {label ? (
           <Text style={styles.label}>
             {label}
@@ -97,57 +70,67 @@ export const Input = forwardRef<TextInput, InputProps>(
           </Text>
         ) : null}
 
-        {/* Input row */}
+        {/* Outer glow wrapper — only visible on focus */}
         <View
           style={[
-            styles.inputRow,
-            isFocused && styles.inputRowFocused,
-            hasError && styles.inputRowError,
-            isDisabled && styles.inputRowDisabled,
+            styles.glowWrapper,
+            isFocused && styles.glowWrapperFocused,
+            hasError && styles.glowWrapperError,
           ]}
         >
-          {leftIcon ? (
-            <View style={styles.leftIconContainer}>{leftIcon}</View>
-          ) : null}
-
-          <TextInput
-            ref={ref}
+          <View
             style={[
-              styles.input,
-              leftIcon ? styles.inputWithLeftIcon : null,
-              rightIcon ? styles.inputWithRightIcon : null,
-              isDisabled ? styles.inputDisabled : null,
+              styles.inputRow,
+              isFocused && styles.inputRowFocused,
+              hasError && styles.inputRowError,
+              isDisabled && styles.inputRowDisabled,
             ]}
-            placeholderTextColor={Colors.muted}
-            editable={editable}
-            onFocus={(e) => {
-              setIsFocused(true);
-              textInputProps.onFocus?.(e);
-            }}
-            onBlur={(e) => {
-              setIsFocused(false);
-              textInputProps.onBlur?.(e);
-            }}
-            accessibilityLabel={label}
-            accessibilityHint={helperText}
-            accessibilityState={{ disabled: isDisabled }}
-            {...textInputProps}
-          />
+          >
+            {/* Inner top highlight — 3D light source */}
+            <View style={styles.topEdge} pointerEvents="none" />
 
-          {rightIcon ? (
-            <TouchableOpacity
-              style={styles.rightIconContainer}
-              onPress={onRightIconPress}
-              disabled={!onRightIconPress}
-              accessibilityRole={onRightIconPress ? 'button' : 'none'}
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-            >
-              {rightIcon}
-            </TouchableOpacity>
-          ) : null}
+            {leftIcon ? (
+              <View style={styles.leftIconContainer}>{leftIcon}</View>
+            ) : null}
+
+            <TextInput
+              ref={ref}
+              style={[
+                styles.input,
+                leftIcon ? styles.inputWithLeftIcon : null,
+                rightIcon ? styles.inputWithRightIcon : null,
+                isDisabled ? styles.inputDisabled : null,
+              ]}
+              placeholderTextColor={Colors.textTertiary}
+              editable={editable}
+              onFocus={(e) => {
+                setIsFocused(true);
+                textInputProps.onFocus?.(e);
+              }}
+              onBlur={(e) => {
+                setIsFocused(false);
+                textInputProps.onBlur?.(e);
+              }}
+              accessibilityLabel={label}
+              accessibilityHint={helperText}
+              accessibilityState={{ disabled: isDisabled }}
+              {...textInputProps}
+            />
+
+            {rightIcon ? (
+              <TouchableOpacity
+                style={styles.rightIconContainer}
+                onPress={onRightIconPress}
+                disabled={!onRightIconPress}
+                accessibilityRole={onRightIconPress ? 'button' : 'none'}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                {rightIcon}
+              </TouchableOpacity>
+            ) : null}
+          </View>
         </View>
 
-        {/* Error / Helper text */}
         {hasError ? (
           <Text
             style={styles.errorText}
@@ -173,32 +156,70 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   label: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
-    color: Colors.textPrimary,
-    marginBottom: 6,
+    color: Colors.textSecondary,
+    marginBottom: 8,
+    letterSpacing: 0.2,
   },
   required: {
-    color: Colors.error,
+    color: Colors.primary,
+  },
+  glowWrapper: {
+    borderRadius: 14,
+  },
+  glowWrapperFocused: {
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.20,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  glowWrapperError: {
+    shadowColor: Colors.error,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 4,
   },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: Colors.border,
-    borderRadius: 12,
-    backgroundColor: Colors.surface,
-    minHeight: 50,
+    borderColor: Colors.surfaceBorder,
+    borderRadius: 14,
+    backgroundColor: Colors.surfacePrimary,
+    minHeight: 52,
+    overflow: 'hidden',
+    position: 'relative',
+    // Subtle 3D shadow
+    shadowColor: '#0F1535',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  topEdge: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 1,
+    backgroundColor: 'rgba(255,255,255,0.80)',
+    zIndex: 1,
   },
   inputRowFocused: {
     borderColor: Colors.primary,
+    borderWidth: 1.5,
+    backgroundColor: Colors.surfacePrimary,
   },
   inputRowError: {
     borderColor: Colors.error,
+    borderWidth: 1.5,
   },
   inputRowDisabled: {
-    backgroundColor: Colors.background,
-    borderColor: Colors.border,
+    backgroundColor: Colors.backgroundLayer2,
+    borderColor: Colors.surfaceBorderDim,
   },
   leftIconContainer: {
     paddingLeft: 14,
@@ -212,8 +233,8 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     color: Colors.textPrimary,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
   },
   inputWithLeftIcon: {
     paddingLeft: 4,
@@ -227,13 +248,14 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 12,
     color: Colors.error,
-    marginTop: 5,
-    marginLeft: 2,
+    marginTop: 6,
+    marginLeft: 4,
+    fontWeight: '500',
   },
   helperText: {
     fontSize: 12,
     color: Colors.textTertiary,
-    marginTop: 5,
-    marginLeft: 2,
+    marginTop: 6,
+    marginLeft: 4,
   },
 });

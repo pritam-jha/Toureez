@@ -136,7 +136,7 @@ export function StickyActionBar({
             size={15}
             color={
               compareDisabled
-                ? Colors.muted
+                ? Colors.textTertiary
                 : isInCompare
                 ? Colors.white
                 : Colors.primary
@@ -154,15 +154,15 @@ export function StickyActionBar({
           </Text>
         </Pressable>
 
-        {/* Enquire Now */}
+        {/* Book Now */}
         <Pressable
           style={styles.enquireButton}
           onPress={onEnquirePress}
           accessibilityRole="button"
-          accessibilityLabel="Enquire about this package"
+          accessibilityLabel="Book this package"
         >
           <Text style={styles.enquireText} numberOfLines={1}>
-            Enquire Now
+            Book Now
           </Text>
         </Pressable>
       </View>
@@ -175,22 +175,22 @@ export function StickyActionBar({
 const styles = StyleSheet.create({
   bar: {
     alignItems: 'center',
-    backgroundColor: Colors.surface,
-    borderTopColor: Colors.border,
+    backgroundColor: Colors.surfacePrimary,
+    borderTopColor: Colors.surfaceBorder,
     borderTopWidth: 1,
     bottom: 0,
-    elevation: 16,
+    elevation: 20,
     flexDirection: 'row',
-    height: BAR_HEIGHT + 40, // extra for safe area
+    height: BAR_HEIGHT + 40,
     left: 0,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingTop: 12,
     position: 'absolute',
     right: 0,
-    shadowColor: Colors.textPrimary,
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
+    shadowColor: '#0F1535',
+    shadowOffset: { width: 0, height: -6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 20,
     zIndex: 100,
   },
   priceBlock: {
@@ -200,69 +200,78 @@ const styles = StyleSheet.create({
   price: {
     color: Colors.primary,
     fontSize: 22,
-    fontWeight: '900',
+    fontWeight: '800',
     lineHeight: 28,
+    letterSpacing: -0.5,
   },
   perPerson: {
     color: Colors.textTertiary,
     fontSize: 11,
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 14,
     marginTop: 1,
   },
   selectPlan: {
     color: Colors.textSecondary,
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '600',
     lineHeight: 18,
   },
   buttons: {
     alignItems: 'center',
     flexDirection: 'row',
+    gap: 10,
   },
   compareButton: {
     alignItems: 'center',
-    borderColor: Colors.primary,
-    borderRadius: 10,
+    borderColor: Colors.surfaceBorderStrong,
+    borderRadius: 12,
     borderWidth: 1.5,
     flexDirection: 'row',
-    height: 46,
+    height: 48,
     justifyContent: 'center',
-    marginRight: 10,
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
+    backgroundColor: Colors.backgroundLayer2,
+    gap: 5,
   },
   compareButtonActive: {
-    backgroundColor: Colors.secondary,
-    borderColor: Colors.secondary,
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
   },
   compareButtonDisabled: {
-    borderColor: Colors.border,
+    borderColor: Colors.surfaceBorder,
+    backgroundColor: Colors.backgroundLayer2,
   },
   compareText: {
-    color: Colors.primary,
+    color: Colors.textSecondary,
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: '600',
     lineHeight: 18,
-    marginLeft: 5,
   },
   compareTextActive: {
     color: Colors.white,
   },
   compareTextDisabled: {
-    color: Colors.muted,
+    color: Colors.textTertiary,
   },
   enquireButton: {
     alignItems: 'center',
     backgroundColor: Colors.primary,
-    borderRadius: 10,
-    height: 46,
+    borderRadius: 12,
+    height: 48,
     justifyContent: 'center',
-    paddingHorizontal: 18,
+    paddingHorizontal: 20,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 12,
+    elevation: 8,
   },
   enquireText: {
     color: Colors.white,
     fontSize: 14,
-    fontWeight: '900',
+    fontWeight: '700',
     lineHeight: 20,
+    letterSpacing: 0.2,
   },
 });

@@ -20,7 +20,7 @@ export default function AuthLayout(): React.ReactElement {
     <Stack
       screenOptions={{
         headerShown: false,
-        contentStyle: { backgroundColor: Colors.background },
+        contentStyle: { backgroundColor: Colors.backgroundBase },
         animation: 'slide_from_right',
       }}
     >

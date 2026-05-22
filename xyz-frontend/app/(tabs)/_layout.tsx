@@ -1,6 +1,7 @@
 /**
  * @file app/(tabs)/_layout.tsx
- * @description Bottom tab navigator with persistent compare tray overlay.
+ * @description Bottom tab navigator — Premium Light 3D design.
+ * White tab bar with navy active icons, subtle top border, 3D elevation.
  */
 
 import React from 'react';
@@ -11,24 +12,23 @@ import { Ionicons } from '@expo/vector-icons';
 import { CompareTray } from '../../components/home/CompareTray';
 import { Colors } from '../../constants/colors';
 
-type TabIconName =
-  | 'home-outline'
-  | 'search-outline'
-  | 'heart-outline'
-  | 'person-outline';
+type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
 interface TabIconProps {
-  name: TabIconName;
   focused: boolean;
+  outlineName: IoniconName;
+  filledName: IoniconName;
 }
 
-function TabIcon({ name, focused }: TabIconProps): React.ReactElement {
+function TabIcon({ focused, outlineName, filledName }: TabIconProps): React.ReactElement {
   return (
-    <Ionicons
-      name={name}
-      size={22}
-      color={focused ? Colors.tabBarActive : Colors.tabBarInactive}
-    />
+    <View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
+      <Ionicons
+        name={focused ? filledName : outlineName}
+        size={22}
+        color={focused ? Colors.tabActive : Colors.tabInactive}
+      />
+    </View>
   );
 }
 
@@ -38,9 +38,9 @@ export default function TabsLayout(): React.ReactElement {
       <Tabs
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: Colors.tabBarActive,
-          tabBarInactiveTintColor: Colors.tabBarInactive,
-          tabBarLabelStyle: styles.tabBarLabel,
+          tabBarShowLabel: false,
+          tabBarActiveTintColor: Colors.tabActive,
+          tabBarInactiveTintColor: Colors.tabInactive,
           tabBarStyle: styles.tabBar,
         }}
       >
@@ -49,7 +49,11 @@ export default function TabsLayout(): React.ReactElement {
           options={{
             title: 'Home',
             tabBarIcon: ({ focused }) => (
-              <TabIcon name="home-outline" focused={focused} />
+              <TabIcon
+                focused={focused}
+                outlineName="home-outline"
+                filledName="home"
+              />
             ),
           }}
         />
@@ -58,7 +62,24 @@ export default function TabsLayout(): React.ReactElement {
           options={{
             title: 'Search',
             tabBarIcon: ({ focused }) => (
-              <TabIcon name="search-outline" focused={focused} />
+              <TabIcon
+                focused={focused}
+                outlineName="search-outline"
+                filledName="search"
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="bookings"
+          options={{
+            title: 'Bookings',
+            tabBarIcon: ({ focused }) => (
+              <TabIcon
+                focused={focused}
+                outlineName="calendar-outline"
+                filledName="calendar"
+              />
             ),
           }}
         />
@@ -67,7 +88,11 @@ export default function TabsLayout(): React.ReactElement {
           options={{
             title: 'Wishlist',
             tabBarIcon: ({ focused }) => (
-              <TabIcon name="heart-outline" focused={focused} />
+              <TabIcon
+                focused={focused}
+                outlineName="heart-outline"
+                filledName="heart"
+              />
             ),
           }}
         />
@@ -76,7 +101,11 @@ export default function TabsLayout(): React.ReactElement {
           options={{
             title: 'Profile',
             tabBarIcon: ({ focused }) => (
-              <TabIcon name="person-outline" focused={focused} />
+              <TabIcon
+                focused={focused}
+                outlineName="person-outline"
+                filledName="person"
+              />
             ),
           }}
         />
@@ -92,15 +121,27 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tabBar: {
-    backgroundColor: Colors.tabBarBackground,
-    borderTopColor: Colors.border,
+    backgroundColor: Colors.tabBackground,
+    borderTopColor: Colors.surfaceBorder,
     borderTopWidth: 1,
-    height: 64,
-    paddingBottom: 9,
-    paddingTop: 7,
+    height: 68,
+    paddingBottom: 10,
+    paddingTop: 8,
+    // 3D elevation
+    shadowColor: '#0F1535',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    elevation: 16,
   },
-  tabBarLabel: {
-    fontSize: 11,
-    fontWeight: '700',
+  iconWrap: {
+    width: 44,
+    height: 36,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconWrapActive: {
+    backgroundColor: Colors.primaryGlow,
   },
 });
