@@ -1,6 +1,8 @@
+import compression from 'compression';
 import cors, { type CorsOptions } from 'cors';
-import express from 'express';
+import express, { type Request, type Response, type NextFunction } from 'express';
 import helmet from 'helmet';
+import { randomUUID } from 'crypto';
 import { AppError, ERROR_MESSAGES } from './constants/errors';
 import { errorHandler } from './middleware/errorHandler';
 import { requestLogger } from './middleware/requestLogger';
@@ -52,11 +54,29 @@ const corsOptions: CorsOptions = {
  */
 export const app = express();
 
+// Trust the first proxy hop so express-rate-limit and IP logging work correctly
+// behind Nginx, Railway, Render, Fly.io, or any reverse proxy.
+app.set('trust proxy', 1);
+
 app.disable('x-powered-by');
+app.use(compression());
 app.use(helmet());
 app.use(cors(corsOptions));
-app.use(express.json({ limit: '1mb' }));
-app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+
+// Attach a unique correlation ID to every request for distributed tracing.
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const requestId =
+    (Array.isArray(req.headers['x-request-id'])
+      ? req.headers['x-request-id'][0]
+      : req.headers['x-request-id']) ?? randomUUID();
+  res.setHeader('X-Request-Id', requestId);
+  // Expose on req so route handlers and services can include it in logs.
+  (req as Request & { requestId: string }).requestId = requestId;
+  next();
+});
+
+app.use(express.json({ limit: '512kb' }));
+app.use(express.urlencoded({ extended: true, limit: '512kb' }));
 app.use(requestLogger);
 
 app.use('/api/v1', apiV1Router);

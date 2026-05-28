@@ -158,10 +158,27 @@ export const ImageParamsSchema = z.object({
  * Validates the body when a vendor saves a Cloudinary-uploaded image.
  * The file is uploaded directly from the client to Cloudinary; only the
  * resulting metadata (URL + public_id) is sent to our backend.
+ *
+ * Security: we validate that the URL is served from Cloudinary's CDN
+ * to prevent vendors from injecting arbitrary external URLs as "images".
  */
 export const PackageImageSaveSchema = z
   .object({
-    url: z.string().url('url must be a valid URL'),
+    url: z
+      .string()
+      .url('url must be a valid URL')
+      .refine((url) => {
+        try {
+          const parsed = new URL(url);
+          return (
+            parsed.protocol === 'https:' &&
+            (parsed.hostname === 'res.cloudinary.com' ||
+              parsed.hostname.endsWith('.cloudinary.com'))
+          );
+        } catch {
+          return false;
+        }
+      }, 'Image URL must be served from Cloudinary (https://res.cloudinary.com)'),
     public_id: z.string().trim().min(1).max(500),
     alt_text: z.string().trim().max(200).optional(),
     is_cover: z.boolean().optional().default(false),

@@ -19,8 +19,10 @@ import {
   getBookingById,
   getMyBookings,
 } from '../services/bookingService';
-import { success, validationError } from '../utils/response';
+import { success, validationError, error as errorResponse } from '../utils/response';
 import { UuidParamSchema } from '../utils/validation';
+
+const isProduction = process.env.NODE_ENV === 'production';
 
 export const bookingsRouter = Router();
 
@@ -157,19 +159,21 @@ bookingsRouter.post('/create', async (req, res, next) => {
 /**
  * POST /api/v1/bookings/confirm-mock
  * Confirms a booking with a mock payment (no real gateway).
- *
- * Body: { booking_id, payment_type }
- * Returns: { booking }
+ * DISABLED in production — replace with Razorpay verify-payment before launch.
  *
  * TODO: Razorpay Integration
  * 1. Call POST /api/v1/bookings/create-order to get razorpay_order_id
  * 2. Open Razorpay checkout with order_id
- * 3. On success: call POST /api/v1/bookings/verify-payment
+ * 3. On success: call POST /api/v1/bookings/verify-payment with razorpay signature
  * 4. On failure: show error and allow retry
  *
- * NOTE: Replace this endpoint with Razorpay signature verification.
+ * NOTE: Replace this endpoint with Razorpay signature verification before launch.
  */
 bookingsRouter.post('/confirm-mock', async (req, res, next) => {
+  if (isProduction) {
+    return errorResponse(res, 'Mock payment is not available in production', 410);
+  }
+
   try {
     const parsed = ConfirmMockPaymentSchema.safeParse(req.body);
 

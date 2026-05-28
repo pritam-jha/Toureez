@@ -141,11 +141,7 @@ export function useCreateBooking(): UseMutationResult<
 
   return useMutation({
     mutationFn: async (input: CreateBookingInput) => {
-      console.log('[useCreateBooking] payload:', JSON.stringify(input, null, 2));
-
       const { data, error } = await createBooking(input);
-
-      console.log('[useCreateBooking] response:', JSON.stringify({ data, error }, null, 2));
 
       if (error || !data) {
         throw new Error(error ?? 'Failed to create booking.');
@@ -154,20 +150,16 @@ export function useCreateBooking(): UseMutationResult<
       return data;
     },
     onSuccess: (data) => {
-      // Invalidate the bookings list so it refetches on next visit
       void queryClient.invalidateQueries({
         queryKey: bookingQueryKeys.list(),
       });
 
-      // Navigate to payment screen with the real booking ID
       router.push({
         pathname: '/booking/payment' as never,
         params: { bookingId: data.booking.id },
       });
     },
     onError: (err) => {
-      // Surface the error — without this, failures are completely silent
-      console.error('[useCreateBooking]', err.message);
       Alert.alert(
         'Booking Failed',
         err.message || 'Something went wrong. Please try again.',

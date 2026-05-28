@@ -47,8 +47,8 @@ function AppLayout(): React.ReactElement {
   const rootSegment = segments[0] as string | undefined;
 
   useEffect(() => {
-    void ScreenCapture.allowScreenCaptureAsync().catch((error) => {
-      console.warn('[AppLayout] Failed to allow screen capture:', error);
+    void ScreenCapture.allowScreenCaptureAsync().catch(() => {
+      // Non-fatal — screen capture restriction is best-effort on some platforms.
     });
   }, []);
 
@@ -104,8 +104,8 @@ function AppLayout(): React.ReactElement {
             });
           }
         }
-      } catch (error) {
-        console.warn('[AppLayout] Failed to resolve initial session:', error);
+      } catch {
+        // Session resolution failure is non-fatal — the user will see the login screen.
       } finally {
         setLoading(false);
         await SplashScreen.hideAsync();
