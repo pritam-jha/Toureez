@@ -242,11 +242,26 @@ export type UpsertItineraryInput = z.infer<typeof UpsertItinerarySchema>;
 
 /**
  * Validates the body when saving a Cloudinary-uploaded package image.
- * Matches the existing PackageImageSaveSchema in validation.ts.
+ * Security: URL is restricted to Cloudinary CDN so vendors cannot inject
+ * arbitrary external URLs as package images.
  */
 export const VendorPackageImageSaveSchema = z
   .object({
-    url: z.string().url('Must be a valid URL'),
+    url: z
+      .string()
+      .url('Must be a valid URL')
+      .refine((url) => {
+        try {
+          const parsed = new URL(url);
+          return (
+            parsed.protocol === 'https:' &&
+            (parsed.hostname === 'res.cloudinary.com' ||
+              parsed.hostname.endsWith('.cloudinary.com'))
+          );
+        } catch {
+          return false;
+        }
+      }, 'Image URL must be served from Cloudinary (https://res.cloudinary.com)'),
     public_id: z.string().trim().min(1).max(500),
     alt_text: optionalTrimmed(1, 200),
     is_cover: z.boolean().default(false),

@@ -17,6 +17,7 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
+import { useAuthStore } from '../store/authStore';
 import type {
   UseMutationResult,
   UseQueryResult,
@@ -233,6 +234,8 @@ export function useConfirmMockPayment(): UseMutationResult<
  * const { data, isLoading } = useMyBookings();
  */
 export function useMyBookings(): UseQueryResult<BookingSummary[], Error> {
+  const isAuthenticated = useAuthStore((state) => state.user !== null);
+
   return useQuery({
     queryKey: bookingQueryKeys.list(),
     queryFn: async () => {
@@ -240,6 +243,7 @@ export function useMyBookings(): UseQueryResult<BookingSummary[], Error> {
       if (error || !data) throw new Error(error ?? 'Failed to load bookings.');
       return data;
     },
+    enabled: isAuthenticated,
     staleTime: Config.queryStaleTimeMs,
     gcTime: Config.queryCacheTimeMs,
     retry: 1,
@@ -260,6 +264,8 @@ export function useMyBookings(): UseQueryResult<BookingSummary[], Error> {
 export function useBookingDetail(
   id: string
 ): UseQueryResult<Booking, Error> {
+  const isAuthenticated = useAuthStore((state) => state.user !== null);
+
   return useQuery({
     queryKey: bookingQueryKeys.detail(id),
     queryFn: async () => {
@@ -267,7 +273,7 @@ export function useBookingDetail(
       if (error || !data) throw new Error(error ?? 'Booking not found.');
       return data;
     },
-    enabled: Boolean(id && id.trim().length > 0),
+    enabled: isAuthenticated && Boolean(id && id.trim().length > 0),
     staleTime: Config.queryStaleTimeMs,
     gcTime: Config.queryCacheTimeMs,
     retry: (failureCount, err) => {

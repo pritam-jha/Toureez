@@ -136,9 +136,9 @@ export default function AdminNotificationsScreen(): React.ReactElement {
         ListEmptyComponent={
           !isLoading ? (
             <EmptyState
-              icon="bell-off"
+              icon="🔔"
               title="No notifications"
-              description="Admin notifications will appear here."
+              subtitle="Admin notifications will appear here."
             />
           ) : null
         }

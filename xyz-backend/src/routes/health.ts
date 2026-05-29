@@ -19,8 +19,12 @@ healthRouter.get('/', async (_req, res) => {
   let dbStatus: 'ok' | 'error' = 'ok';
 
   try {
-    // Lightweight DB ping — selects a single constant so no table scan occurs.
-    const { error } = await supabaseAdmin.rpc('now');
+    // Lightweight DB ping — fetches zero rows from users (always exists, no table scan).
+    // Using limit(0) keeps network cost near-zero while confirming the connection is alive.
+    const { error } = await supabaseAdmin
+      .from('users')
+      .select('id')
+      .limit(0);
     if (error) {
       dbStatus = 'error';
       logger.warn({ err: error }, 'Health check: database ping failed');

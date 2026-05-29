@@ -156,7 +156,6 @@ async function request<T>(
       let fullMessage = message;
       if (typeof parsed === 'object' && parsed !== null && 'details' in parsed) {
         const details = (parsed as Record<string, unknown>).details;
-        console.error('[apiClient] Validation details:', JSON.stringify(details, null, 2));
         fullMessage = `${message}\n\n${JSON.stringify(details, null, 2)}`;
       }
 

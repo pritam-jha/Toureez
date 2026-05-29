@@ -57,6 +57,8 @@ jobs:
           cache-dependency-path: |
             xyz-backend/package-lock.json
             xyz-admin-app/package-lock.json
+            xyz-frontend/package-lock.json
+            xyz-vendor-app/package-lock.json
 
       - name: Install backend deps
         working-directory: xyz-backend
@@ -72,6 +74,22 @@ jobs:
 
       - name: Type-check admin-app
         working-directory: xyz-admin-app
+        run: npx tsc --noEmit
+
+      - name: Install frontend deps
+        working-directory: xyz-frontend
+        run: npm install --ignore-scripts
+
+      - name: Type-check frontend (traveller app)
+        working-directory: xyz-frontend
+        run: npx tsc --noEmit
+
+      - name: Install vendor-app deps
+        working-directory: xyz-vendor-app
+        run: npm install --ignore-scripts
+
+      - name: Type-check vendor-app
+        working-directory: xyz-vendor-app
         run: npx tsc --noEmit
 
   # ── Job 3: Build ─────────────────────────────────────────────────────────────
@@ -125,3 +143,26 @@ jobs:
       - name: Run tests
         working-directory: xyz-backend
         run: npm test
+
+  # ── Job 5: Security audit ────────────────────────────────────────────────────
+  audit:
+    name: Security audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: xyz-backend/package-lock.json
+
+      - name: Install backend deps
+        working-directory: xyz-backend
+        run: npm ci --frozen-lockfile
+
+      # Fail on high-severity vulnerabilities; moderate ones are reported only.
+      - name: npm audit (backend)
+        working-directory: xyz-backend
+        run: npm audit --audit-level=high
