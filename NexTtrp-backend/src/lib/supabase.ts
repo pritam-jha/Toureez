@@ -1,6 +1,5 @@
 import 'dotenv/config';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import ws from 'ws';
 
 const getRequiredEnv = (keys: string[]): string => {
   for (const key of keys) {
@@ -28,19 +27,14 @@ const supabaseAnonKey = getRequiredEnv([
 
 const supabaseServiceRoleKey = getRequiredEnv(['SUPABASE_SERVICE_ROLE_KEY']);
 
-// Node.js 20 does not have a native WebSocket global.
-// Passing the 'ws' package as the realtime transport fixes the crash:
-//   "Error: Node.js 20 detected without native WebSocket support."
-// Node.js 22+ has native WebSocket so this is harmless on newer runtimes.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const realtimeOptions = { transport: ws as any };
+// Node.js 22+ has native WebSocket — no polyfill needed.
+// The Dockerfile uses node:22-alpine which satisfies this requirement.
 
 export const supabasePublic: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     autoRefreshToken: false,
     persistSession: false,
   },
-  realtime: realtimeOptions,
 });
 
 export const supabaseAdmin: SupabaseClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
@@ -48,5 +42,4 @@ export const supabaseAdmin: SupabaseClient = createClient(supabaseUrl, supabaseS
     autoRefreshToken: false,
     persistSession: false,
   },
-  realtime: realtimeOptions,
 });

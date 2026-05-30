@@ -1,6 +1,6 @@
 # ── Stage 1: Builder ──────────────────────────────────────────────────────────
-# Installs all dependencies (including devDeps) and compiles TypeScript.
-FROM node:20-alpine AS builder
+# Node 22 has native WebSocket support — no 'ws' polyfill needed.
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -18,7 +18,7 @@ RUN npm run build
 
 # ── Stage 2: Runner ───────────────────────────────────────────────────────────
 # Minimal image — only production deps and compiled JS.
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 
 WORKDIR /app
 
