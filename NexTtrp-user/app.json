@@ -82,7 +82,8 @@
           "photosPermission": "NEXTTRP needs access to your photo library to upload profile pictures.",
           "cameraPermission": "NEXTTRP needs access to your camera to take profile pictures."
         }
-      ]
+      ],
+      "@sentry/react-native"
     ],
     "scheme": "nexttrp",
     "experiments": {
