@@ -20,6 +20,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@sentry/node": "^10.55.0",
+    "@supabase/realtime-js": "2.8.4",
     "@supabase/supabase-js": "2.43.4",
     "@types/ws": "^8.18.1",
     "cloudinary": "^2.5.1",
@@ -55,8 +56,5 @@
   },
   "engines": {
     "node": ">=22.0.0"
-  },
-  "overrides": {
-    "@supabase/realtime-js": "2.8.4"
   }
 }
