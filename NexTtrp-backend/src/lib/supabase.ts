@@ -1,15 +1,23 @@
 import 'dotenv/config';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
+// ── Node.js < 22 WebSocket polyfill ──────────────────────────────────────────
+// @supabase/realtime-js checks globalThis.WebSocket at startup.
+// Node.js 22+ has it natively; older versions need the 'ws' package.
+// Setting globalThis.WebSocket here before createClient() is called is
+// the most reliable approach — no options threading needed.
+if (typeof (globalThis as Record<string, unknown>).WebSocket === 'undefined') {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
+  (globalThis as any).WebSocket = require('ws');
+}
+
 const getRequiredEnv = (keys: string[]): string => {
   for (const key of keys) {
     const value = process.env[key];
-
     if (value !== undefined && value.trim() !== '') {
       return value.trim();
     }
   }
-
   throw new Error(`${keys.join(' or ')} environment variable is required`);
 };
 
@@ -27,31 +35,10 @@ const supabaseAnonKey = getRequiredEnv([
 
 const supabaseServiceRoleKey = getRequiredEnv(['SUPABASE_SERVICE_ROLE_KEY']);
 
-// ── WebSocket polyfill for Node.js < 22 ──────────────────────────────────────
-// Node 22+ has a native WebSocket global; older versions need the 'ws' package.
-// We detect the version at runtime and pass 'ws' as the realtime transport when
-// needed. This makes the code work on both Node 20 and Node 22.
-
-function getRealtimeOptions(): Record<string, unknown> {
-  const [major] = process.versions.node.split('.').map(Number);
-  if (major < 22) {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const ws = require('ws') as unknown;
-    return { transport: ws };
-  }
-  return {};
-}
-
-const realtimeOptions = getRealtimeOptions();
-
 export const supabasePublic: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
   auth: { autoRefreshToken: false, persistSession: false },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  realtime: realtimeOptions as any,
 });
 
 export const supabaseAdmin: SupabaseClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
   auth: { autoRefreshToken: false, persistSession: false },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  realtime: realtimeOptions as any,
 });
