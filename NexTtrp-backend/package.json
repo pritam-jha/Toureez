@@ -55,5 +55,8 @@
   },
   "engines": {
     "node": ">=22.0.0"
+  },
+  "overrides": {
+    "@supabase/realtime-js": "2.8.4"
   }
 }
