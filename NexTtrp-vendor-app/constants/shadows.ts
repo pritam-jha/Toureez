@@ -1,7 +1,7 @@
 /**
  * @file constants/shadows.ts
  * @description Design-system shadow tokens for the Vendor Portal.
- * Matches the shadow system used in xyz-frontend for visual consistency.
+ * Matches the shadow system used in NexTtrp-user for visual consistency.
  */
 
 import type { ViewStyle } from 'react-native';

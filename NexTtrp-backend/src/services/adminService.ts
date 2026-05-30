@@ -228,12 +228,12 @@ function isRpcNotFound(err: unknown): boolean {
  * Used automatically when get_admin_dashboard() RPC is not yet deployed.
  *
  * To enable the optimised single-query path, run:
- *   xyz-backend/supabase/get_admin_dashboard.sql  in the Supabase SQL Editor.
+ *   NexTtrp-backend/supabase/get_admin_dashboard.sql  in the Supabase SQL Editor.
  */
 async function getDashboardFallback(): Promise<AdminDashboardMetrics> {
   logger.warn(
     'get_admin_dashboard RPC not found — falling back to parallel queries. ' +
-    'Deploy xyz-backend/supabase/get_admin_dashboard.sql to Supabase to enable the optimised path.',
+    'Deploy NexTtrp-backend/supabase/get_admin_dashboard.sql to Supabase to enable the optimised path.',
   );
 
   const ms = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
@@ -291,7 +291,7 @@ async function getDashboardFallback(): Promise<AdminDashboardMetrics> {
 
 export async function getAdminDashboard(): Promise<AdminDashboardMetrics> {
   // Fast path: single DB round-trip via PL/pgSQL RPC.
-  // SQL: xyz-backend/supabase/get_admin_dashboard.sql (run once in Supabase SQL Editor).
+  // SQL: NexTtrp-backend/supabase/get_admin_dashboard.sql (run once in Supabase SQL Editor).
   const { data, error } = await supabaseAdmin.rpc('get_admin_dashboard');
 
   if (error !== null) {

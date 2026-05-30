@@ -24,7 +24,7 @@ export const selectUserRole = (state: AuthState): UserRole | undefined =>
   state.user?.role;
 
 // Central mapping for post-login and cold-start role redirects.
-// Admin users should use the dedicated xyz-admin-app, not this consumer app.
+// Admin users should use the dedicated NexTtrp-admin-app, not this consumer app.
 // If an admin somehow lands here, redirect to login so they can sign out.
 export const getHomeRouteForRole = (role: UserRole | null | undefined): Href => {
   if (role === 'admin') return '/(auth)/login' as Href;
@@ -33,7 +33,7 @@ export const getHomeRouteForRole = (role: UserRole | null | undefined): Href => 
 };
 
 // Compare current Expo Router segment with the role-specific home group.
-// Admin role is no longer served by this consumer app (use xyz-admin-app instead).
+// Admin role is no longer served by this consumer app (use NexTtrp-admin-app instead).
 export const getHomeGroupForRole = (
   role: UserRole | null | undefined
 ): '(tabs)' | '(vendor)' => {

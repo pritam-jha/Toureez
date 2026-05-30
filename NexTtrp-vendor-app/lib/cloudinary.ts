@@ -4,7 +4,7 @@
  *
  * Images are uploaded directly from the client to Cloudinary (unsigned upload).
  * Only the resulting URL and public_id are sent to our backend for storage.
- * This matches the pattern used in xyz-frontend.
+ * This matches the pattern used in NexTtrp-user.
  */
 
 import * as ImagePicker from 'expo-image-picker';
@@ -51,7 +51,7 @@ export async function uploadToCloudinary(localUri: string): Promise<CloudinaryUp
   // Guard against unconfigured placeholder values
   if (cloudName === 'your-cloud-name' || !cloudName) {
     throw new Error(
-      'Cloudinary is not configured. Open xyz-vendor-app/.env and set EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME to your Cloudinary cloud name.',
+      'Cloudinary is not configured. Open NexTtrp-vendor-app/.env and set EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME to your Cloudinary cloud name.',
     );
   }
 

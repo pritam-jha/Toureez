@@ -5,15 +5,15 @@
 services:
   backend:
     build:
-      context: ./xyz-backend
+      context: ./NexTtrp-backend
       dockerfile: Dockerfile
-    container_name: xyz-backend
+    container_name: nexttrp-backend
     restart: unless-stopped
 
     # Load environment variables from the .env file next to docker-compose.yml.
-    # Copy xyz-backend/.env.example → .env and fill in real values before running.
+    # Copy NexTtrp-backend/.env.example → .env and fill in real values before running.
     env_file:
-      - ./xyz-backend/.env
+      - ./NexTtrp-backend/.env
 
     ports:
       - "${PORT:-3000}:3000"

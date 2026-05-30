@@ -2,7 +2,7 @@
  * @file constants/colors.ts
  * @description NEXTTRP Vendor Portal brand palette.
  *
- * Uses the same brand system as xyz-frontend to maintain visual consistency
+ * Uses the same brand system as NexTtrp-user to maintain visual consistency
  * across all applications in the NEXTTRP ecosystem.
  */
 

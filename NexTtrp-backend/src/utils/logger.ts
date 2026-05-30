@@ -31,7 +31,7 @@ export const logger = pino(
       censor: '[REDACTED]',
     },
     // Consistent base fields on every log record.
-    base: { service: 'xyz-backend' },
+    base: { service: 'nexttrp-backend' },
   },
   isProduction
     ? undefined // plain JSON to stdout — let your log shipper handle it

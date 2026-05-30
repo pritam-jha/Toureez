@@ -71,7 +71,7 @@ function AppLayout(): React.ReactElement {
 
     const isInAuthGroup = rootSegment === '(auth)';
     // Treat all role app groups as protected shells.
-    // (admin) was removed from this app; admins should use xyz-admin-app.
+    // (admin) was removed from this app; admins should use NexTtrp-admin-app.
     const isInProtectedGroup =
       rootSegment === '(tabs)' || rootSegment === '(vendor)';
 

@@ -21,25 +21,23 @@ jobs:
           node-version: "20"
           cache: "npm"
           cache-dependency-path: |
-            xyz-backend/package-lock.json
-            xyz-admin-app/package-lock.json
+            NexTtrp-backend/package-lock.json
+            NexTtrp-admin-app/package-lock.json
 
       - name: Install backend deps
-        working-directory: xyz-backend
+        working-directory: NexTtrp-backend
         run: npm ci --frozen-lockfile
 
       - name: Lint backend
-        working-directory: xyz-backend
+        working-directory: NexTtrp-backend
         run: npx eslint "src/**/*.ts" --max-warnings 0
 
       - name: Install admin-app deps
-        working-directory: xyz-admin-app
+        working-directory: NexTtrp-admin-app
         run: npm install --ignore-scripts
 
-      # admin-app uses expo's default TypeScript strict mode; run tsc for
-      # linting since there is no separate eslint config there yet.
       - name: Check admin-app (tsc as lint proxy)
-        working-directory: xyz-admin-app
+        working-directory: NexTtrp-admin-app
         run: npx tsc --noEmit
 
   # ── Job 2: Type-check ────────────────────────────────────────────────────────
@@ -55,48 +53,47 @@ jobs:
           node-version: "20"
           cache: "npm"
           cache-dependency-path: |
-            xyz-backend/package-lock.json
-            xyz-admin-app/package-lock.json
-            xyz-frontend/package-lock.json
-            xyz-vendor-app/package-lock.json
+            NexTtrp-backend/package-lock.json
+            NexTtrp-admin-app/package-lock.json
+            NexTtrp-user/package-lock.json
+            NexTtrp-vendor-app/package-lock.json
 
       - name: Install backend deps
-        working-directory: xyz-backend
+        working-directory: NexTtrp-backend
         run: npm ci --frozen-lockfile
 
       - name: Type-check backend
-        working-directory: xyz-backend
+        working-directory: NexTtrp-backend
         run: npx tsc --noEmit
 
       - name: Install admin-app deps
-        working-directory: xyz-admin-app
+        working-directory: NexTtrp-admin-app
         run: npm install --ignore-scripts
 
       - name: Type-check admin-app
-        working-directory: xyz-admin-app
+        working-directory: NexTtrp-admin-app
         run: npx tsc --noEmit
 
-      - name: Install frontend deps
-        working-directory: xyz-frontend
+      - name: Install user-app deps
+        working-directory: NexTtrp-user
         run: npm install --ignore-scripts
 
-      - name: Type-check frontend (traveller app)
-        working-directory: xyz-frontend
+      - name: Type-check user app (traveller)
+        working-directory: NexTtrp-user
         run: npx tsc --noEmit
 
       - name: Install vendor-app deps
-        working-directory: xyz-vendor-app
+        working-directory: NexTtrp-vendor-app
         run: npm install --ignore-scripts
 
       - name: Type-check vendor-app
-        working-directory: xyz-vendor-app
+        working-directory: NexTtrp-vendor-app
         run: npx tsc --noEmit
 
   # ── Job 3: Build ─────────────────────────────────────────────────────────────
   build:
     name: Build backend
     runs-on: ubuntu-latest
-    # Only run build after type-check passes.
     needs: [typecheck]
 
     steps:
@@ -106,20 +103,18 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: xyz-backend/package-lock.json
+          cache-dependency-path: NexTtrp-backend/package-lock.json
 
       - name: Install backend deps
-        working-directory: xyz-backend
+        working-directory: NexTtrp-backend
         run: npm ci --frozen-lockfile
 
       - name: Build backend
-        working-directory: xyz-backend
+        working-directory: NexTtrp-backend
         run: npm run build
 
-      # Verify the compiled entry-point exists so the Docker stage can always
-      # COPY dist/ without missing-file surprises.
       - name: Verify dist/server.js exists
-        run: test -f xyz-backend/dist/server.js
+        run: test -f NexTtrp-backend/dist/server.js
 
   # ── Job 4: Test ──────────────────────────────────────────────────────────────
   test:
@@ -134,14 +129,14 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: xyz-backend/package-lock.json
+          cache-dependency-path: NexTtrp-backend/package-lock.json
 
       - name: Install backend deps
-        working-directory: xyz-backend
+        working-directory: NexTtrp-backend
         run: npm ci --frozen-lockfile
 
       - name: Run tests
-        working-directory: xyz-backend
+        working-directory: NexTtrp-backend
         run: npm test
 
   # ── Job 5: Security audit ────────────────────────────────────────────────────
@@ -156,13 +151,12 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: xyz-backend/package-lock.json
+          cache-dependency-path: NexTtrp-backend/package-lock.json
 
       - name: Install backend deps
-        working-directory: xyz-backend
+        working-directory: NexTtrp-backend
         run: npm ci --frozen-lockfile
 
-      # Fail on high-severity vulnerabilities; moderate ones are reported only.
       - name: npm audit (backend)
-        working-directory: xyz-backend
+        working-directory: NexTtrp-backend
         run: npm audit --audit-level=high

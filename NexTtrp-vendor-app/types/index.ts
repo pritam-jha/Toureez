@@ -5,7 +5,7 @@
  * All interfaces are defined here and imported across the codebase to
  * ensure a single source of truth for data shapes.
  *
- * Mirrors the shared domain types from xyz-frontend/types/index.ts
+ * Mirrors the shared domain types from NexTtrp-user/types/index.ts
  * with vendor-specific extensions.
  */
 
