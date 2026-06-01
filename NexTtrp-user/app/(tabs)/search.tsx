@@ -28,19 +28,23 @@ import { ActiveFilters, buildActiveFilterChips } from '../../components/search/A
 import { PackageList } from '../../components/search/PackageList';
 import { ResultsHeader } from '../../components/search/ResultsHeader';
 import { SortModal } from '../../components/search/SortModal';
-import { useLocations } from '../../hooks/useHomeData';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   countActiveFilters,
   flattenSearchPages,
   getSearchTotal,
   useInfiniteSearch,
 } from '../../hooks/useSearch';
+import { useAuthStore } from '../../store/authStore';
 import { Colors } from '../../constants/colors';
 import { Shadows } from '../../constants/shadows';
 import { useSlideUp } from '../../utils/animations';
 import type { SearchScreenFilters, SortOption } from '../../hooks/useSearch';
 import type { ActiveFilterChip } from '../../components/search/ActiveFilters';
-import type { Location } from '../../types';
+
+function recentKey(userId: string): string {
+  return `@nexttrp:recent_searches:${userId}`;
+}
 
 const DESTINATION_DEBOUNCE_MS = 400;
 const DESTINATION_IMAGES = [
@@ -122,16 +126,28 @@ function DestinationGrid({
 export default function SearchScreen(): React.ReactElement {
   const params = useLocalSearchParams<Record<string, string>>();
   const slideUp = useSlideUp();
-  const { data: locations } = useLocations(true);
+  const user = useAuthStore((s) => s.user);
 
   const [filters, setFilters] = useState<SearchScreenFilters>(() => paramsToFilters(params));
   const [destinationInput, setDestinationInput] = useState(filters.destination ?? '');
   const [sort, setSort] = useState<SortOption>(filters.sort ?? 'best_match');
-  const [recentSearches, setRecentSearches] = useState<string[]>([
-    'Manali',
-    'Goa',
-    'Kashmir',
-  ]);
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+
+  // Load this user's recent searches from AsyncStorage on mount
+  useEffect(() => {
+    if (!user?.id) return;
+    void AsyncStorage.getItem(recentKey(user.id)).then((raw) => {
+      if (raw) {
+        try { setRecentSearches(JSON.parse(raw) as string[]); } catch { /* ignore corrupt */ }
+      }
+    });
+  }, [user?.id]);
+
+  // Persist recent searches whenever they change
+  useEffect(() => {
+    if (!user?.id) return;
+    void AsyncStorage.setItem(recentKey(user.id), JSON.stringify(recentSearches));
+  }, [recentSearches, user?.id]);
   const [isFilterSheetOpen, setFilterSheetOpen] = useState(false);
   const [isSortModalOpen, setSortModalOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -281,11 +297,6 @@ export default function SearchScreen(): React.ReactElement {
             </View>
           </View>
         ) : null}
-
-        <View style={styles.destinationBlock}>
-          <Text style={styles.blockTitle}>Destinations</Text>
-          <DestinationGrid locations={locations ?? []} onPress={handleDestinationPress} />
-        </View>
 
         <ResultsHeader
           total={total}

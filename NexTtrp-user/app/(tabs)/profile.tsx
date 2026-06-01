@@ -7,6 +7,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {
   Alert,
   Animated,
+  Linking,
   ScrollView,
   StyleSheet,
   Text,
@@ -257,8 +258,28 @@ export default function ProfileScreen(): React.ReactElement {
               </MenuSection>
 
               <MenuSection label="SUPPORT">
-                <MenuItem icon="chatbubble-outline" label="App Feedback" onPress={() => {}} />
-                <MenuItem icon="help-circle-outline" label="Help Center" onPress={() => {}} isLast />
+                <MenuItem
+                  icon="chatbubble-outline"
+                  label="App Feedback"
+                  onPress={() =>
+                    void Linking.openURL('mailto:support@nexttrp.com?subject=App%20Feedback')
+                  }
+                />
+                <MenuItem
+                  icon="help-circle-outline"
+                  label="Help Center"
+                  onPress={() =>
+                    Alert.alert(
+                      'Help & Support',
+                      'For any assistance, please email us at:\nsupport@nexttrp.com\n\nWe typically respond within 24 hours.',
+                      [
+                        { text: 'Send Email', onPress: () => void Linking.openURL('mailto:support@nexttrp.com?subject=Help%20Request') },
+                        { text: 'OK', style: 'cancel' },
+                      ]
+                    )
+                  }
+                  isLast
+                />
               </MenuSection>
 
               <TouchableOpacity

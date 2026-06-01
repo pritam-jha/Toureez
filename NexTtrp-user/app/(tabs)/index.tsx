@@ -31,6 +31,7 @@ import {
 } from '../../hooks/useHomeData';
 import { useWishlistIds } from '../../hooks/useWishlist';
 import { useWishlistStore } from '../../store/wishlistStore';
+import { useAuthStore } from '../../store/authStore';
 import { Colors } from '../../constants/colors';
 import { Shadows } from '../../constants/shadows';
 import { use3DCard, useHeartBounce, useSlideUp } from '../../utils/animations';
@@ -237,9 +238,18 @@ function PackageSkeleton(): React.ReactElement {
   );
 }
 
+function getGreeting(): string {
+  const h = new Date().getHours();
+  if (h < 12) return 'Good morning';
+  if (h < 17) return 'Good afternoon';
+  return 'Good evening';
+}
+
 export default function HomeScreen(): React.ReactElement {
   const insets = useSafeAreaInsets();
   const slideUp = useSlideUp();
+  const user = useAuthStore((s) => s.user);
+  const firstName = user?.full_name?.trim().split(' ')[0] ?? 'Traveller';
   const { data: locations, isLoading: locationsLoading, refetch: refetchLocations } = useLocations(true);
   const { refetch: refetchCategories } = useCategories();
   const { data: packages, isLoading: packagesLoading, refetch: refetchFeaturedPackages } = useFeaturedPackages();
@@ -324,11 +334,11 @@ export default function HomeScreen(): React.ReactElement {
     <View style={styles.root}>
       <View style={[styles.hero, heroInsetStyle]}>
         <View style={styles.greetingRow}>
-          <Text style={styles.greeting}>Good morning</Text>
+          <Text style={styles.greeting}>{getGreeting()}</Text>
           <Ionicons name="airplane" size={13} color={Colors.primary} />
         </View>
 
-        <Text style={styles.logo}>NEXTTRP</Text>
+        <Text style={styles.logo}>{firstName}</Text>
         <Text style={styles.tagline}>Travel More, Spend Less</Text>
       </View>
 
