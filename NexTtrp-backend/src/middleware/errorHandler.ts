@@ -1,13 +1,15 @@
 import type { ErrorRequestHandler } from 'express';
-import { ZodError } from 'zod';
+import { z } from 'zod';
 import { AppError, ERROR_MESSAGES } from '../constants/errors';
 import { error as errorResponse, validationError } from '../utils/response';
 import { logger } from '../utils/logger';
 
+type ZodError = z.ZodError;
+
 const isProduction = (): boolean => process.env.NODE_ENV === 'production';
 
 const formatZodIssues = (err: ZodError): Array<{ path: string; message: string }> => {
-  return err.issues.map((issue) => ({
+  return err.issues.map((issue: z.ZodIssue) => ({
     path: issue.path.length > 0 ? issue.path.join('.') : 'root',
     message: issue.message,
   }));
@@ -27,7 +29,7 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, next) => {
 
   logError(err);
 
-  if (err instanceof ZodError) {
+  if (err instanceof z.ZodError) {
     return validationError(res, formatZodIssues(err));
   }
 
