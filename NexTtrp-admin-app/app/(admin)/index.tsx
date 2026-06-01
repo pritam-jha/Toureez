@@ -321,6 +321,7 @@ export default function AdminDashboardScreen(): React.ReactElement {
                 sublabel={`${formatINR(metrics?.revenue_this_month ?? 0)} this month`}
                 accent={Colors.success}
                 loading={loading}
+                onPress={() => pushRoute('/(admin)/payouts')}
               />
             </View>
             <View style={{ width: statWidth }}>
@@ -342,9 +343,10 @@ export default function AdminDashboardScreen(): React.ReactElement {
                   (metrics?.pending_reviews ?? 0) +
                   (metrics?.pending_payouts ?? 0)
                 }
-                sublabel="Across all queues"
+                sublabel="Tap to review queues"
                 accent={Colors.primary}
                 loading={loading}
+                onPress={() => pushRoute('/(admin)/vendors')}
               />
             </View>
           </View>

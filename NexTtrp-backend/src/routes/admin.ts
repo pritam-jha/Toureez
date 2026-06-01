@@ -506,6 +506,52 @@ adminRouter.patch('/packages/:id/bestseller', strictLimiter, async (req, res, ne
   }
 });
 
+/**
+ * DELETE /api/v1/admin/packages/:id
+ * Hard-deletes a draft or rejected package with no bookings.
+ */
+adminRouter.delete('/packages/:id', strictLimiter, async (req, res, next) => {
+  try {
+    const adminUser = req.user;
+    if (!adminUser) return errorResponse(res, 'Unauthorized', 401);
+
+    const { id } = AdminUuidParamSchema.parse(req.params);
+
+    // Reuse the vendor delete service which already guards status + booking count
+    const { deleteVendorPackage } = await import('../services/vendorPackageService');
+    // Pass the package owner ID as a dummy — we override ownership check for admin
+    // by fetching company_id directly
+    const { data: pkgRow } = await (await import('../lib/supabase')).supabaseAdmin
+      .from('packages')
+      .select('company_id, companies(owner_id)')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (!pkgRow) return notFound(res, 'Package');
+
+    const companies = pkgRow.companies as { owner_id?: string } | null;
+    const ownerId = companies?.owner_id ?? '';
+
+    await deleteVendorPackage(ownerId, id);
+
+    void logAdminAction({
+      adminId: adminUser.id,
+      action: 'delete_package',
+      entityType: 'package',
+      entityId: id,
+      metadata: {},
+    });
+
+    return success(res, { deleted: true });
+  } catch (err) {
+    if (err instanceof AppError && err.statusCode === 404) return notFound(res, 'Package');
+    if (err instanceof AppError && err.statusCode === 409) {
+      return errorResponse(res, err.message, 409);
+    }
+    return next(err);
+  }
+});
+
 // ── Bookings ──────────────────────────────────────────────────────────────────
 
 /**

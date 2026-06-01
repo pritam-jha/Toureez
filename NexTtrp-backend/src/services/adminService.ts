@@ -971,7 +971,7 @@ export async function listReviews(params: {
 
   let query = supabaseAdmin
     .from('reviews')
-    .select('*, user:users(full_name, avatar_url)', { count: 'exact' })
+    .select('*, user:users!user_id(full_name, avatar_url)', { count: 'exact' })
     .order('created_at', { ascending: false })
     .range(from, to);
 
@@ -1006,7 +1006,7 @@ export async function publishReview(reviewId: string): Promise<Review> {
     .from('reviews')
     .update({ is_published: true })
     .eq('id', reviewId)
-    .select('*, user:users(full_name, avatar_url)')
+    .select('*, user:users!user_id(full_name, avatar_url)')
     .maybeSingle();
 
   if (error !== null) throwDb('publishReview', error);
@@ -1019,7 +1019,7 @@ export async function unpublishReview(reviewId: string): Promise<Review> {
     .from('reviews')
     .update({ is_published: false })
     .eq('id', reviewId)
-    .select('*, user:users(full_name, avatar_url)')
+    .select('*, user:users!user_id(full_name, avatar_url)')
     .maybeSingle();
 
   if (error !== null) throwDb('unpublishReview', error);
@@ -1032,7 +1032,7 @@ export async function verifyReview(reviewId: string): Promise<Review> {
     .from('reviews')
     .update({ is_verified: true })
     .eq('id', reviewId)
-    .select('*, user:users(full_name, avatar_url)')
+    .select('*, user:users!user_id(full_name, avatar_url)')
     .maybeSingle();
 
   if (error !== null) throwDb('verifyReview', error);

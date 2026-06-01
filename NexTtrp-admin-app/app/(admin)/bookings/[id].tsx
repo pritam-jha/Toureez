@@ -100,7 +100,13 @@ export default function AdminBookingDetailScreen(): React.ReactElement {
       <ModerationToolbar
         actions={[
           { label: 'Confirm', variant: 'success', onPress: () => setSheet('confirmed'), disabled: booking.status === 'confirmed' || booking.status === 'completed' || updateStatus.isPending },
-          { label: 'Complete', variant: 'primary', onPress: () => setSheet('completed'), disabled: booking.status === 'completed' || updateStatus.isPending },
+          {
+            label: 'Complete',
+            variant: 'primary',
+            onPress: () => setSheet('completed'),
+            // Disable if already completed OR if payment is still pending
+            disabled: booking.status === 'completed' || booking.payment_status === 'pending' || updateStatus.isPending,
+          },
           { label: 'Cancel', variant: 'danger', onPress: () => setSheet('cancelled'), disabled: booking.status === 'cancelled' || booking.status === 'completed' || updateStatus.isPending },
         ]}
       />

@@ -162,6 +162,14 @@ export async function setBestsellerAdminPackage(
   );
 }
 
+export async function deleteAdminPackage(
+  packageId: string,
+): Promise<BackendApiResponse<{ deleted: boolean }>> {
+  return apiClient.delete<{ deleted: boolean }>(
+    `/admin/packages/${encodeURIComponent(packageId)}`,
+  );
+}
+
 // ── Bookings ──────────────────────────────────────────────────────────────────
 
 export async function getAdminBookings(

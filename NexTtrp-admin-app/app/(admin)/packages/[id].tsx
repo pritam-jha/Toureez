@@ -26,6 +26,7 @@ import {
   useApprovePackage,
   useRejectPackage,
   useFeaturePackage,
+  useDeletePackage,
 } from '../../../hooks/admin/useAdminPackages';
 
 type Sheet = 'approve' | 'reject' | null;
@@ -55,8 +56,29 @@ export default function AdminPackageDetailScreen(): React.ReactElement {
   const approve = useApprovePackage();
   const reject = useRejectPackage();
   const feature = useFeaturePackage();
+  const deletePackage = useDeletePackage();
 
-  const isMutating = approve.isPending || reject.isPending || feature.isPending;
+  const isMutating = approve.isPending || reject.isPending || feature.isPending || deletePackage.isPending;
+
+  const handleDelete = () => {
+    Alert.alert(
+      'Delete Package',
+      `Permanently delete "${pkg?.title}"? This cannot be undone. Only draft or rejected packages with no bookings can be deleted.`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => {
+            deletePackage.mutate(pkgId, {
+              onSuccess: () => { Alert.alert('Deleted', 'Package has been deleted.'); router.back(); },
+              onError: (e) => Alert.alert('Cannot Delete', e.message),
+            });
+          },
+        },
+      ],
+    );
+  };
 
   if (isLoading) {
     return <SafeAreaView style={styles.center}><ActivityIndicator color={Colors.primary} size="large" /></SafeAreaView>;
@@ -161,18 +183,25 @@ export default function AdminPackageDetailScreen(): React.ReactElement {
       <ModerationToolbar
         actions={[
           {
+            label: '🗑 Delete',
+            variant: 'danger',
+            onPress: handleDelete,
+            disabled: (pkg.status === 'active' || pkg.status === 'pending') || isMutating,
+            loading: deletePackage.isPending,
+          },
+          {
+            label: 'Reject',
+            variant: 'warning',
+            onPress: () => setSheet('reject'),
+            disabled: pkg.status === 'rejected' || pkg.status === 'active' === false && pkg.status !== 'pending' || isMutating,
+            loading: reject.isPending,
+          },
+          {
             label: pkg.status === 'active' ? '✓ Approved' : 'Approve',
             variant: 'success',
             onPress: () => setSheet('approve'),
             disabled: pkg.status === 'active' || isMutating,
             loading: approve.isPending,
-          },
-          {
-            label: 'Reject',
-            variant: 'danger',
-            onPress: () => setSheet('reject'),
-            disabled: pkg.status === 'rejected' || isMutating,
-            loading: reject.isPending,
           },
         ]}
       />

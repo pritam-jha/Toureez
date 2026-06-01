@@ -44,8 +44,8 @@ function AuthBootstrap(): null {
         const { data: { session } } = await supabase.auth.getSession();
 
         if (session) {
-          // Give the profile fetch 8 s; on timeout fall through to login.
-          const profile = await withTimeout(getMyProfile(), 8000);
+          // Give the profile fetch 15 s; on timeout fall through to login.
+          const profile = await withTimeout(getMyProfile(), 15000);
 
           if (profile?.role === 'admin') {
             setSession(profile, session);
@@ -75,10 +75,12 @@ function AuthBootstrap(): null {
 
     void bootstrap();
 
-    // Listen for auth state changes (token revocation, sign-out from another tab,
-    // or a failed token refresh — e.g. "Invalid Refresh Token" after server reset).
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_OUT' || !session) {
+    // Listen for explicit sign-out only. Do NOT redirect on !session because
+    // Supabase fires intermediate events with null session during the login flow
+    // (e.g. before the session is persisted), which was sending users back to
+    // login immediately after the login screen called router.replace('/(admin)').
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event) => {
+      if (event === 'SIGNED_OUT') {
         try { await supabase.auth.signOut(); } catch { /* already signed out */ }
         clearUser();
         router.replace('/(auth)/login');

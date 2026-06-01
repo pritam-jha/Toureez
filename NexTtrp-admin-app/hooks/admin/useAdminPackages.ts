@@ -14,7 +14,9 @@ import {
   rejectAdminPackage,
   featureAdminPackage,
   setBestsellerAdminPackage,
+  deleteAdminPackage,
 } from '../../lib/api/admin';
+import { adminDashboardQueryKeys } from './useAdminDashboard';
 import type { AdminPackageListItem, AdminPackageListParams } from '../../types/admin';
 import type { PaginatedResponse } from '../../types';
 
@@ -69,10 +71,9 @@ export function useApprovePackage(): UseMutationResult<AdminPackageListItem, Err
       return res.data;
     },
     onSuccess: (_pkg, { packageId }) => {
-      void queryClient.invalidateQueries({
-        queryKey: adminPackageQueryKeys.detail(packageId),
-      });
+      void queryClient.invalidateQueries({ queryKey: adminPackageQueryKeys.detail(packageId) });
       void queryClient.invalidateQueries({ queryKey: adminPackageQueryKeys.all });
+      void queryClient.invalidateQueries({ queryKey: adminDashboardQueryKeys.all });
     },
   });
 }
@@ -86,10 +87,9 @@ export function useRejectPackage(): UseMutationResult<AdminPackageListItem, Erro
       return res.data;
     },
     onSuccess: (_pkg, { packageId }) => {
-      void queryClient.invalidateQueries({
-        queryKey: adminPackageQueryKeys.detail(packageId),
-      });
+      void queryClient.invalidateQueries({ queryKey: adminPackageQueryKeys.detail(packageId) });
       void queryClient.invalidateQueries({ queryKey: adminPackageQueryKeys.all });
+      void queryClient.invalidateQueries({ queryKey: adminDashboardQueryKeys.all });
     },
   });
 }
@@ -107,6 +107,21 @@ export function useFeaturePackage(): UseMutationResult<AdminPackageListItem, Err
         queryKey: adminPackageQueryKeys.detail(packageId),
       });
       void queryClient.invalidateQueries({ queryKey: adminPackageQueryKeys.all });
+    },
+  });
+}
+
+export function useDeletePackage(): UseMutationResult<{ deleted: boolean }, Error, string> {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (packageId: string) => {
+      const res = await deleteAdminPackage(packageId);
+      if (res.error || !res.data) throw new Error(res.error ?? 'Failed to delete package');
+      return res.data;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: adminPackageQueryKeys.all });
+      void queryClient.invalidateQueries({ queryKey: adminDashboardQueryKeys.all });
     },
   });
 }

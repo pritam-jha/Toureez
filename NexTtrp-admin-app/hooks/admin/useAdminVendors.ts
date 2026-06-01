@@ -14,6 +14,7 @@ import {
   rejectAdminVendor,
   verifyAdminVendor,
 } from '../../lib/api/admin';
+import { adminDashboardQueryKeys } from './useAdminDashboard';
 import type { AdminVendor, AdminVendorListParams } from '../../types/admin';
 import type { PaginatedResponse } from '../../types';
 
@@ -74,13 +75,10 @@ export function useApproveVendor(): UseMutationResult<AdminVendor, Error, { vend
       return res.data;
     },
     onSuccess: (_vendor, { vendorId }) => {
-      // Invalidate the specific detail key (uses URL vendorId, not response id,
-      // so the cache key always matches the query running on the screen).
-      void queryClient.invalidateQueries({
-        queryKey: adminVendorQueryKeys.detail(vendorId),
-      });
-      // Invalidate the list so status badge updates on back-navigation.
+      void queryClient.invalidateQueries({ queryKey: adminVendorQueryKeys.detail(vendorId) });
       void queryClient.invalidateQueries({ queryKey: adminVendorQueryKeys.all });
+      // Refresh dashboard so "Needs Attention" pending counts update immediately
+      void queryClient.invalidateQueries({ queryKey: adminDashboardQueryKeys.all });
     },
   });
 }
@@ -94,10 +92,9 @@ export function useRejectVendor(): UseMutationResult<AdminVendor, Error, { vendo
       return res.data;
     },
     onSuccess: (_vendor, { vendorId }) => {
-      void queryClient.invalidateQueries({
-        queryKey: adminVendorQueryKeys.detail(vendorId),
-      });
+      void queryClient.invalidateQueries({ queryKey: adminVendorQueryKeys.detail(vendorId) });
       void queryClient.invalidateQueries({ queryKey: adminVendorQueryKeys.all });
+      void queryClient.invalidateQueries({ queryKey: adminDashboardQueryKeys.all });
     },
   });
 }
