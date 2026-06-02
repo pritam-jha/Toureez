@@ -20,6 +20,8 @@
 import { Router } from 'express';
 import { requireAuth } from '../middleware/auth';
 import { requireRole } from '../middleware/roles';
+import { supabaseAdmin } from '../lib/supabase';
+import { toRecord, readString, readNumber } from '../utils/dbHelpers';
 import { strictLimiter, readLimiter } from '../middleware/rateLimiter';
 import {
   getAdminDashboard,
@@ -509,6 +511,7 @@ adminRouter.patch('/packages/:id/bestseller', strictLimiter, async (req, res, ne
 /**
  * DELETE /api/v1/admin/packages/:id
  * Hard-deletes a draft or rejected package with no bookings.
+ * Admin bypasses ownership checks entirely.
  */
 adminRouter.delete('/packages/:id', strictLimiter, async (req, res, next) => {
   try {
@@ -517,22 +520,32 @@ adminRouter.delete('/packages/:id', strictLimiter, async (req, res, next) => {
 
     const { id } = AdminUuidParamSchema.parse(req.params);
 
-    // Reuse the vendor delete service which already guards status + booking count
-    const { deleteVendorPackage } = await import('../services/vendorPackageService');
-    // Pass the package owner ID as a dummy — we override ownership check for admin
-    // by fetching company_id directly
-    const { data: pkgRow } = await (await import('../lib/supabase')).supabaseAdmin
+    const { data, error } = await supabaseAdmin
       .from('packages')
-      .select('company_id, companies(owner_id)')
+      .select('id, status, total_bookings')
       .eq('id', id)
       .maybeSingle();
 
-    if (!pkgRow) return notFound(res, 'Package');
+    if (error !== null) return next(error);
+    if (data === null) return notFound(res, 'Package');
 
-    const companies = pkgRow.companies as { owner_id?: string } | null;
-    const ownerId = companies?.owner_id ?? '';
+    const row = toRecord(data);
+    const status = readString(row, 'status');
+    const totalBookings = readNumber(row, 'total_bookings');
 
-    await deleteVendorPackage(ownerId, id);
+    if (status === 'active' || status === 'pending') {
+      return errorResponse(res, `Cannot delete a ${status} package. Only draft or rejected packages can be deleted.`, 409);
+    }
+    if (totalBookings > 0) {
+      return errorResponse(res, 'This package has existing bookings and cannot be deleted.', 409);
+    }
+
+    const { error: deleteErr } = await supabaseAdmin
+      .from('packages')
+      .delete()
+      .eq('id', id);
+
+    if (deleteErr !== null) return next(deleteErr);
 
     void logAdminAction({
       adminId: adminUser.id,
