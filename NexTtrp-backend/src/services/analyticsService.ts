@@ -150,7 +150,7 @@ export async function getVendorAnalytics(companyId: string): Promise<VendorAnaly
 export async function getAdminAnalytics(): Promise<AdminAnalytics> {
   const since = lastN(6);
 
-  const [bookingsRes, usersRes, companiesRes, categoriesRes] = await Promise.all([
+  const [bookingsRes, usersRes, companiesRes, _categoriesRes] = await Promise.all([
     supabaseAdmin
       .from('bookings')
       .select('id, total_amount, status, created_at')

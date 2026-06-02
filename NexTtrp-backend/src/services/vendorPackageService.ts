@@ -1126,7 +1126,7 @@ export async function updateVendorBookingStatus(
   ownerId: string,
   bookingId: string,
   status: 'confirmed' | 'cancelled' | 'completed',
-  note?: string,
+  _note?: string,
 ): Promise<VendorBookingDetail> {
   const companyId = await resolveCompanyId(ownerId);
 

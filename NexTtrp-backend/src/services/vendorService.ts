@@ -591,9 +591,9 @@ export async function getVendorPayouts(
   ownerId: string,
   params: { page: number; limit: number },
 ): Promise<PaginatedResponse<VendorPayout>> {
-  const companyId = await requireCompanyId(ownerId);
+  const _companyId = await requireCompanyId(ownerId);
   const from = (params.page - 1) * params.limit;
-  const to = from + params.limit - 1;
+  const _to = from + params.limit - 1;
 
   // vendor_payouts table is not yet in the schema — return empty gracefully.
   const rows: unknown[] = [];
@@ -652,7 +652,7 @@ export async function createPayoutAccount(
       ? input.account_number.slice(-4)
       : null;
 
-  const payload: Record<string, unknown> = {
+  const _payload: Record<string, unknown> = {
     company_id: companyId,
     account_holder_name: input.account_holder_name,
     bank_name: input.bank_name ?? null,
@@ -671,7 +671,7 @@ export async function createPayoutAccount(
  * Lists payout accounts for the vendor's company.
  */
 export async function getPayoutAccounts(ownerId: string): Promise<VendorPayoutAccount[]> {
-  const companyId = await requireCompanyId(ownerId);
+  const _companyId = await requireCompanyId(ownerId);
 
   // vendor_payout_accounts table is not yet in the schema — return empty gracefully.
   const rows: unknown[] = [];
