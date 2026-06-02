@@ -51,8 +51,10 @@ export function useVendorCompany(): UseQueryResult<VendorCompany | null, Error> 
       return data ?? null;
     },
     enabled: isVendor,
-    staleTime: Config.queryStaleTimeMs,
+    staleTime: 0,              // always refetch — status can change via admin approval
     gcTime: Config.queryCacheTimeMs,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
     retry: 1,
   });
 }
