@@ -451,9 +451,12 @@ export async function listVendors(params: {
   const from = (params.page - 1) * params.limit;
   const to = from + params.limit - 1;
 
+  // No cross-schema join — select companies only, then fetch owners separately.
+  // The companies.owner_id FK may reference auth.users which PostgREST cannot
+  // join to public.users, causing "something went wrong" errors.
   let query = supabaseAdmin
     .from('companies')
-    .select('*, owner:users!owner_id(full_name, email, phone)', { count: 'exact' })
+    .select('*', { count: 'exact' })
     .order('created_at', { ascending: false })
     .range(from, to);
 
@@ -461,10 +464,7 @@ export async function listVendors(params: {
   if (params.isVerified !== undefined) query = query.eq('is_verified', params.isVerified);
   if (params.search) {
     const escaped = params.search.replace(/[%_\\]/g, '\\$&');
-    // Search by company name OR owner's full name / email via the existing users join
-    query = query.or(
-      `name.ilike.%${escaped}%,users.full_name.ilike.%${escaped}%,users.email.ilike.%${escaped}%`,
-    );
+    query = query.ilike('name', `%${escaped}%`);
   }
 
   const { data, error, count } = await query;
@@ -472,8 +472,20 @@ export async function listVendors(params: {
 
   const rows = (data as unknown[] | null) ?? [];
   const total = count ?? 0;
+
+  // Fetch owner profiles separately via public.users
+  const ownerIds = rows
+    .map((r) => readString(toRecord(r), 'owner_id'))
+    .filter((id) => id !== '');
+  const ownerMap = await fetchUserMap(ownerIds);
+
   return {
-    items: rows.map((r) => mapVendor(toRecord(r))),
+    items: rows.map((r) => {
+      const record = toRecord(r);
+      const ownerId = readString(record, 'owner_id');
+      const ownerProfile = ownerMap.get(ownerId);
+      return mapVendor({ ...record, owner: ownerProfile ?? undefined });
+    }),
     total,
     page: params.page,
     limit: params.limit,
@@ -484,13 +496,17 @@ export async function listVendors(params: {
 export async function getVendorById(vendorId: string): Promise<AdminVendor> {
   const { data, error } = await supabaseAdmin
     .from('companies')
-    .select('*, owner:users!owner_id(full_name, email, phone)')
+    .select('*')
     .eq('id', vendorId)
     .maybeSingle();
 
   if (error !== null) throwDb('getVendorById', error);
   if (data === null) throw new AppError('Vendor not found', 404);
-  return mapVendor(toRecord(data));
+
+  const record = toRecord(data);
+  const ownerId = readString(record, 'owner_id');
+  const ownerMap = await fetchUserMap(ownerId ? [ownerId] : []);
+  return mapVendor({ ...record, owner: ownerMap.get(ownerId) ?? undefined });
 }
 
 export async function approveVendor(vendorId: string): Promise<AdminVendor> {
@@ -498,12 +514,12 @@ export async function approveVendor(vendorId: string): Promise<AdminVendor> {
     .from('companies')
     .update({ status: 'approved', updated_at: new Date().toISOString() })
     .eq('id', vendorId)
-    .select('*, owner:users!owner_id(full_name, email, phone)')
+    .select('*')
     .maybeSingle();
 
   if (error !== null) throwDb('approveVendor', error);
   if (data === null) throw new AppError('Vendor not found', 404);
-  return mapVendor(toRecord(data));
+  return getVendorById(vendorId);
 }
 
 export async function rejectVendor(vendorId: string, reason: string): Promise<AdminVendor> {
@@ -515,12 +531,12 @@ export async function rejectVendor(vendorId: string, reason: string): Promise<Ad
       updated_at: new Date().toISOString(),
     } as Record<string, unknown>)
     .eq('id', vendorId)
-    .select('*, owner:users!owner_id(full_name, email, phone)')
+    .select('*')
     .maybeSingle();
 
   if (error !== null) throwDb('rejectVendor', error);
   if (data === null) throw new AppError('Vendor not found', 404);
-  return mapVendor(toRecord(data));
+  return getVendorById(vendorId);
 }
 
 export async function verifyVendor(vendorId: string): Promise<AdminVendor> {
@@ -528,12 +544,12 @@ export async function verifyVendor(vendorId: string): Promise<AdminVendor> {
     .from('companies')
     .update({ is_verified: true, updated_at: new Date().toISOString() })
     .eq('id', vendorId)
-    .select('*, owner:users!owner_id(full_name, email, phone)')
+    .select('*')
     .maybeSingle();
 
   if (error !== null) throwDb('verifyVendor', error);
   if (data === null) throw new AppError('Vendor not found', 404);
-  return mapVendor(toRecord(data));
+  return getVendorById(vendorId);
 }
 
 // ── Package moderation ────────────────────────────────────────────────────────
@@ -957,6 +973,29 @@ export async function updateBookingStatus(
 
 // ── Review moderation ─────────────────────────────────────────────────────────
 
+async function fetchReviewWithUser(reviewId: string): Promise<Review> {
+  const { data, error } = await supabaseAdmin
+    .from('reviews')
+    .select('*')
+    .eq('id', reviewId)
+    .maybeSingle();
+
+  if (error !== null) throwDb('fetchReviewWithUser', error);
+  if (data === null) throw new AppError('Review not found', 404);
+
+  const record = toRecord(data);
+  const userId = readString(record, 'user_id');
+  const userMap = await fetchUserMap(userId ? [userId] : []);
+  const userProfile = userMap.get(userId);
+
+  return mapReview({
+    ...record,
+    user: userProfile
+      ? { full_name: userProfile.full_name, avatar_url: null }
+      : undefined,
+  });
+}
+
 export async function listReviews(params: {
   page: number;
   limit: number;
@@ -969,9 +1008,10 @@ export async function listReviews(params: {
   const from = (params.page - 1) * params.limit;
   const to = from + params.limit - 1;
 
+  // No cross-schema join — select reviews only, then fetch users separately.
   let query = supabaseAdmin
     .from('reviews')
-    .select('*, user:users!user_id(full_name, avatar_url)', { count: 'exact' })
+    .select('*', { count: 'exact' })
     .order('created_at', { ascending: false })
     .range(from, to);
 
@@ -981,10 +1021,7 @@ export async function listReviews(params: {
   if (params.minRating !== undefined) query = query.gte('overall_rating', params.minRating);
   if (params.search) {
     const escaped = params.search.replace(/[%_\\]/g, '\\$&');
-    // Filter on review content (body/title) and the reviewer's name via the joined users table
-    query = query.or(
-      `body.ilike.%${escaped}%,title.ilike.%${escaped}%,users.full_name.ilike.%${escaped}%`,
-    );
+    query = query.or(`body.ilike.%${escaped}%,title.ilike.%${escaped}%`);
   }
 
   const { data, error, count } = await query;
@@ -992,8 +1029,22 @@ export async function listReviews(params: {
 
   const rows = (data as unknown[] | null) ?? [];
   const total = count ?? 0;
+
+  const userIds = rows
+    .map((r) => readString(toRecord(r), 'user_id'))
+    .filter((id) => id !== '');
+  const userMap = await fetchUserMap(userIds);
+
   return {
-    items: rows.map((r) => mapReview(toRecord(r))),
+    items: rows.map((r) => {
+      const record = toRecord(r);
+      const userId = readString(record, 'user_id');
+      const userProfile = userMap.get(userId);
+      return mapReview({
+        ...record,
+        user: userProfile ? { full_name: userProfile.full_name, avatar_url: null } : undefined,
+      });
+    }),
     total,
     page: params.page,
     limit: params.limit,
@@ -1002,42 +1053,33 @@ export async function listReviews(params: {
 }
 
 export async function publishReview(reviewId: string): Promise<Review> {
-  const { data, error } = await supabaseAdmin
+  const { error } = await supabaseAdmin
     .from('reviews')
     .update({ is_published: true })
-    .eq('id', reviewId)
-    .select('*, user:users!user_id(full_name, avatar_url)')
-    .maybeSingle();
+    .eq('id', reviewId);
 
   if (error !== null) throwDb('publishReview', error);
-  if (data === null) throw new AppError('Review not found', 404);
-  return mapReview(toRecord(data));
+  return fetchReviewWithUser(reviewId);
 }
 
 export async function unpublishReview(reviewId: string): Promise<Review> {
-  const { data, error } = await supabaseAdmin
+  const { error } = await supabaseAdmin
     .from('reviews')
     .update({ is_published: false })
-    .eq('id', reviewId)
-    .select('*, user:users!user_id(full_name, avatar_url)')
-    .maybeSingle();
+    .eq('id', reviewId);
 
   if (error !== null) throwDb('unpublishReview', error);
-  if (data === null) throw new AppError('Review not found', 404);
-  return mapReview(toRecord(data));
+  return fetchReviewWithUser(reviewId);
 }
 
 export async function verifyReview(reviewId: string): Promise<Review> {
-  const { data, error } = await supabaseAdmin
+  const { error } = await supabaseAdmin
     .from('reviews')
     .update({ is_verified: true })
-    .eq('id', reviewId)
-    .select('*, user:users!user_id(full_name, avatar_url)')
-    .maybeSingle();
+    .eq('id', reviewId);
 
   if (error !== null) throwDb('verifyReview', error);
-  if (data === null) throw new AppError('Review not found', 404);
-  return mapReview(toRecord(data));
+  return fetchReviewWithUser(reviewId);
 }
 
 // ── Category CRUD ─────────────────────────────────────────────────────────────
