@@ -17,6 +17,7 @@ import { Header } from '../../components/ui/Header';
 import { ListLoader } from '../../components/ui/LoadingSpinner';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { useVendorAnalytics } from '../../hooks/useVendorAnalytics';
+import { useScreenBack } from '../../hooks/useScreenBack';
 import { Colors } from '../../constants/colors';
 import { Shadows } from '../../constants/shadows';
 
@@ -46,6 +47,7 @@ function KpiTile({ label, value, sub, accent = Colors.primary }: KpiTileProps): 
 
 export default function AnalyticsScreen(): React.ReactElement {
   const { data, isLoading, refetch, isFetching } = useVendorAnalytics();
+  const onBack = useScreenBack();
 
   const chartData = (data?.monthly_revenue ?? []).map((m) => ({
     value: m.revenue,
@@ -60,7 +62,7 @@ export default function AnalyticsScreen(): React.ReactElement {
 
   return (
     <View style={styles.flex}>
-      <Header title="Analytics" showBack />
+      <Header title="Analytics" showBack onBack={onBack} />
 
       {isLoading ? (
         <ListLoader />

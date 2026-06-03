@@ -15,6 +15,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 
 import { useVendorReviews } from '../../hooks/useVendorReviews';
+import { useScreenBack } from '../../hooks/useScreenBack';
 import { Header } from '../../components/ui/Header';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { ListLoader } from '../../components/ui/LoadingSpinner';
@@ -227,6 +228,7 @@ const cardStyles = StyleSheet.create({
 
 export default function ReviewsScreen(): React.ReactElement {
   const { data, isLoading, isFetching, refetch, isError } = useVendorReviews(1);
+  const onBack = useScreenBack();
 
   const renderItem = useCallback(
     ({ item }: { item: VendorReview }) => <ReviewCard review={item} />,
@@ -240,7 +242,7 @@ export default function ReviewsScreen(): React.ReactElement {
 
   return (
     <View style={styles.flex}>
-      <Header title="Reviews" showBack />
+      <Header title="Reviews" showBack onBack={onBack} />
       {isLoading ? (
         <ListLoader />
       ) : isError ? (

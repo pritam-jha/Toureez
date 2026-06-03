@@ -22,6 +22,7 @@ import {
   useMarkNotificationRead,
   useMarkAllNotificationsRead,
 } from '../../hooks/useVendorNotifications';
+import { useScreenBack } from '../../hooks/useScreenBack';
 import { Header } from '../../components/ui/Header';
 import { Button } from '../../components/ui/Button';
 import { EmptyState } from '../../components/ui/EmptyState';
@@ -159,6 +160,7 @@ export default function NotificationsScreen(): React.ReactElement {
   const { data, isLoading, isFetching, refetch } = useVendorNotifications(1);
   const markRead = useMarkNotificationRead();
   const markAllRead = useMarkAllNotificationsRead();
+  const onBack = useScreenBack();
 
   const notifications = data?.items ?? [];
   const unreadCount = notifications.filter((n) => !n.is_read).length;
@@ -176,6 +178,7 @@ export default function NotificationsScreen(): React.ReactElement {
       <Header
         title="Notifications"
         showBack
+        onBack={onBack}
         rightAction={
           unreadCount > 0 ? (
             <Button

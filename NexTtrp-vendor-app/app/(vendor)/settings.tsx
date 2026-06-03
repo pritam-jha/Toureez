@@ -25,6 +25,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { updateProfile, signOut } from '../../lib/api/auth';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/authStore';
+import { useScreenBack } from '../../hooks/useScreenBack';
 import { Header } from '../../components/ui/Header';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
@@ -43,6 +44,7 @@ export default function SettingsScreen(): React.ReactElement {
   const [city, setCity] = useState('');
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileDirty, setProfileDirty] = useState(false);
+  const onBack = useScreenBack();
 
   // ── Password form ─────────────────────────────────────────────────────────
   const [newPassword, setNewPassword] = useState('');
@@ -143,6 +145,7 @@ export default function SettingsScreen(): React.ReactElement {
       <Header
         title="Settings"
         showBack
+        onBack={onBack}
         rightAction={
           profileDirty ? (
             <Pressable

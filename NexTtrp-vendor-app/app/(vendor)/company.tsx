@@ -24,6 +24,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 import { useVendorCompany, useUpdateCompany } from '../../hooks/useVendorCompany';
+import { useScreenBack } from '../../hooks/useScreenBack';
 import { pickAndUploadImage } from '../../lib/cloudinary';
 import { Header } from '../../components/ui/Header';
 import { Button } from '../../components/ui/Button';
@@ -36,6 +37,7 @@ export default function CompanyScreen(): React.ReactElement {
   const { data: company, isLoading } = useVendorCompany();
   const updateCompany = useUpdateCompany();
   const { from } = useLocalSearchParams<{ from?: string }>();
+  const onBack = useScreenBack();
 
   const [name, setName] = useState('');
   const [about, setAbout] = useState('');
@@ -107,7 +109,7 @@ export default function CompanyScreen(): React.ReactElement {
   if (isLoading) {
     return (
       <View style={styles.flex}>
-        <Header title="Company Profile" showBack />
+        <Header title="Company Profile" showBack onBack={onBack} />
         <InlineLoader message="Loading company details…" />
       </View>
     );
@@ -116,7 +118,7 @@ export default function CompanyScreen(): React.ReactElement {
   if (company == null) {
     return (
       <View style={styles.flex}>
-        <Header title="Company Profile" showBack />
+        <Header title="Company Profile" showBack onBack={onBack} />
         <View style={styles.emptyState}>
           <Ionicons name="business-outline" size={48} color={Colors.textLight} />
           <Text style={styles.emptyTitle}>No company found</Text>

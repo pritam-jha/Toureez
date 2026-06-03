@@ -27,6 +27,7 @@ import {
   useVendorPayoutAccounts,
   useCreatePayoutAccount,
 } from '../../hooks/useVendorPayouts';
+import { useScreenBack } from '../../hooks/useScreenBack';
 import { Header } from '../../components/ui/Header';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
@@ -441,6 +442,7 @@ export default function PayoutsScreen(): React.ReactElement {
   const [showModal, setShowModal] = useState(false);
   const { data: payoutsData, isLoading: payoutsLoading, refetch } = useVendorPayouts(1);
   const { data: accounts, isLoading: accountsLoading } = useVendorPayoutAccounts();
+  const onBack = useScreenBack();
 
   const payouts = payoutsData?.items ?? [];
 
@@ -449,6 +451,7 @@ export default function PayoutsScreen(): React.ReactElement {
       <Header
         title="Payouts"
         showBack
+        onBack={onBack}
         rightAction={
           <Pressable
             onPress={() => setShowModal(true)}
