@@ -37,7 +37,7 @@ const PALETTE: Record<string, Palette> = {
   verified: { bg: Colors.successLight, text: Colors.success },
 
   // Warning / pending
-  pending: { bg: Colors.warningLight, text: '#A36500' },
+  pending: { bg: Colors.warningLight, text: Colors.warning },
   draft: { bg: Colors.borderLight, text: Colors.textLight },
   unpublished: { bg: Colors.borderLight, text: Colors.textLight },
   hidden: { bg: Colors.borderLight, text: Colors.textLight },
@@ -55,12 +55,12 @@ const PALETTE: Record<string, Palette> = {
   refunded: { bg: Colors.secondaryLight, text: Colors.secondary },
 
   // Roles
-  company_owner: { bg: Colors.accentLight, text: '#946700' },
-  vendor: { bg: Colors.accentLight, text: '#946700' },
+  company_owner: { bg: Colors.accentLight, text: Colors.accent },
+  vendor: { bg: Colors.accentLight, text: Colors.accent },
   traveler: { bg: Colors.primaryLight, text: Colors.primary },
-  featured: { bg: Colors.accentLight, text: '#946700' },
-  bestseller: { bg: Colors.accentLight, text: '#946700' },
-  popular: { bg: Colors.accentLight, text: '#946700' },
+  featured: { bg: Colors.accentLight, text: Colors.accent },
+  bestseller: { bg: Colors.accentLight, text: Colors.accent },
+  popular: { bg: Colors.accentLight, text: Colors.accent },
 };
 
 function paletteFor(status: string): Palette {

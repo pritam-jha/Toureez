@@ -210,7 +210,7 @@ export default function AdminAccountScreen(): React.ReactElement {
           />
         </MenuSection>
 
-        <Text style={styles.version}>XYZ Admin Portal</Text>
+        <Text style={styles.version}>NEXTTRP Admin Portal</Text>
       </ScrollView>
     </SafeAreaView>
   );

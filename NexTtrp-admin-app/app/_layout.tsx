@@ -100,7 +100,7 @@ export default function RootLayout(): React.ReactElement {
           Without it, a single bad render leaves the whole app as a blank screen. */}
       <ErrorBoundary>
         <AuthBootstrap />
-        <StatusBar style="dark" />
+        <StatusBar style="light" backgroundColor="#0B1426" />
         <Stack screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
           <Stack.Screen name="index" />
           <Stack.Screen name="(auth)" />

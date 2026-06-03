@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   kav: { flex: 1 },
   header: {
     backgroundColor: Colors.surface,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: 1,
     borderBottomColor: Colors.border,
     zIndex: ZIndex.sticky,
   },

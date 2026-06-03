@@ -64,9 +64,9 @@ export default function LoginScreen(): React.ReactElement {
             {/* Brand */}
             <View style={styles.brand}>
               <View style={styles.logoBox}>
-                <Text style={styles.logoGlyph}>X</Text>
+                <Text style={styles.logoGlyph}>✈</Text>
               </View>
-              <Text style={styles.appName}>XYZ Admin</Text>
+              <Text style={styles.appName}>NEXTTRP Admin</Text>
               <Text style={styles.appSubtitle}>
                 Platform Management Console
               </Text>
@@ -122,7 +122,7 @@ export default function LoginScreen(): React.ReactElement {
             </View>
 
             <Text style={styles.footer}>
-              This portal is restricted to XYZ platform administrators.
+              This portal is restricted to NEXTTRP platform administrators.
               {'\n'}Unauthorized access attempts are logged.
             </Text>
           </View>
@@ -133,7 +133,7 @@ export default function LoginScreen(): React.ReactElement {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#F7F8FA' },
+  safe: { flex: 1, backgroundColor: '#0B1426' },
   flex: { flex: 1 },
   scroll: {
     flexGrow: 1,
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.xxl,
     gap: Spacing.lg,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: Colors.border,
     ...(Shadows.md as object),
   },
   cardTitle: {
