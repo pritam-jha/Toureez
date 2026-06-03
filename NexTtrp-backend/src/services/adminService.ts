@@ -758,11 +758,11 @@ export async function setBestsellerPackage(packageId: string, isBestseller: bool
 // ── Booking helpers ───────────────────────────────────────────────────────────
 
 /**
- * Batch-fetches { full_name, email } from public.users by id.
+ * Batch-fetches { full_name, phone } from public.users by id.
  *
- * Used by booking queries because bookings.user_id references auth.users (not
- * public.users), so PostgREST cannot resolve the join automatically (PGRST200).
- * We fetch user profile data in a separate query instead.
+ * Note: email lives in auth.users (private schema), not public.users, so it is
+ * intentionally omitted here. Use supabaseAdmin.auth.admin.getUserById() when
+ * a specific user's email is needed (e.g. vendor detail screen).
  */
 async function fetchUserMap(
   userIds: string[],
@@ -770,10 +770,15 @@ async function fetchUserMap(
   const map = new Map<string, { full_name: string | null; email: string }>();
   if (userIds.length === 0) return map;
 
-  const { data } = await supabaseAdmin
+  const { data, error } = await supabaseAdmin
     .from('users')
-    .select('id, full_name, email')
+    .select('id, full_name, phone')
     .in('id', userIds);
+
+  if (error !== null) {
+    logger.warn({ err: error }, 'fetchUserMap: failed to load user profiles');
+    return map;
+  }
 
   (data as unknown[] | null)?.forEach((u) => {
     const ur = toRecord(u);
@@ -781,7 +786,7 @@ async function fetchUserMap(
     if (id) {
       map.set(id, {
         full_name: readNullableString(ur, 'full_name'),
-        email: readString(ur, 'email'),
+        email: '',  // fetched separately via auth.admin.getUserById when needed
       });
     }
   });

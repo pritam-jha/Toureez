@@ -117,6 +117,7 @@ export default function PaymentScreen(): React.ReactElement {
       : '';
   const form = useBookingStore((s) => s.form);
   const user = useAuthStore((s) => s.user);
+  const userEmail = useAuthStore((s) => s.session?.user?.email ?? '');
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('upi');
   const [upiId, setUpiId] = useState('');
   const [isPaying, setIsPaying] = useState(false);
@@ -170,7 +171,7 @@ export default function PaymentScreen(): React.ReactElement {
         order_id,
         name:         'NEXTTRP',
         prefill: {
-          email:    user?.email ?? '',
+          email:    userEmail,
           contact:  user?.phone ?? '',
           name:     user?.full_name ?? '',
         },
