@@ -155,7 +155,7 @@ const mapDocument = (row: Record<string, unknown>): CompanyDocument => ({
   id: readString(row, 'id'),
   company_id: readString(row, 'company_id'),
   document_type: readString(row, 'document_type'),
-  url: readString(row, 'url'),
+  url: readString(row, 'file_url'),
   public_id: readString(row, 'public_id'),
   label: readNullableString(row, 'label'),
   uploaded_at: readString(row, 'uploaded_at') || readString(row, 'created_at'),
@@ -510,11 +510,11 @@ export async function saveCompanyDocument(
 
   const payload = {
     company_id: companyId,
+    uploaded_by: ownerId,
     document_type: input.document_type,
-    url: input.url,
+    file_url: input.url,
     public_id: input.public_id,
     label: input.label ?? null,
-    uploaded_at: new Date().toISOString(),
   };
 
   const { data, error } = await supabaseAdmin
@@ -560,7 +560,7 @@ export async function getVendorReviews(
   const { data, error, count } = await supabaseAdmin
     .from('reviews')
     .select(
-      'id, booking_id, user_id, package_id, overall_rating, rating_guide, rating_hotel, rating_food, rating_transport, rating_value, title, body, is_verified, is_published, created_at, package:packages(title)',
+      'id, booking_id, user_id, package_id, overall_rating, rating_guide, rating_hotel, rating_food, rating_transport, rating_value, title, body, is_verified, is_published, created_at, package:packages(title), user:users(full_name, avatar_url)',
       { count: 'exact' },
     )
     .in('package_id', packageIds)

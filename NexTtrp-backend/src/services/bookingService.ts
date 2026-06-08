@@ -428,6 +428,8 @@ export async function createBooking(
       total_amount: calc.total_amount,
       advance_amount: calc.advance_amount,
       balance_amount: calc.balance_amount,
+      payment_type: input.payment_type,
+      primary_contact: input.primary_contact ?? null,
       status: 'pending',
       payment_status: 'pending',
       special_requests: input.special_requests ?? null,

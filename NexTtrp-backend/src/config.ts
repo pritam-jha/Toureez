@@ -28,3 +28,5 @@ export const config = {
   API_BASE_URL: normalizeBaseUrl(process.env.API_BASE_URL?.trim() || `http://localhost:${port}`),
   APP_NAME: process.env.APP_NAME?.trim() || 'API',
 } as const;
+
+export const IS_PRODUCTION = config.NODE_ENV === 'production';

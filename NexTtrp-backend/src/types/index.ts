@@ -359,7 +359,7 @@ export interface CreateBookingInput {
     phone: string;
     city: string;
     state: string;
-  };
+  } | null;
 }
 
 /**

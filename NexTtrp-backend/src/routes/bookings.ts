@@ -12,6 +12,7 @@
 
 import { Router } from 'express';
 import { z } from 'zod';
+import { IS_PRODUCTION } from '../config';
 import { requireAuth } from '../middleware/auth';
 import { defaultLimiter, strictLimiter } from '../middleware/rateLimiter';
 import {
@@ -25,7 +26,6 @@ import { createRazorpayOrder, verifyRazorpayPayment } from '../services/razorpay
 import { success, validationError, error as errorResponse } from '../utils/response';
 import { UuidParamSchema } from '../utils/validation';
 
-const isProduction = process.env.NODE_ENV === 'production';
 // Set ENABLE_MOCK_PAYMENT=true in your deployment env to keep mock payment
 // active for soft-launch testing even when NODE_ENV=production.
 const mockPaymentEnabled = process.env.ENABLE_MOCK_PAYMENT === 'true';
@@ -176,7 +176,7 @@ bookingsRouter.post('/create', async (req, res, next) => {
  * NOTE: Replace this endpoint with Razorpay signature verification before launch.
  */
 bookingsRouter.post('/confirm-mock', async (req, res, next) => {
-  if (isProduction && !mockPaymentEnabled) {
+  if (IS_PRODUCTION && !mockPaymentEnabled) {
     return errorResponse(res, 'Mock payment is not available in production', 410);
   }
 
