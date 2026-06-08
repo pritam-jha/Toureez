@@ -123,22 +123,22 @@ function AppLayout(): React.ReactElement {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'TOKEN_REFRESHED' && session) {
-        // Silently rotate the stored access token. Only update if the
-        // user profile is already loaded — otherwise the login flow's
-        // useSignIn.onSuccess handler owns the initial session setup.
+        // Silently rotate the stored access token.
         const currentUser = useAuthStore.getState().user;
         if (currentUser !== null) {
           setSession(currentUser, session);
         }
+      } else if (event === 'PASSWORD_RECOVERY') {
+        // User opened the password-reset deep link — navigate to reset screen.
+        // The session is temporarily set by Supabase so updateUser() will work.
+        // Do NOT call setSession here — we don't want the user "logged in" yet.
+        router.replace('/reset-password');
       } else if (event === 'SIGNED_OUT') {
         setSession(null, null);
         setWishlist([]);
         queryClient.clear();
       }
-      // SIGNED_IN is handled by useSignIn.onSuccess / useSignUp.onSuccess
-      // in hooks/useAuth.ts. Duplicating it here caused a race: two concurrent
-      // setSession calls with different token snapshots sent the user to home
-      // then immediately back to login when the staler token got a 401.
+      // SIGNED_IN handled by useSignIn.onSuccess / useSignUp.onSuccess.
     });
 
     return () => {

@@ -1,7 +1,7 @@
 /**
  * @file lib/sentry.ts
- * Sentry error monitoring — safe to import whether or not the native
- * plugin is linked. Set EXPO_PUBLIC_SENTRY_DSN in eas.json to activate.
+ * Safe Sentry bootstrap. It is a no-op unless a DSN is configured and the
+ * optional native package is installed.
  */
 
 export function initialiseSentry(): void {
@@ -9,10 +9,12 @@ export function initialiseSentry(): void {
   if (!dsn) return;
 
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const Sentry = require('@sentry/react-native') as typeof import('@sentry/react-native');
-    Sentry.init({ dsn, tracesSampleRate: 0.2, enableAutoSessionTracking: true });
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+    const Sentry = require('@sentry/react-native') as {
+      init?: (options: Record<string, unknown>) => void;
+    };
+    Sentry.init?.({ dsn, tracesSampleRate: 0.2, enableAutoSessionTracking: true });
   } catch {
-    // native module not linked — continue without Sentry
+    // Continue without Sentry when the optional package/native module is absent.
   }
 }

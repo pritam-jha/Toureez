@@ -5,6 +5,7 @@
  */
 
 import { supabase } from '../supabase';
+import * as Linking from 'expo-linking';
 import type { ApiResponse, User } from '../../types';
 
 // FIXED: 7 - Role changes must go through PATCH /api/v1/admin/users/:id/role, never frontend profile writes.
@@ -519,7 +520,7 @@ export async function resetPassword(
     }
 
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: 'nexttrp://reset-password',
+      redirectTo: Linking.createURL('/reset-password'),
     });
 
     if (error) {

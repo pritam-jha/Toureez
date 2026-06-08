@@ -21,6 +21,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -348,28 +349,28 @@ export default function TravelerDetailsScreen(): React.ReactElement {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Primary Contact</Text>
             <Field label="Full Name" required error={contactErrors.full_name}>
-              <TextInput style={[styles.input, contactErrors.full_name ? styles.inputError : null]} value={contact.full_name} onChangeText={(v) => handleContactChange('full_name', v)} placeholder="Your full name" placeholderTextColor={Colors.textTertiary} autoCapitalize="words" autoCorrect={false} returnKeyType="next" accessibilityLabel="Full name" />
+              <TextInput style={[styles.input, contactErrors.full_name ? styles.inputError : null]} value={contact.full_name} onChangeText={(v: string) => handleContactChange('full_name', v)} placeholder="Your full name" placeholderTextColor={Colors.textTertiary} autoCapitalize="words" autoCorrect={false} returnKeyType="next" accessibilityLabel="Full name" />
             </Field>
             <Field label="Email" required error={contactErrors.email}>
-              <TextInput style={[styles.input, contactErrors.email ? styles.inputError : null]} value={contact.email} onChangeText={(v) => handleContactChange('email', v)} placeholder="your@email.com" placeholderTextColor={Colors.textTertiary} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} returnKeyType="next" accessibilityLabel="Email address" />
+              <TextInput style={[styles.input, contactErrors.email ? styles.inputError : null]} value={contact.email} onChangeText={(v: string) => handleContactChange('email', v)} placeholder="your@email.com" placeholderTextColor={Colors.textTertiary} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} returnKeyType="next" accessibilityLabel="Email address" />
             </Field>
             <Field label="Phone" required error={contactErrors.phone}>
-              <TextInput style={[styles.input, contactErrors.phone ? styles.inputError : null]} value={contact.phone} onChangeText={(v) => handleContactChange('phone', v.replace(/\D/g, ''))} placeholder="10-digit mobile number" placeholderTextColor={Colors.textTertiary} keyboardType="phone-pad" maxLength={10} returnKeyType="next" accessibilityLabel="Phone number" />
+              <TextInput style={[styles.input, contactErrors.phone ? styles.inputError : null]} value={contact.phone} onChangeText={(v: string) => handleContactChange('phone', v.replace(/\D/g, ''))} placeholder="10-digit mobile number" placeholderTextColor={Colors.textTertiary} keyboardType="phone-pad" maxLength={10} returnKeyType="next" accessibilityLabel="Phone number" />
             </Field>
             <View style={styles.row}>
               <View style={styles.halfField}>
                 <Field label="City" required error={contactErrors.city}>
-                  <TextInput style={[styles.input, contactErrors.city ? styles.inputError : null]} value={contact.city} onChangeText={(v) => handleContactChange('city', v)} placeholder="Your city" placeholderTextColor={Colors.textTertiary} autoCapitalize="words" returnKeyType="next" accessibilityLabel="City" />
+                  <TextInput style={[styles.input, contactErrors.city ? styles.inputError : null]} value={contact.city} onChangeText={(v: string) => handleContactChange('city', v)} placeholder="Your city" placeholderTextColor={Colors.textTertiary} autoCapitalize="words" returnKeyType="next" accessibilityLabel="City" />
                 </Field>
               </View>
               <View style={styles.halfField}>
                 <Field label="State" required error={contactErrors.state}>
-                  <TextInput style={[styles.input, contactErrors.state ? styles.inputError : null]} value={contact.state} onChangeText={(v) => handleContactChange('state', v)} placeholder="Your state" placeholderTextColor={Colors.textTertiary} autoCapitalize="words" returnKeyType="next" accessibilityLabel="State" />
+                  <TextInput style={[styles.input, contactErrors.state ? styles.inputError : null]} value={contact.state} onChangeText={(v: string) => handleContactChange('state', v)} placeholder="Your state" placeholderTextColor={Colors.textTertiary} autoCapitalize="words" returnKeyType="next" accessibilityLabel="State" />
                 </Field>
               </View>
             </View>
             <Field label="Special Requests (optional)">
-              <TextInput style={[styles.input, styles.textArea]} value={contact.special_requests} onChangeText={(v) => handleContactChange('special_requests', v)} placeholder="Any dietary requirements, accessibility needs, etc." placeholderTextColor={Colors.textTertiary} multiline numberOfLines={3} textAlignVertical="top" accessibilityLabel="Special requests" />
+              <TextInput style={[styles.input, styles.textArea]} value={contact.special_requests} onChangeText={(v: string) => handleContactChange('special_requests', v)} placeholder="Any dietary requirements, accessibility needs, etc." placeholderTextColor={Colors.textTertiary} multiline numberOfLines={3} textAlignVertical="top" accessibilityLabel="Special requests" />
             </Field>
           </View>
 

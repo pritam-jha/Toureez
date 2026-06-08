@@ -1,25 +1,10 @@
 /**
  * @file app/reset-password.tsx
- * @description Handles the deep-link redirect from Supabase password-reset emails.
- *
- * Flow:
- *  1. User taps "Reset Password" in email
- *  2. Supabase redirects to  nexttrp://reset-password?code=...
- *     (or  nexttrp://reset-password#access_token=...&type=recovery)
- *  3. Expo Router opens this screen
- *  4. User enters + confirms new password
- *  5. supabase.auth.updateUser({ password }) sets the new password
- *  6. Navigate to login
- *
- * The screen works whether the URL carries a PKCE code (?code=) or
- * legacy implicit tokens (#access_token=).  Supabase's session
- * listener in _layout.tsx automatically exchanges the code/tokens when
- * the app is opened via the deep-link before this screen renders.
+ * @description Handles Supabase password-recovery deep links for vendors.
  */
 
 import React, { useState } from 'react';
 import {
-  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -35,8 +20,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { supabase } from '../lib/supabase';
 import { firstSearchParam, parseRecoveryLink } from '../lib/authRecovery';
-import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { FullScreenLoader } from '../components/ui/LoadingSpinner';
 import { Colors } from '../constants/colors';
 
 export default function ResetPasswordScreen(): React.ReactElement {
@@ -136,6 +122,7 @@ export default function ResetPasswordScreen(): React.ReactElement {
       setError('Password must be at least 6 characters.');
       return;
     }
+
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
       return;
@@ -148,6 +135,7 @@ export default function ResetPasswordScreen(): React.ReactElement {
         setError(updateError.message);
         return;
       }
+
       await supabase.auth.signOut();
       setSuccess(true);
     } finally {
@@ -156,30 +144,22 @@ export default function ResetPasswordScreen(): React.ReactElement {
   };
 
   if (exchanging) {
-    return (
-      <View style={[styles.root, { paddingTop: insets.top + 20 }]}>
-        <View style={styles.successBox}>
-          <ActivityIndicator size="large" color={Colors.primary} />
-          <Text style={{ color: Colors.textSecondary, marginTop: 16, fontSize: 14 }}>Verifying reset link…</Text>
-        </View>
-      </View>
-    );
+    return <FullScreenLoader message="Verifying reset link..." />;
   }
 
   if (success) {
     return (
       <View style={[styles.root, { paddingTop: insets.top + 20, paddingBottom: insets.bottom + 20 }]}>
         <View style={styles.successBox}>
-          <Text style={styles.successIcon}>✅</Text>
-          <Text style={styles.successTitle}>Password updated!</Text>
+          <Ionicons name="checkmark-circle" size={64} color={Colors.success} />
+          <Text style={styles.successTitle}>Password updated</Text>
           <Text style={styles.successSub}>
-            Your password has been changed successfully. You can now log in with your new password.
+            Your password has been changed. Log in with your new password to continue.
           </Text>
           <Button
             label="Go to Login"
             onPress={() => router.replace('/(auth)/login')}
             fullWidth
-            variant="primary"
             size="large"
           />
         </View>
@@ -200,7 +180,6 @@ export default function ResetPasswordScreen(): React.ReactElement {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {/* Back */}
         <TouchableOpacity
           style={styles.backBtn}
           onPress={() => router.replace('/(auth)/login')}
@@ -210,25 +189,24 @@ export default function ResetPasswordScreen(): React.ReactElement {
           <Text style={styles.backText}>Back to login</Text>
         </TouchableOpacity>
 
-        {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Set new password</Text>
-          <Text style={styles.subtitle}>
-            Enter a new password for your account.
-          </Text>
+          <Text style={styles.subtitle}>Enter a new password for your vendor account.</Text>
         </View>
 
-        {/* Form */}
         <Input
           label="New Password"
           required
           value={password}
-          onChangeText={(v) => { setPassword(v); setError(''); }}
+          onChangeText={(value) => {
+            setPassword(value);
+            setError('');
+          }}
           placeholder="At least 6 characters"
           secureTextEntry={!showPassword}
           autoCapitalize="none"
           rightIcon={
-            <TouchableOpacity onPress={() => setShowPassword((v) => !v)} hitSlop={8}>
+            <TouchableOpacity onPress={() => setShowPassword((value) => !value)} hitSlop={8}>
               <Ionicons
                 name={showPassword ? 'eye-off-outline' : 'eye-outline'}
                 size={20}
@@ -242,24 +220,26 @@ export default function ResetPasswordScreen(): React.ReactElement {
           label="Confirm New Password"
           required
           value={confirmPassword}
-          onChangeText={(v) => { setConfirmPassword(v); setError(''); }}
+          onChangeText={(value) => {
+            setConfirmPassword(value);
+            setError('');
+          }}
           placeholder="Repeat your new password"
           secureTextEntry={!showPassword}
           autoCapitalize="none"
         />
 
         {error ? (
-          <View style={styles.errorBox}>
+          <View style={styles.errorBox} accessibilityRole="alert">
             <Text style={styles.errorText}>{error}</Text>
           </View>
         ) : null}
 
         <Button
-          label={loading ? 'Updating…' : 'Update Password'}
+          label={loading ? 'Updating...' : 'Update Password'}
           onPress={() => void handleReset()}
           loading={loading}
           fullWidth
-          variant="primary"
           size="large"
         />
       </ScrollView>
@@ -268,7 +248,7 @@ export default function ResetPasswordScreen(): React.ReactElement {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: Colors.backgroundBase ?? '#FFF8F0' },
+  root: { flex: 1, backgroundColor: Colors.background },
   content: { paddingHorizontal: 24, gap: 16 },
   backBtn: {
     flexDirection: 'row',
@@ -278,10 +258,10 @@ const styles = StyleSheet.create({
   },
   backText: { fontSize: 14, color: Colors.primary, fontWeight: '600' },
   header: { marginBottom: 8 },
-  title: { fontSize: 26, fontWeight: '800', color: Colors.navy ?? '#1A1A2E', marginBottom: 6 },
+  title: { fontSize: 26, fontWeight: '800', color: Colors.navy, marginBottom: 6 },
   subtitle: { fontSize: 14, color: Colors.textSecondary, lineHeight: 20 },
   errorBox: {
-    backgroundColor: Colors.errorLight ?? '#FEE2E2',
+    backgroundColor: Colors.errorLight,
     borderRadius: 10,
     padding: 12,
   },
@@ -293,7 +273,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     gap: 16,
   },
-  successIcon: { fontSize: 56 },
-  successTitle: { fontSize: 24, fontWeight: '800', color: Colors.navy ?? '#1A1A2E', textAlign: 'center' },
-  successSub: { fontSize: 14, color: Colors.textSecondary, textAlign: 'center', lineHeight: 22 },
+  successTitle: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: Colors.navy,
+    textAlign: 'center',
+  },
+  successSub: {
+    fontSize: 14,
+    color: Colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: 22,
+  },
 });

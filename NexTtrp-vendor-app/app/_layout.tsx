@@ -13,7 +13,7 @@
  */
 
 import React, { useEffect } from 'react';
-import { Stack, useSegments, router } from 'expo-router';
+import { Stack, useSegments, router, type Href } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
@@ -109,7 +109,11 @@ function AppLayout(): React.ReactElement {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session !== null) {
+      if (event === 'PASSWORD_RECOVERY') {
+        router.replace('/reset-password' as Href);
+      } else if (event === 'SIGNED_IN' && session !== null) {
+        if (rootSegment === 'reset-password') return;
+
         // Supabase auth callbacks run synchronously; defer so sign-in resolves normally.
         setTimeout(() => {
           void getMyProfile().then((profile) => {
@@ -129,7 +133,7 @@ function AppLayout(): React.ReactElement {
     return () => {
       subscription.unsubscribe();
     };
-  }, [setLoading, setSession, clearUser]);
+  }, [setLoading, setSession, clearUser, rootSegment]);
 
   if (isLoading) {
     return <FullScreenLoader message="Loading NEXTTRP Vendor..." />;
@@ -142,6 +146,7 @@ function AppLayout(): React.ReactElement {
         <Stack.Screen name="index" />
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(vendor)" />
+        <Stack.Screen name="reset-password" />
       </Stack>
     </>
   );

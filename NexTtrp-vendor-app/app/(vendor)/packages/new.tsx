@@ -89,32 +89,6 @@ export default function NewPackageScreen(): React.ReactElement {
     }
   }, [company, companyLoading]);
 
-  // Show approval gate if company isn't approved yet
-  if (!companyLoading && company !== null && company.status !== 'approved') {
-    return (
-      <View style={styles.flex}>
-        <Header title="New Package" showBack onBack={handleBack} />
-        <View style={styles.gateContainer}>
-          <Ionicons name="time-outline" size={56} color={Colors.warning} />
-          <Text style={styles.gateTitle}>Approval Required</Text>
-          <Text style={styles.gateBody}>
-            Your company profile must be approved by the NEXTTRP team before you can create packages.
-            {'\n\n'}
-            {company.status === 'rejected'
-              ? 'Your application was rejected. Please update your company details and resubmit.'
-              : 'Your application is currently under review. You will be notified once approved.'}
-          </Text>
-          <Pressable
-            style={styles.gateBtn}
-            onPress={() => router.push({ pathname: '/(vendor)/company', params: { from: from ?? 'packages' } })}
-          >
-            <Text style={styles.gateBtnText}>View Company Profile</Text>
-          </Pressable>
-        </View>
-      </View>
-    );
-  }
-
   // Load locations and categories once on mount
   useEffect(() => {
     let cancelled = false;
@@ -144,6 +118,32 @@ export default function NewPackageScreen(): React.ReactElement {
     setLocationModalVisible(false);
     setLocationSearch('');
   }, []);
+
+  // Show approval gate if company isn't approved yet
+  if (!companyLoading && company !== null && company.status !== 'approved') {
+    return (
+      <View style={styles.flex}>
+        <Header title="New Package" showBack onBack={handleBack} />
+        <View style={styles.gateContainer}>
+          <Ionicons name="time-outline" size={56} color={Colors.warning} />
+          <Text style={styles.gateTitle}>Approval Required</Text>
+          <Text style={styles.gateBody}>
+            Your company profile must be approved by the NEXTTRP team before you can create packages.
+            {'\n\n'}
+            {company.status === 'rejected'
+              ? 'Your application was rejected. Please update your company details and resubmit.'
+              : 'Your application is currently under review. You will be notified once approved.'}
+          </Text>
+          <Pressable
+            style={styles.gateBtn}
+            onPress={() => router.push({ pathname: '/(vendor)/company', params: { from: from ?? 'packages' } })}
+          >
+            <Text style={styles.gateBtnText}>View Company Profile</Text>
+          </Pressable>
+        </View>
+      </View>
+    );
+  }
 
   const validate = (): boolean => {
     let valid = true;
