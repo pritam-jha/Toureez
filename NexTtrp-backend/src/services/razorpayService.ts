@@ -14,6 +14,7 @@ import { supabaseAdmin } from '../lib/supabase';
 import { AppError } from '../constants/errors';
 import { logger } from '../utils/logger';
 import { toRecord, readString, readNumber } from '../utils/dbHelpers';
+import { sendBookingConfirmationEmail } from '../lib/email';
 
 // ── Client ────────────────────────────────────────────────────────────────────
 
@@ -139,7 +140,14 @@ export async function verifyRazorpayPayment(params: {
   // Confirm booking owns this user
   const { data: booking, error: bookingErr } = await supabaseAdmin
     .from('bookings')
-    .select('id, user_id, total_amount, advance_amount, payment_type, status')
+    .select(
+      `
+      id, user_id, total_amount, advance_amount, payment_type, status,
+      booking_reference, travel_date, num_travelers,
+      package:packages!bookings_package_id_fkey(title, location:locations(city)),
+      company:companies(name)
+    `
+    )
     .eq('id', params.booking_id)
     .maybeSingle();
 
@@ -196,6 +204,36 @@ export async function verifyRazorpayPayment(params: {
     { bookingId: params.booking_id, paymentId: params.razorpay_payment_id },
     'Razorpay payment verified and booking confirmed',
   );
+
+  // Fire-and-forget booking confirmation email — never block the response
+  const packageRecord = toRecord(row['package']);
+  const locationRecord = toRecord(packageRecord['location']);
+  const companyRecord = toRecord(row['company']);
+
+  void supabaseAdmin.auth.admin.getUserById(params.user_id)
+    .then(({ data: userData, error: userError }) => {
+      const userEmail = userData?.user?.email;
+      if (userError || !userEmail) {
+        logger.error({ err: userError, bookingId: params.booking_id }, 'Failed to load user email for confirmation');
+        return;
+      }
+
+      return sendBookingConfirmationEmail({
+        to: userEmail,
+        booking_reference: readString(row, 'booking_reference'),
+        package_name: readString(packageRecord, 'title'),
+        travel_date: readString(row, 'travel_date'),
+        num_travelers: readNumber(row, 'num_travelers'),
+        amount_paid: paidAmount,
+        payment_type: paymentType as 'full' | 'advance',
+        balance_amount: balanceAmount,
+        company_name: readString(companyRecord, 'name'),
+        destination: readString(locationRecord, 'city'),
+      });
+    })
+    .catch((err) =>
+      logger.error({ err, bookingId: params.booking_id }, 'Failed to send booking confirmation email')
+    );
 
   return {
     booking_id: params.booking_id,

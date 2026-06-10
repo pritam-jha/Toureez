@@ -75,7 +75,15 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-app.use(express.json({ limit: '512kb' }));
+// Razorpay webhook needs the raw request body for signature verification,
+// so it must be excluded from JSON body parsing.
+const jsonParser = express.json({ limit: '512kb' });
+app.use((req: Request, res: Response, next: NextFunction) => {
+  if (req.originalUrl === '/api/v1/payments/webhook/razorpay') {
+    return next();
+  }
+  return jsonParser(req, res, next);
+});
 app.use(express.urlencoded({ extended: true, limit: '512kb' }));
 app.use(requestLogger);
 

@@ -23,6 +23,7 @@ import {
   getMyBookings,
 } from '../services/bookingService';
 import { createRazorpayOrder, verifyRazorpayPayment } from '../services/razorpayService';
+import { createBalancePaymentOrder, verifyBalancePayment } from '../services/balancePaymentService';
 import { success, validationError, error as errorResponse } from '../utils/response';
 import { UuidParamSchema } from '../utils/validation';
 
@@ -241,6 +242,49 @@ bookingsRouter.post('/verify-razorpay-payment', strictLimiter, async (req, res, 
     if (!parsed.success) return validationError(res, parsed.error.flatten().fieldErrors);
 
     const result = await verifyRazorpayPayment({ ...parsed.data, user_id: req.user!.id });
+    return success(res, result);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/**
+ * POST /api/v1/bookings/:id/create-balance-order
+ * Creates a Razorpay order for the remaining balance of a confirmed advance booking.
+ *
+ * Returns: { order_id, amount, currency, key_id, booking_id }
+ */
+bookingsRouter.post('/:id/create-balance-order', strictLimiter, async (req, res, next) => {
+  try {
+    const { id } = UuidParamSchema.parse(req.params);
+    const result = await createBalancePaymentOrder(id, req.user!.id);
+    return success(res, result);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/**
+ * POST /api/v1/bookings/:id/verify-balance-payment
+ * Verifies Razorpay HMAC signature and settles the remaining balance.
+ *
+ * Body: { razorpay_order_id, razorpay_payment_id, razorpay_signature }
+ * Returns: { booking_id, payment_id, status }
+ */
+bookingsRouter.post('/:id/verify-balance-payment', strictLimiter, async (req, res, next) => {
+  try {
+    const { id } = UuidParamSchema.parse(req.params);
+
+    const schema = z.object({
+      razorpay_order_id:   z.string().min(1),
+      razorpay_payment_id: z.string().min(1),
+      razorpay_signature:  z.string().min(1),
+    }).strict();
+
+    const parsed = schema.safeParse(req.body);
+    if (!parsed.success) return validationError(res, parsed.error.flatten().fieldErrors);
+
+    const result = await verifyBalancePayment({ booking_id: id, ...parsed.data, user_id: req.user!.id });
     return success(res, result);
   } catch (err) {
     return next(err);
