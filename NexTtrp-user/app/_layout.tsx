@@ -4,8 +4,9 @@
  */
 
 import React, { useEffect } from 'react';
+import { AppState, type AppStateStatus } from 'react-native';
 import { Stack, useSegments } from 'expo-router';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, focusManager } from '@tanstack/react-query';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import * as ScreenCapture from 'expo-screen-capture';
@@ -56,6 +57,15 @@ function AppLayout(): React.ReactElement {
     void ScreenCapture.allowScreenCaptureAsync().catch(() => {
       // Non-fatal — screen capture restriction is best-effort on some platforms.
     });
+  }, []);
+
+  // Re-focusing the app refetches stale queries automatically, so screens
+  // show fresh data without a manual pull-to-refresh or logout/login.
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (status: AppStateStatus) => {
+      focusManager.setFocused(status === 'active');
+    });
+    return () => subscription.remove();
   }, []);
 
   // ── Post-login / post-logout navigation guard ─────────────────────────────

@@ -4,9 +4,10 @@
  * the user to the correct screen based on their role.
  */
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, focusManager } from '@tanstack/react-query';
 import { router, SplashScreen, Stack } from 'expo-router';
 import React, { useEffect } from 'react';
+import { AppState, type AppStateStatus } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { supabase } from '../lib/supabase';
 import { getMyProfile } from '../lib/api/auth';
@@ -19,7 +20,7 @@ SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { retry: 1, refetchOnWindowFocus: false },
+    queries: { retry: 1, refetchOnWindowFocus: true },
   },
 });
 
@@ -35,6 +36,15 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
 
 function AuthBootstrap(): null {
   const { setSession, setLoading, clearUser } = useAuthStore();
+
+  // Re-focusing the app refetches stale queries automatically, so screens
+  // show fresh data without a manual pull-to-refresh or logout/login.
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (status: AppStateStatus) => {
+      focusManager.setFocused(status === 'active');
+    });
+    return () => subscription.remove();
+  }, []);
 
   useEffect(() => {
     // Restore session on cold start — wrapped in try/catch so a slow or
@@ -79,9 +89,12 @@ function AuthBootstrap(): null {
     // Supabase fires intermediate events with null session during the login flow
     // (e.g. before the session is persisted), which was sending users back to
     // login immediately after the login screen called router.replace('/(admin)').
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'SIGNED_OUT') {
-        try { await supabase.auth.signOut(); } catch { /* already signed out */ }
+        // The SIGNED_OUT event means sign-out already happened — calling
+        // supabase.auth.signOut() again here re-enters the GoTrue client's
+        // auth lock while the original signOut() call still holds it,
+        // deadlocking and leaving the screen stuck.
         clearUser();
         router.replace('/(auth)/login');
       }

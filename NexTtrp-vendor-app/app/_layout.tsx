@@ -13,8 +13,9 @@
  */
 
 import React, { useEffect } from 'react';
+import { AppState, type AppStateStatus } from 'react-native';
 import { Stack, useSegments, router, type Href } from 'expo-router';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, focusManager } from '@tanstack/react-query';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 
@@ -55,6 +56,15 @@ function AppLayout(): React.ReactElement {
 
   usePushNotifications();
   const rootSegment = segments[0] as string | undefined;
+
+  // Re-focusing the app refetches stale queries automatically, so screens
+  // show fresh data without a manual pull-to-refresh or logout/login.
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (status: AppStateStatus) => {
+      focusManager.setFocused(status === 'active');
+    });
+    return () => subscription.remove();
+  }, []);
 
   // ── Post-login / post-logout navigation guard ─────────────────────────────
   // index.tsx handles the initial cold-start redirect.
