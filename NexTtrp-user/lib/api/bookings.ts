@@ -10,6 +10,7 @@
  */
 
 import { apiClient } from './client';
+import { Config } from '../../constants/config';
 import type {
   ApiResponse,
   Booking,
@@ -219,4 +220,20 @@ export async function verifyBalancePayment(params: {
     return { data: null, error: response.error ?? 'Balance payment verification failed.' };
   }
   return { data: response.data, error: null };
+}
+
+export interface InvoiceDownloadResult {
+  localUri: string; // expo-file-system local file path
+  filename: string;
+}
+
+/**
+ * Fetches the GST invoice PDF for a confirmed/completed booking as a Blob URL.
+ * Returns the remote URL string to pass to expo-file-system for download.
+ */
+export function getInvoiceUrl(bookingId: string): string {
+  // Returns the raw backend URL — download is handled by expo-file-system
+  // not through apiClient because we need a binary stream, not JSON.
+  const base = Config.apiBaseUrl.replace(/\/$/, '');
+  return `${base}/bookings/${encodeURIComponent(bookingId)}/invoice`;
 }

@@ -4,6 +4,10 @@
  */
 
 import { useCallback, useState } from 'react';
+import * as React from 'react';
+import { Linking } from 'react-native';
+import * as FileSystem from 'expo-file-system/legacy';
+import * as Sharing from 'expo-sharing';
 import {
   useMutation,
   useQuery,
@@ -19,6 +23,7 @@ import {
   getMyBookings,
   getBookingById,
   cancelBooking,
+  getInvoiceUrl,
 } from '../lib/api/bookings';
 import type { CancelBookingResult } from '../lib/api/bookings';
 import { useAuthStore } from '../store/authStore';
@@ -175,4 +180,63 @@ export function useCancelBooking(): UseCancelBookingReturn {
     toast,
     hideToast,
   };
+}
+
+/**
+ * Downloads the GST invoice PDF for a booking and opens the system share sheet.
+ */
+export function useDownloadInvoice(): {
+  downloadInvoice: (bookingId: string, bookingRef: string) => Promise<void>;
+  isDownloading: boolean;
+  error: string | null;
+} {
+  const [isDownloading, setIsDownloading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+
+  const downloadInvoice = useCallback(
+    async (bookingId: string, bookingRef: string): Promise<void> => {
+      setIsDownloading(true);
+      setError(null);
+
+      try {
+        const session = useAuthStore.getState().session;
+        if (!session?.access_token) throw new Error('Not authenticated');
+
+        if (!FileSystem.documentDirectory) throw new Error('Storage unavailable');
+
+        const url = getInvoiceUrl(bookingId);
+        const month = new Date().toISOString().slice(0, 7).replace('-', '');
+        const last6 = bookingRef.slice(-6);
+        const filename = `NextTrip_Invoice_NT-INV-${month}-${last6}.pdf`;
+        const localUri = `${FileSystem.documentDirectory}${filename}`;
+
+        const downloadResult = await FileSystem.downloadAsync(url, localUri, {
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        });
+
+        if (downloadResult.status !== 200) {
+          throw new Error('Failed to download invoice');
+        }
+
+        const canShare = await Sharing.isAvailableAsync();
+        if (canShare) {
+          await Sharing.shareAsync(downloadResult.uri, {
+            mimeType: 'application/pdf',
+            dialogTitle: 'Save or Share Invoice',
+            UTI: 'com.adobe.pdf',
+          });
+        } else {
+          await Linking.openURL(downloadResult.uri);
+        }
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Download failed';
+        setError(message);
+      } finally {
+        setIsDownloading(false);
+      }
+    },
+    []
+  );
+
+  return { downloadInvoice, isDownloading, error };
 }

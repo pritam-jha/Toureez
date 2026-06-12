@@ -25,7 +25,7 @@ import type {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const GST_RATE = 0.05;
+export const GST_RATE = 0.05;
 const GROUP_DISCOUNT_RATE = 0.05;
 const GROUP_DISCOUNT_THRESHOLD = 7;
 const ADVANCE_FRACTION = 0.3;

@@ -28,7 +28,7 @@ import { LoadingSpinner } from '../../../components/ui/LoadingSpinner';
 import { Toast } from '../../../components/ui/Toast';
 import { Colors } from '../../../constants/colors';
 import { useAuthStore } from '../../../store/authStore';
-import { useBookingDetail, useCancelBooking } from '../../../hooks/useBookings';
+import { useBookingDetail, useCancelBooking, useDownloadInvoice } from '../../../hooks/useBookings';
 import { useReviewEligibility } from '../../../hooks/useReviews';
 import { formatINR } from '../../../utils/currency';
 import type { Booking } from '../../../types';
@@ -426,6 +426,7 @@ export default function BookingDetailScreen(): React.ReactElement {
   const authLoading = useAuthStore((state) => state.isLoading);
   const bookingQuery = useBookingDetail(id);
   const cancelBooking = useCancelBooking();
+  const { downloadInvoice, isDownloading, error: invoiceError } = useDownloadInvoice();
   const booking = bookingQuery.data;
 
   const goBack = useCallback(() => {
@@ -495,6 +496,32 @@ export default function BookingDetailScreen(): React.ReactElement {
             <TravelInfoCard booking={booking} />
             <TravelerDetailsCard travelers={booking.traveler_details} />
             <PaymentDetailsCard booking={booking} />
+
+            {(booking.status === 'completed' ||
+              (booking.payment_status === 'paid' && booking.balance_amount <= 0)) && (
+              <Pressable
+                style={[styles.invoiceButton, isDownloading && styles.invoiceButtonDisabled]}
+                onPress={() => void downloadInvoice(booking.id, booking.booking_reference)}
+                disabled={isDownloading}
+              >
+                <Ionicons
+                  name={isDownloading ? 'hourglass-outline' : 'document-text-outline'}
+                  size={18}
+                  color={Colors.primary}
+                />
+                <Text style={styles.invoiceButtonText}>
+                  {isDownloading ? 'Generating Invoice…' : 'Download GST Invoice'}
+                </Text>
+                {!isDownloading && (
+                  <Ionicons name="download-outline" size={16} color={Colors.primary} />
+                )}
+              </Pressable>
+            )}
+
+            {invoiceError !== null && (
+              <Text style={styles.invoiceError}>{invoiceError}</Text>
+            )}
+
             <PayBalanceCard booking={booking} />
             <BookingTimeline booking={booking} />
             <WriteReviewSection booking={booking} />
@@ -710,5 +737,34 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.78,
+  },
+  invoiceButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    borderWidth: 1.5,
+    borderColor: Colors.primary,
+    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginBottom: 14,
+    backgroundColor: Colors.primaryUltraLight,
+  },
+  invoiceButtonDisabled: {
+    opacity: 0.6,
+  },
+  invoiceButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Colors.primary,
+    flex: 1,
+    textAlign: 'center',
+  },
+  invoiceError: {
+    fontSize: 13,
+    color: '#DC2626',
+    textAlign: 'center',
+    marginBottom: 14,
   },
 });

@@ -24,6 +24,9 @@ import {
 } from '../services/bookingService';
 import { createRazorpayOrder, verifyRazorpayPayment } from '../services/razorpayService';
 import { createBalancePaymentOrder, verifyBalancePayment } from '../services/balancePaymentService';
+import { generateBookingInvoice } from '../services/invoiceService';
+import { AppError } from '../constants/errors';
+import { logger } from '../utils/logger';
 import { success, validationError, error as errorResponse } from '../utils/response';
 import { UuidParamSchema } from '../utils/validation';
 
@@ -331,6 +334,29 @@ bookingsRouter.get('/:id', async (req, res, next) => {
     const booking = await getBookingById(req.user!.id, id);
     return success(res, booking);
   } catch (caughtError) {
+    return next(caughtError);
+  }
+});
+
+/**
+ * GET /api/v1/bookings/:id/invoice
+ * Returns a GST-compliant tax invoice PDF for a confirmed/completed booking
+ * owned by the authenticated user.
+ */
+bookingsRouter.get('/:id/invoice', async (req, res, next) => {
+  try {
+    const { id } = UuidParamSchema.parse(req.params);
+    const { buffer, filename } = await generateBookingInvoice(req.user!.id, id);
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('Content-Length', buffer.byteLength);
+    return res.end(buffer);
+  } catch (caughtError) {
+    if (caughtError instanceof AppError) {
+      return res.status(caughtError.statusCode).json({ error: caughtError.message });
+    }
+    logger.error({ err: caughtError }, 'bookings./:id/invoice failed');
     return next(caughtError);
   }
 });
