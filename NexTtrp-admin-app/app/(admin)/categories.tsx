@@ -204,7 +204,7 @@ export default function AdminCategoriesScreen(): React.ReactElement {
         <FlatList
           data={categories ?? []}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
+          renderItem={({ item }: { item: Category }) => (
             <CategoryRow cat={item} onEdit={() => openEdit(item)} onDelete={() => handleDelete(item)} />
           )}
           windowSize={5}

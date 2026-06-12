@@ -3,7 +3,7 @@
  * @description Admin vendor list with status filtering and search.
  */
 
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import {
   FlatList,
@@ -96,8 +96,15 @@ function ItemSeparator(): React.ReactElement {
   return <View style={styles.separator} />;
 }
 
+const VENDOR_STATUS_VALUES: VendorStatus[] = ['pending', 'approved', 'rejected'];
+
 export default function AdminVendorsScreen(): React.ReactElement {
-  const [statusFilter, setStatusFilter] = useState<VendorStatus | 'all'>('all');
+  const { status } = useLocalSearchParams<{ status?: string }>();
+  const initialStatus = VENDOR_STATUS_VALUES.includes(status as VendorStatus)
+    ? (status as VendorStatus)
+    : 'all';
+
+  const [statusFilter, setStatusFilter] = useState<VendorStatus | 'all'>(initialStatus);
   const [search, setSearch] = useState('');
 
   const { data, isLoading, isError, error, refetch } = useAdminVendors({
@@ -147,7 +154,7 @@ export default function AdminVendorsScreen(): React.ReactElement {
         <FlatList
           data={items}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <VendorRow vendor={item} />}
+          renderItem={({ item }: { item: AdminVendor }) => <VendorRow vendor={item} />}
           windowSize={5}
           maxToRenderPerBatch={10}
           removeClippedSubviews

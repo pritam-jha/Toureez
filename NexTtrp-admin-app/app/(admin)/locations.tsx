@@ -320,7 +320,7 @@ export default function AdminLocationsScreen(): React.ReactElement {
         <FlatList
           data={filtered}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
+          renderItem={({ item }: { item: Location }) => (
             <LocationRow
               loc={item}
               onEdit={() => openEdit(item)}

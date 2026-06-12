@@ -150,13 +150,13 @@ function DetailContent({ pkg }: { pkg: PackageDetail }): React.ReactElement {
   const handleShare = useCallback(async () => {
     try {
       await Share.share({
-        message: `Check out ${pkg.title} on NEXTTRP - Travel More, Spend Less`,
+        message: `Check out ${pkg.title} on NEXTTRP - Travel More, Spend Less\nnexttrp://package/${pkg.id}`,
         title: pkg.title,
       });
     } catch {
       // Share cancelled.
     }
-  }, [pkg.title]);
+  }, [pkg.title, pkg.id]);
 
   const handleWishlist = useCallback(() => {
     heart.trigger();

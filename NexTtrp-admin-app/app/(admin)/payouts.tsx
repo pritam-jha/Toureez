@@ -202,7 +202,7 @@ export default function AdminPayoutsScreen(): React.ReactElement {
         <FlatList
           data={data?.items ?? []}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
+          renderItem={({ item }: { item: AdminPayout }) => (
             <PayoutCard
               payout={item}
               loading={updateStatus.isPending}

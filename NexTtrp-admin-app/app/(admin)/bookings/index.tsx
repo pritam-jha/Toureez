@@ -107,7 +107,7 @@ export default function AdminBookingsScreen(): React.ReactElement {
       <FlatList
         data={items}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <BookingRow booking={item} />}
+        renderItem={({ item }: { item: AdminBooking }) => <BookingRow booking={item} />}
         windowSize={5}
         maxToRenderPerBatch={10}
         removeClippedSubviews

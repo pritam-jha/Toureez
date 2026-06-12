@@ -22,6 +22,7 @@ import { Button } from '../../components/ui/Button';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { Caption } from '../../components/ui/Typography';
 import { useAdminAuditLogs } from '../../hooks/admin/useAdminAuditLogs';
+import type { AdminAuditLog } from '../../types/admin';
 
 type EntityFilter = 'all' | 'vendor' | 'package' | 'booking' | 'review' | 'category' | 'location' | 'payout' | 'user';
 
@@ -95,7 +96,7 @@ export default function AdminAuditLogsScreen(): React.ReactElement {
       <FlatList
         data={logs}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <AuditLogItem log={item} />}
+        renderItem={({ item }: { item: AdminAuditLog }) => <AuditLogItem log={item} />}
         windowSize={5}
         maxToRenderPerBatch={10}
         removeClippedSubviews

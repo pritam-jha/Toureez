@@ -122,7 +122,7 @@ export default function AdminNotificationsScreen(): React.ReactElement {
       <FlatList
         data={notifications}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
+        renderItem={({ item }: { item: AdminNotification }) => (
           <NotificationRow notification={item} onPress={handlePress} />
         )}
         refreshControl={

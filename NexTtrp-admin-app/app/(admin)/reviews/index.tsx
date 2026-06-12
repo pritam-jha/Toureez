@@ -125,7 +125,7 @@ export default function AdminReviewsScreen(): React.ReactElement {
         <FlatList
           data={data?.items ?? []}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
+          renderItem={({ item }: { item: Review }) => (
             <ReviewCard
               review={item}
               loading={anyMutating}

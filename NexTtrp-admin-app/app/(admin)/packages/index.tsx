@@ -4,7 +4,7 @@
  */
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import {
   FlatList,
@@ -100,8 +100,15 @@ function ItemSeparator(): React.ReactElement {
   return <View style={styles.separator} />;
 }
 
+const PKG_STATUS_VALUES: PkgStatus[] = ['draft', 'pending', 'active', 'rejected'];
+
 export default function AdminPackagesScreen(): React.ReactElement {
-  const [statusFilter, setStatusFilter] = useState<PkgStatus | 'all'>('all');
+  const { status } = useLocalSearchParams<{ status?: string }>();
+  const initialStatus = PKG_STATUS_VALUES.includes(status as PkgStatus)
+    ? (status as PkgStatus)
+    : 'all';
+
+  const [statusFilter, setStatusFilter] = useState<PkgStatus | 'all'>(initialStatus);
   const [search, setSearch] = useState('');
 
   const { data, isLoading, isError, error, refetch } = useAdminPackages({
@@ -148,7 +155,7 @@ export default function AdminPackagesScreen(): React.ReactElement {
         <FlatList
           data={items}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <PackageRow pkg={item} />}
+          renderItem={({ item }: { item: AdminPackageListItem }) => <PackageRow pkg={item} />}
           windowSize={5}
           maxToRenderPerBatch={10}
           removeClippedSubviews

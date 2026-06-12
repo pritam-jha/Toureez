@@ -119,7 +119,7 @@ export default function AdminUsersScreen(): React.ReactElement {
       <FlatList
         data={items}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <UserRow user={item} />}
+        renderItem={({ item }: { item: AdminUser }) => <UserRow user={item} />}
         windowSize={5}
         maxToRenderPerBatch={10}
         removeClippedSubviews

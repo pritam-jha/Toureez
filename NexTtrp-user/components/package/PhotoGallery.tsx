@@ -98,7 +98,7 @@ function Dots({ count, activeIndex }: DotsProps): React.ReactElement | null {
 export function PhotoGallery({
   images,
   packageTitle,
-  packageId: _packageId,
+  packageId,
 }: PhotoGalleryProps): React.ReactElement {
   const insets = useSafeAreaInsets();
   const [activeIndex, setActiveIndex] = useState(0);
@@ -135,13 +135,13 @@ export function PhotoGallery({
   const handleShare = useCallback(async () => {
     try {
       await Share.share({
-        message: `Check out this travel package: ${packageTitle}`,
+        message: `Check out this travel package: ${packageTitle}\nnexttrp://package/${packageId}`,
         title: packageTitle,
       });
     } catch {
       // Share cancelled — no-op
     }
-  }, [packageTitle]);
+  }, [packageTitle, packageId]);
 
   if (images.length === 0) {
     return (

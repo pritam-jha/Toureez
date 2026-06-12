@@ -236,8 +236,8 @@ export default function AdminDashboardScreen(): React.ReactElement {
   }, [queryClient, refetch]);
 
   const pendingItems = [
-    { icon: 'timer-sand' as const,     label: 'Vendors',  count: metrics?.pending_vendors  ?? 0, color: D.warning, route: '/(admin)/vendors' },
-    { icon: 'package-variant' as const,label: 'Packages', count: metrics?.pending_packages ?? 0, color: D.primary, route: '/(admin)/packages' },
+    { icon: 'timer-sand' as const,     label: 'Vendors',  count: metrics?.pending_vendors  ?? 0, color: D.warning, route: '/(admin)/vendors?status=pending' },
+    { icon: 'package-variant' as const,label: 'Packages', count: metrics?.pending_packages ?? 0, color: D.primary, route: '/(admin)/packages?status=pending' },
     { icon: 'star' as const,           label: 'Reviews',  count: metrics?.pending_reviews  ?? 0, color: D.purple,  route: '/(admin)/reviews' },
     { icon: 'cash' as const,           label: 'Payouts',  count: metrics?.pending_payouts  ?? 0, color: D.success, route: '/(admin)/payouts' },
   ].filter((i) => i.count > 0);
