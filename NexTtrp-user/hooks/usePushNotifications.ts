@@ -16,23 +16,17 @@
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
 import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { registerDeviceToken } from '../lib/api/users';
 import { useAuthStore } from '../store/authStore';
 
-const TOKEN_STORAGE_KEY = '@nexttrp:push_token';
+// expo-notifications registers a push token listener at module load time, which
+// triggers a loud warning in Expo Go (SDK 53+). Using a dynamic import prevents
+// the package from loading at all in Expo Go, silencing the warning entirely.
+const isExpoGo = Constants.executionEnvironment === 'storeClient';
 
-// Configure how notifications are displayed while the app is in the foreground.
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
-});
+const TOKEN_STORAGE_KEY = '@nexttrp:push_token';
 
 export function usePushNotifications(): void {
   const user = useAuthStore((s) => s.user);
@@ -40,16 +34,24 @@ export function usePushNotifications(): void {
   useEffect(() => {
     if (!user) return;
     if (!Device.isDevice) return;
+    if (isExpoGo) return;
 
-    // Delay permission request slightly so it doesn't fire immediately on top
-    // of other system dialogs (e.g. iOS app-tracking transparency).
-    // This also prevents the double-alert that occurs when the permission dialog
-    // is triggered at the same time as the app's first render.
     const timer = setTimeout(() => {
       void (async () => {
+        const Notifications = await import('expo-notifications');
+
+        Notifications.setNotificationHandler({
+          handleNotification: async () => ({
+            shouldShowAlert: true,
+            shouldPlaySound: true,
+            shouldSetBadge: true,
+            shouldShowBanner: true,
+            shouldShowList: true,
+          }),
+        });
+
         const { status: existingStatus } = await Notifications.getPermissionsAsync();
 
-        // Never ask again if the user already denied — respect their choice.
         if (existingStatus === 'denied') return;
 
         let finalStatus = existingStatus;
@@ -58,7 +60,6 @@ export function usePushNotifications(): void {
           finalStatus = status;
         }
 
-          // Android: ensure notification channel exists
         if (Platform.OS === 'android') {
           await Notifications.setNotificationChannelAsync('default', {
             name: 'NEXTTRP',
@@ -78,7 +79,7 @@ export function usePushNotifications(): void {
         await registerDeviceToken(token, platform);
         await AsyncStorage.setItem(TOKEN_STORAGE_KEY, token);
       })();
-    }, 2000); // 2-second delay prevents dialog clash on first open
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, [user]);

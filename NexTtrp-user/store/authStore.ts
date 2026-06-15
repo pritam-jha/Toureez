@@ -29,7 +29,6 @@ export const selectUserRole = (state: AuthState): UserRole | undefined =>
 // Admins   → use NexTtrp-admin-app
 // If either lands here, redirect to login so they can sign out.
 export const getHomeRouteForRole = (role: UserRole | null | undefined): Href => {
-  if (role === 'admin') return '/(auth)/login' as Href;
   if (role === VENDOR_ROLE) return '/(auth)/login' as Href; // no (vendor) group in this app
   return '/(tabs)';
 };

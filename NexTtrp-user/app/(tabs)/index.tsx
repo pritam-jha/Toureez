@@ -3,7 +3,7 @@
  * @description NEXTTRP home screen.
  */
 
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Animated,
   Dimensions,
@@ -21,6 +21,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import type { GestureResponderEvent, ListRenderItem } from 'react-native';
 
+import { Avatar } from '../../components/ui/Avatar';
 import { Chip } from '../../components/ui/Chip';
 import { PackageCard } from '../../components/home/PackageCard';
 import { SkeletonLoader } from '../../components/ui/SkeletonLoader';
@@ -240,9 +241,11 @@ function PackageSkeleton(): React.ReactElement {
 
 function getGreeting(): string {
   const h = new Date().getHours();
+  if (h < 5) return 'Good night';
   if (h < 12) return 'Good morning';
   if (h < 17) return 'Good afternoon';
-  return 'Good evening';
+  if (h < 21) return 'Good evening';
+  return 'Good night';
 }
 
 export default function HomeScreen(): React.ReactElement {
@@ -254,6 +257,12 @@ export default function HomeScreen(): React.ReactElement {
   const { refetch: refetchCategories } = useCategories();
   const { data: packages, isLoading: packagesLoading, refetch: refetchFeaturedPackages } = useFeaturedPackages();
   const [refreshing, setRefreshing] = useState(false);
+  const [greeting, setGreeting] = useState(getGreeting);
+
+  useEffect(() => {
+    const id = setInterval(() => setGreeting(getGreeting()), 60_000);
+    return () => clearInterval(id);
+  }, []);
   const wishlistedDestinationIds = useWishlistStore(
     (state) => state.wishlistedDestinationIds
   );
@@ -333,13 +342,23 @@ export default function HomeScreen(): React.ReactElement {
   return (
     <View style={styles.root}>
       <View style={[styles.hero, heroInsetStyle]}>
-        <View style={styles.greetingRow}>
-          <Text style={styles.greeting}>{getGreeting()}</Text>
-          <Ionicons name="airplane" size={13} color={Colors.primary} />
-        </View>
+        <View style={styles.heroRow}>
+          <View style={styles.heroLeft}>
+            <View style={styles.greetingRow}>
+              <Text style={styles.greeting}>{greeting}</Text>
+              <Ionicons name="airplane" size={13} color={Colors.primary} />
+            </View>
+            <Text style={styles.logo}>{firstName}</Text>
+            <Text style={styles.tagline}>Travel More, Spend Less</Text>
+          </View>
 
-        <Text style={styles.logo}>{firstName}</Text>
-        <Text style={styles.tagline}>Travel More, Spend Less</Text>
+          <Avatar
+            uri={user?.avatar_url}
+            name={user?.full_name}
+            size="md"
+            onPress={() => router.push('/(tabs)/profile' as never)}
+          />
+        </View>
       </View>
 
       <Animated.View style={[styles.contentWrap, slideUp.animatedStyle]}>
@@ -460,11 +479,19 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
     paddingHorizontal: 20,
   },
+  heroRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 8,
+  },
+  heroLeft: {
+    flex: 1,
+  },
   greetingRow: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: 6,
-    marginTop: 8,
   },
   greeting: {
     color: Colors.textSecondary,
@@ -474,7 +501,7 @@ const styles = StyleSheet.create({
     color: Colors.primary,
     fontSize: 28,
     fontWeight: '800',
-    marginTop: 18,
+    marginTop: 4,
   },
   tagline: {
     color: Colors.textSecondary,
