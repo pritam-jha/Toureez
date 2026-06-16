@@ -516,6 +516,16 @@ export async function getVendorById(vendorId: string): Promise<AdminVendor> {
   return mapVendor({ ...record, owner: ownerMap.get(ownerId) ?? undefined });
 }
 
+export async function getCompanyOwnerId(companyId: string): Promise<string | null> {
+  const { data } = await supabaseAdmin
+    .from('companies')
+    .select('owner_id')
+    .eq('id', companyId)
+    .maybeSingle();
+  const owner_id = toRecord(data ?? {});
+  return readString(owner_id, 'owner_id') || null;
+}
+
 export async function approveVendor(vendorId: string): Promise<AdminVendor> {
   const { data, error } = await supabaseAdmin
     .from('companies')

@@ -240,6 +240,9 @@ export type NotificationType =
   | 'payment_received'
   | 'review_received'
   | 'package_approved'
+  | 'package_rejected'
+  | 'vendor_approved'
+  | 'vendor_rejected'
   | 'wishlist_price_drop'
   | 'booking_received';
 

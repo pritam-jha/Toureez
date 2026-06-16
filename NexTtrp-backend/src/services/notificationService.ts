@@ -42,6 +42,9 @@ const readNotificationType = (value: unknown): NotificationType => {
     value === 'payment_received' ||
     value === 'review_received' ||
     value === 'package_approved' ||
+    value === 'package_rejected' ||
+    value === 'vendor_approved' ||
+    value === 'vendor_rejected' ||
     value === 'wishlist_price_drop' ||
     value === 'booking_received'
   ) {

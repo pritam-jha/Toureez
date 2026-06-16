@@ -81,75 +81,6 @@ function todayStr(): string {
   return new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-// ── Mini sparkline ────────────────────────────────────────────────────────────
-
-const SPARKS: Record<string, number[]> = {
-  users:    [4, 6, 5, 8, 7, 9, 8, 11, 10, 12, 11, 14],
-  bookings: [3, 5, 4, 7, 5, 8, 6, 9,  7,  9,  8, 11],
-  revenue:  [5, 8, 6, 9, 8, 11, 9, 13, 11, 13, 12, 16],
-  vendors:  [2, 4, 3, 5, 4, 6,  5, 7,  6,  8,  7, 10],
-};
-
-function Sparkline({ id, color }: { id: string; color: string }): React.ReactElement {
-  const data = SPARKS[id] ?? SPARKS.users;
-  const max = Math.max(...data);
-  const H = 28;
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'flex-end', height: H, gap: 2 }}>
-      {data.map((v, i) => (
-        <View
-          key={i}
-          style={{
-            width: 3,
-            height: Math.max(3, (v / max) * H),
-            backgroundColor: color,
-            borderRadius: 2,
-            opacity: 0.3 + (i / (data.length - 1)) * 0.7,
-          }}
-        />
-      ))}
-    </View>
-  );
-}
-
-// ── Revenue bar chart ─────────────────────────────────────────────────────────
-
-const REV_BARS = [14, 19, 16, 22, 18, 26, 21, 28, 24, 27, 25, 30, 23, 29, 26, 32, 28, 30, 27, 33, 29, 34, 31, 36, 32, 35, 33, 38, 35, 40];
-const MONTH_TICKS = ['May 1', 'May 8', 'May 15', 'May 22', 'May 29'];
-
-function RevenueChart(): React.ReactElement {
-  const chartW = SW - H_PAD * 2 - 32;
-  const max = Math.max(...REV_BARS);
-  const H = 80;
-  return (
-    <View>
-      {/* Y-axis labels */}
-      <View style={{ flexDirection: 'row', alignItems: 'flex-end', height: H, gap: 2 }}>
-        {REV_BARS.map((v, i) => {
-          const barH = Math.max(4, (v / max) * H);
-          const isLast = i === REV_BARS.length - 1;
-          return (
-            <View
-              key={i}
-              style={{
-                flex: 1,
-                height: barH,
-                borderRadius: 3,
-                backgroundColor: isLast ? D.primary : `rgba(232,99,26,${0.2 + (i / REV_BARS.length) * 0.45})`,
-              }}
-            />
-          );
-        })}
-      </View>
-      <View style={[styles.chartLabels, { width: chartW }]}>
-        {MONTH_TICKS.map((l) => (
-          <Text key={l} style={styles.chartLabel}>{l}</Text>
-        ))}
-      </View>
-    </View>
-  );
-}
-
 // ── Stat card ─────────────────────────────────────────────────────────────────
 
 interface StatCardProps {
@@ -158,9 +89,6 @@ interface StatCardProps {
   iconColor: string;
   label: string;
   value: string;
-  trend: string;
-  trendUp: boolean;
-  sparkId: string;
   onPress?: () => void;
   loading?: boolean;
 }
@@ -172,17 +100,12 @@ function StatCard(p: StatCardProps): React.ReactElement {
         <View style={[styles.statIcon, { backgroundColor: p.iconBg }]}>
           <MaterialCommunityIcons name={p.icon} size={16} color={p.iconColor} />
         </View>
-        <View style={[styles.trendPill, { backgroundColor: p.trendUp ? D.successDim : 'rgba(239,68,68,0.12)' }]}>
-          <MaterialCommunityIcons name={p.trendUp ? 'trending-up' : 'trending-down'} size={10} color={p.trendUp ? D.success : D.danger} />
-          <Text style={[styles.trendTxt, { color: p.trendUp ? D.success : D.danger }]}>{p.trend}</Text>
-        </View>
       </View>
       {p.loading
         ? <View style={styles.statSkeleton} />
         : <Text style={styles.statValue} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.65}>{p.value}</Text>
       }
       <Text style={styles.statLabel}>{p.label}</Text>
-      <Sparkline id={p.sparkId} color={p.iconColor} />
     </TouchableOpacity>
   );
 }
@@ -320,19 +243,19 @@ export default function AdminDashboardScreen(): React.ReactElement {
         <View style={styles.statGrid}>
           <StatCard icon="account-group" iconBg={D.infoDim} iconColor={D.info}
             label="Total Users" value={(metrics?.total_users ?? 0).toLocaleString('en-IN')}
-            trend="+12.5%" trendUp sparkId="users" loading={isLoading}
+            loading={isLoading}
             onPress={() => push('/(admin)/users')} />
           <StatCard icon="calendar-check" iconBg={D.purpleDim} iconColor={D.purple}
             label="Total Bookings" value={(metrics?.total_bookings ?? 0).toLocaleString('en-IN')}
-            trend="+8.7%" trendUp sparkId="bookings" loading={isLoading}
+            loading={isLoading}
             onPress={() => push('/(admin)/bookings')} />
           <StatCard icon="currency-inr" iconBg={D.successDim} iconColor={D.success}
             label="Revenue" value={formatINR(metrics?.total_revenue ?? 0)}
-            trend="+16.3%" trendUp sparkId="revenue" loading={isLoading}
+            loading={isLoading}
             onPress={() => push('/(admin)/payouts')} />
           <StatCard icon="store" iconBg={D.warningDim} iconColor={D.warning}
             label="Active Vendors" value={(metrics?.total_vendors ?? 0).toLocaleString('en-IN')}
-            trend="+9.2%" trendUp sparkId="vendors" loading={isLoading}
+            loading={isLoading}
             onPress={() => push('/(admin)/vendors')} />
         </View>
 
@@ -343,10 +266,6 @@ export default function AdminDashboardScreen(): React.ReactElement {
               <Text style={styles.secTitle}>Revenue Overview</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 2 }}>
                 <Text style={styles.revAmount}>{formatINR(metrics?.total_revenue ?? 0)}</Text>
-                <View style={[styles.trendPill, { backgroundColor: D.successDim }]}>
-                  <MaterialCommunityIcons name="trending-up" size={10} color={D.success} />
-                  <Text style={[styles.trendTxt, { color: D.success }]}>+16.3%</Text>
-                </View>
               </View>
             </View>
             <View style={styles.periodPill}>
@@ -354,7 +273,6 @@ export default function AdminDashboardScreen(): React.ReactElement {
               <MaterialCommunityIcons name="chevron-down" size={13} color={D.textSec} />
             </View>
           </View>
-          <RevenueChart />
         </View>
 
         {/* ── Quick actions ──────────────────────────────────────── */}
@@ -521,8 +439,6 @@ const styles = StyleSheet.create({
   revAmount: { fontSize: 26, fontWeight: '800', color: D.text, letterSpacing: -0.5 },
   periodPill:{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: D.cardBorder, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 7 },
   periodTxt: { fontSize: 12, color: D.textSec, fontWeight: '600' },
-  chartLabels: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 },
-  chartLabel:  { fontSize: 10, color: D.textMuted },
 
   // Section
   section:  { marginBottom: 20 },

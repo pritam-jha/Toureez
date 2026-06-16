@@ -54,7 +54,9 @@ import {
   createLocation,
   updateLocation,
   deleteLocation,
+  getCompanyOwnerId,
 } from '../services/adminService';
+import { createNotification } from '../services/notificationService';
 import { getAuditLogs, logAdminAction } from '../services/auditLogService';
 import { getAdminAnalytics } from '../services/analyticsService';
 import { listPayouts, updatePayoutStatus } from '../services/payoutService';
@@ -294,6 +296,14 @@ adminRouter.patch('/vendors/:id/approve', strictLimiter, async (req, res, next) 
       metadata: { note: parsed.data.note ?? null },
     });
 
+    void createNotification(
+      vendor.owner_id,
+      'vendor_approved',
+      'Vendor Account Approved 🎉',
+      'Congratulations! Your vendor account has been approved. You can now list packages and start receiving bookings.',
+      { vendor_id: id },
+    );
+
     return success(res, vendor);
   } catch (err) {
     if (err instanceof AppError && err.statusCode === 404) return notFound(res, 'Vendor');
@@ -322,6 +332,14 @@ adminRouter.patch('/vendors/:id/reject', strictLimiter, async (req, res, next) =
       entityId: id,
       metadata: { reason: parsed.data.reason },
     });
+
+    void createNotification(
+      vendor.owner_id,
+      'vendor_rejected',
+      'Vendor Application Update',
+      `Your vendor application was not approved. Reason: ${parsed.data.reason}`,
+      { vendor_id: id, reason: parsed.data.reason },
+    );
 
     return success(res, vendor);
   } catch (err) {
@@ -416,6 +434,20 @@ adminRouter.patch('/packages/:id/approve', strictLimiter, async (req, res, next)
       metadata: { note: parsed.data.note ?? null },
     });
 
+    void getCompanyOwnerId(pkg.company_id).then((ownerId) => {
+      if (ownerId) {
+        void createNotification(
+          ownerId,
+          'package_approved',
+          'Package Approved 🎉',
+          `Your package "${pkg.title}" has been approved and is now live for travelers to book.`,
+          { package_id: id },
+          id,
+          'package',
+        );
+      }
+    });
+
     return success(res, pkg);
   } catch (err) {
     if (err instanceof AppError && err.statusCode === 404) return notFound(res, 'Package');
@@ -443,6 +475,20 @@ adminRouter.patch('/packages/:id/reject', strictLimiter, async (req, res, next) 
       entityType: 'package',
       entityId: id,
       metadata: { reason: parsed.data.reason },
+    });
+
+    void getCompanyOwnerId(pkg.company_id).then((ownerId) => {
+      if (ownerId) {
+        void createNotification(
+          ownerId,
+          'package_rejected',
+          'Package Needs Changes',
+          `Your package "${pkg.title}" was not approved. Reason: ${parsed.data.reason}`,
+          { package_id: id, reason: parsed.data.reason },
+          id,
+          'package',
+        );
+      }
     });
 
     return success(res, pkg);

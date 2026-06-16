@@ -4,8 +4,8 @@
  */
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { router, useLocalSearchParams } from 'expo-router';
-import React, { useState } from 'react';
+import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
+import React, { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -52,7 +52,10 @@ export default function AdminPackageDetailScreen(): React.ReactElement {
   const pkgId = id ?? '';
   const [sheet, setSheet] = useState<Sheet>(null);
 
-  const { data: pkg, isLoading, isError } = useAdminPackage(pkgId);
+  const { data: pkg, isLoading, isError, refetch } = useAdminPackage(pkgId);
+
+  useFocusEffect(useCallback(() => { void refetch(); }, [refetch]));
+
   const approve = useApprovePackage();
   const reject = useRejectPackage();
   const feature = useFeaturePackage();

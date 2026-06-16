@@ -90,72 +90,6 @@ function statusLabel(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-// ── Mini sparkline ────────────────────────────────────────────────────────────
-
-const SPARKS: Record<string, number[]> = {
-  packages: [3, 5, 4, 6, 5, 7, 6, 8, 7, 9, 8, 10],
-  bookings: [8, 12, 9, 15, 11, 14, 13, 16, 15, 18, 17, 20],
-  revenue:  [6, 10, 8, 13, 10, 14, 12, 17, 14, 18, 16, 22],
-  rating:   [4, 5, 4, 5, 5, 5, 4, 5, 5, 5, 5, 5],
-};
-
-function Sparkline({ id, color, live }: { id: string; color: string; live?: number }): React.ReactElement {
-  const base = SPARKS[id] ?? SPARKS.revenue;
-  const data = live !== undefined ? [...base.slice(1), Math.max(1, live)] : base;
-  const max = Math.max(...data);
-  const H = 32;
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'flex-end', height: H, gap: 2 }}>
-      {data.map((v, i) => (
-        <View
-          key={i}
-          style={{
-            width: 3,
-            height: Math.max(3, (v / max) * H),
-            backgroundColor: color,
-            borderRadius: 2,
-            opacity: 0.25 + (i / (data.length - 1)) * 0.75,
-          }}
-        />
-      ))}
-    </View>
-  );
-}
-
-// ── Earnings bar chart ────────────────────────────────────────────────────────
-
-const EARN_BARS = [12, 18, 14, 22, 16, 25, 20, 28, 22, 26, 24, 30, 22, 28, 25, 32, 28, 30, 26, 33, 29, 35, 31, 38, 33, 36, 34, 40, 37, 42];
-
-function EarningsChart(): React.ReactElement {
-  const max = Math.max(...EARN_BARS);
-  const H = 80;
-  return (
-    <View>
-      <View style={{ flexDirection: 'row', alignItems: 'flex-end', height: H, gap: 2 }}>
-        {EARN_BARS.map((v, i) => {
-          const isLast = i === EARN_BARS.length - 1;
-          return (
-            <View
-              key={i}
-              style={{
-                flex: 1,
-                height: Math.max(3, (v / max) * H),
-                borderRadius: 3,
-                backgroundColor: isLast ? D.primary : `rgba(232,99,26,${0.18 + (i / EARN_BARS.length) * 0.50})`,
-              }}
-            />
-          );
-        })}
-      </View>
-      <View style={styles.chartTicks}>
-        {['May 1', 'May 7', 'May 14', 'May 21', 'May 30'].map((l) => (
-          <Text key={l} style={styles.chartTick}>{l}</Text>
-        ))}
-      </View>
-    </View>
-  );
-}
-
 // ── Stat card ─────────────────────────────────────────────────────────────────
 
 interface StatCardProps {
@@ -164,27 +98,19 @@ interface StatCardProps {
   iconColor: string;
   label: string;
   value: string;
-  trend: string;
-  trendUp?: boolean;
-  sparkId: string;
   onPress?: () => void;
 }
 
-function StatCard({ icon, iconBg, iconColor, label, value, trend, trendUp = true, sparkId, onPress }: StatCardProps): React.ReactElement {
+function StatCard({ icon, iconBg, iconColor, label, value, onPress }: StatCardProps): React.ReactElement {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.82} style={[styles.statCard, { width: CARD_W }]}>
       <View style={styles.statTop}>
         <View style={[styles.statIcon, { backgroundColor: iconBg }]}>
           <Ionicons name={icon} size={16} color={iconColor} />
         </View>
-        <View style={[styles.trendPill, { backgroundColor: trendUp ? D.successDim : D.dangerDim }]}>
-          <Ionicons name={trendUp ? 'trending-up' : 'trending-down'} size={10} color={trendUp ? D.success : D.danger} />
-          <Text style={[styles.trendTxt, { color: trendUp ? D.success : D.danger }]}>{trend}</Text>
-        </View>
       </View>
       <Text style={styles.statValue} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.65}>{value}</Text>
       <Text style={styles.statLabel}>{label}</Text>
-      <Sparkline id={sparkId} color={iconColor} />
     </TouchableOpacity>
   );
 }
@@ -327,8 +253,6 @@ export default function DashboardScreen(): React.ReactElement {
           iconColor={D.primary}
           label="Active Packages"
           value={String(activePackages)}
-          trend="+6%"
-          sparkId="packages"
           onPress={() => router.push('/(vendor)/packages')}
         />
         <StatCard
@@ -337,8 +261,6 @@ export default function DashboardScreen(): React.ReactElement {
           iconColor={D.info}
           label="Bookings This Month"
           value={String(totalBookings)}
-          trend="+18%"
-          sparkId="bookings"
           onPress={() => router.push({ pathname: '/(vendor)/bookings', params: { from: 'dashboard' } })}
         />
         <StatCard
@@ -347,8 +269,6 @@ export default function DashboardScreen(): React.ReactElement {
           iconColor={D.success}
           label="Earnings"
           value={fmt(totalRevenue)}
-          trend="+24%"
-          sparkId="revenue"
           onPress={() => router.push({ pathname: '/(vendor)/analytics', params: { from: 'dashboard' } })}
         />
         <StatCard
@@ -357,8 +277,6 @@ export default function DashboardScreen(): React.ReactElement {
           iconColor={D.purple}
           label="Average Rating"
           value={avgRating > 0 ? `${avgRating.toFixed(1)}/5` : 'N/A'}
-          trend="+0.2"
-          sparkId="rating"
           onPress={() => router.push({ pathname: '/(vendor)/reviews', params: { from: 'dashboard' } })}
         />
       </View>
@@ -371,45 +289,11 @@ export default function DashboardScreen(): React.ReactElement {
             <Text style={styles.earnTotal}>Total Earnings</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 2 }}>
               <Text style={styles.earnAmount}>{fmt(totalRevenue)}</Text>
-              <View style={[styles.trendPill, { backgroundColor: D.successDim }]}>
-                <Ionicons name="trending-up" size={10} color={D.success} />
-                <Text style={[styles.trendTxt, { color: D.success }]}>+24% vs last month</Text>
-              </View>
             </View>
           </View>
           <View style={styles.periodPill}>
             <Text style={styles.periodTxt}>This Month</Text>
             <Ionicons name="chevron-down" size={12} color={D.textSec} />
-          </View>
-        </View>
-
-        <EarningsChart />
-
-        {/* Revenue breakdown */}
-        <View style={styles.earnBreakdown}>
-          <View style={styles.earnBreakItem}>
-            <Text style={styles.earnBreakLabel}>Package Sales</Text>
-            <Text style={styles.earnBreakAmt}>{fmt(Math.round(totalRevenue * 0.85))}</Text>
-            <View style={styles.earnBreakBar}>
-              <View style={[styles.earnBreakFill, { width: '85%', backgroundColor: D.primary }]} />
-            </View>
-            <Text style={[styles.earnBreakPct, { color: D.primary }]}>85%</Text>
-          </View>
-          <View style={styles.earnBreakItem}>
-            <Text style={styles.earnBreakLabel}>Add-on Services</Text>
-            <Text style={styles.earnBreakAmt}>{fmt(Math.round(totalRevenue * 0.12))}</Text>
-            <View style={styles.earnBreakBar}>
-              <View style={[styles.earnBreakFill, { width: '12%', backgroundColor: D.info }]} />
-            </View>
-            <Text style={[styles.earnBreakPct, { color: D.info }]}>12%</Text>
-          </View>
-          <View style={styles.earnBreakItem}>
-            <Text style={styles.earnBreakLabel}>Other Revenue</Text>
-            <Text style={styles.earnBreakAmt}>{fmt(Math.round(totalRevenue * 0.03))}</Text>
-            <View style={styles.earnBreakBar}>
-              <View style={[styles.earnBreakFill, { width: '3%', backgroundColor: D.purple }]} />
-            </View>
-            <Text style={[styles.earnBreakPct, { color: D.purple }]}>3%</Text>
           </View>
         </View>
       </View>
@@ -522,19 +406,6 @@ export default function DashboardScreen(): React.ReactElement {
             <View style={{ flex: 1 }}>
               <Text style={styles.reviewAvgLabel}>Average Rating</Text>
               <Text style={styles.reviewCount}>Based on {dashboard?.total_reviews ?? 0} reviews</Text>
-              {/* Rating bars */}
-              {[5, 4, 3, 2, 1].map((star) => (
-                <View key={star} style={styles.ratingBar}>
-                  <Text style={styles.ratingBarStar}>{star}★</Text>
-                  <View style={styles.ratingBarTrack}>
-                    <View style={[styles.ratingBarFill, {
-                      width: `${star === 5 ? 75 : star === 4 ? 15 : star === 3 ? 6 : star === 2 ? 3 : 1}%`,
-                      backgroundColor: star >= 4 ? D.primary : star === 3 ? D.warning : D.danger,
-                    }]} />
-                  </View>
-                  <Text style={styles.ratingBarPct}>{star === 5 ? '75%' : star === 4 ? '15%' : star === 3 ? '6%' : star === 2 ? '3%' : '1%'}</Text>
-                </View>
-              ))}
             </View>
           </View>
         </View>
@@ -617,27 +488,16 @@ const styles = StyleSheet.create({
   statCard:    { backgroundColor: D.card, borderRadius: 16, padding: 13, borderWidth: 1, borderColor: D.cardBorder, gap: 5 },
   statTop:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   statIcon:    { width: 30, height: 30, borderRadius: 9, alignItems: 'center', justifyContent: 'center' },
-  trendPill:   { flexDirection: 'row', alignItems: 'center', gap: 3, borderRadius: 20, paddingHorizontal: 6, paddingVertical: 3 },
-  trendTxt:    { fontSize: 9, fontWeight: '700' },
   statValue:   { fontSize: 20, fontWeight: '800', color: D.text, letterSpacing: -0.5 },
   statLabel:   { fontSize: 10, color: D.textSec, fontWeight: '500' },
 
   // Earnings
   earnCard:    { backgroundColor: D.card, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: D.cardBorder, marginBottom: 16 },
-  earnHeader:  { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 },
+  earnHeader:  { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
   earnTotal:   { fontSize: 11, color: D.textSec, fontWeight: '500', marginTop: 2 },
   earnAmount:  { fontSize: 22, fontWeight: '800', color: D.text, letterSpacing: -0.4 },
   periodPill:  { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: D.cardBorder, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 7 },
   periodTxt:   { fontSize: 12, color: D.textSec, fontWeight: '600' },
-  chartTicks:  { flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 },
-  chartTick:   { fontSize: 10, color: D.textMuted },
-  earnBreakdown: { flexDirection: 'row', gap: 12, marginTop: 16, paddingTop: 16, borderTopWidth: 1, borderTopColor: D.divider },
-  earnBreakItem: { flex: 1, gap: 4 },
-  earnBreakLabel:{ fontSize: 10, color: D.textSec },
-  earnBreakAmt:  { fontSize: 13, fontWeight: '700', color: D.text },
-  earnBreakBar:  { height: 4, backgroundColor: D.cardBorder, borderRadius: 2, overflow: 'hidden' },
-  earnBreakFill: { height: '100%', borderRadius: 2 },
-  earnBreakPct:  { fontSize: 10, fontWeight: '700' },
 
   // Section
   section:  { marginBottom: 20 },
@@ -683,11 +543,6 @@ const styles = StyleSheet.create({
   reviewScore:   { fontSize: 32, fontWeight: '800', color: D.text },
   reviewAvgLabel:{ fontSize: 13, fontWeight: '700', color: D.text },
   reviewCount:   { fontSize: 11, color: D.textSec, marginBottom: 8 },
-  ratingBar:     { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 3 },
-  ratingBarStar: { fontSize: 10, color: D.textSec, width: 18 },
-  ratingBarTrack:{ flex: 1, height: 4, backgroundColor: D.cardBorder, borderRadius: 2, overflow: 'hidden' },
-  ratingBarFill: { height: '100%', borderRadius: 2 },
-  ratingBarPct:  { fontSize: 10, color: D.textMuted, width: 28, textAlign: 'right' },
 
   // Grow card
   growCard:    { backgroundColor: D.card, borderRadius: 16, borderWidth: 1, borderColor: D.cardBorder, padding: 20, flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 16, overflow: 'hidden' },
