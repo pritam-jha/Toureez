@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file services/vendorPackageService.ts
  * @description Package CRUD operations scoped to the authenticated vendor.
  *
@@ -536,7 +536,7 @@ export async function submitVendorPackage(
   const companyStatus = readString(toRecord(companyRow), 'status', 'pending');
   if (companyStatus !== 'approved') {
     throw new AppError(
-      'Your company profile must be approved by the NEXTTRP team before you can submit packages for review. ' +
+      'Your company profile must be approved by the Toureez team before you can submit packages for review. ' +
       'Please complete your company KYC and wait for admin approval.',
       403,
     );

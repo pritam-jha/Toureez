@@ -25,6 +25,7 @@ import { toRecord, readString, readNumber } from '../utils/dbHelpers';
 import { strictLimiter, readLimiter } from '../middleware/rateLimiter';
 import {
   getAdminDashboard,
+  getAdminEarningsForMonth,
   listUsers,
   getUserById,
   updateUserRole,
@@ -85,6 +86,7 @@ import {
   AdminListPayoutsQuerySchema,
   AdminUpdatePayoutStatusSchema,
   AdminListAuditLogsQuerySchema,
+  AdminEarningsQuerySchema,
 } from '../utils/adminValidation';
 
 export const adminRouter = Router();
@@ -109,6 +111,24 @@ adminRouter.get('/dashboard', async (req, res, next) => {
   try {
     const metrics = await getAdminDashboard();
     return success(res, metrics);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/**
+ * GET /api/v1/admin/earnings?month=YYYY-MM
+ * Returns total paid-payment revenue for a single calendar month, used by
+ * the Revenue Overview month picker on the admin dashboard.
+ */
+adminRouter.get('/earnings', async (req, res, next) => {
+  try {
+    const parsed = AdminEarningsQuerySchema.safeParse(req.query);
+    if (!parsed.success) {
+      return validationError(res, parsed.error.flatten().fieldErrors);
+    }
+    const earnings = await getAdminEarningsForMonth(parsed.data.month);
+    return success(res, earnings);
   } catch (err) {
     return next(err);
   }

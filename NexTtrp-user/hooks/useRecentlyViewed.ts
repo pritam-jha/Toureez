@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file hooks/useRecentlyViewed.ts
  * @description Stores and retrieves recently viewed package IDs in AsyncStorage.
  *
@@ -9,7 +9,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const STORAGE_KEY = '@nexttrp:recently_viewed';
+const STORAGE_KEY = '@toureez:recently_viewed';
 const MAX_ITEMS = 10;
 
 async function loadIds(): Promise<string[]> {

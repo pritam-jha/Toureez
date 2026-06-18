@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/(vendor)/settings.tsx
  * @description Settings screen for the vendor portal.
  *
@@ -245,7 +245,7 @@ export default function SettingsScreen(): React.ReactElement {
             </View>
           </View>
           <Text style={styles.readOnlyHint}>
-            Email cannot be changed. Contact support@nexttrp.com if you need to update it.
+            Email cannot be changed. Contact support@toureez.com if you need to update it.
           </Text>
         </View>
 
@@ -316,7 +316,7 @@ export default function SettingsScreen(): React.ReactElement {
 
           <Pressable
             style={styles.infoLink}
-            onPress={() => Alert.alert('Help & Support', 'Please contact support@nexttrp.com for any assistance.')}
+            onPress={() => Alert.alert('Help & Support', 'Please contact support@toureez.com for any assistance.')}
           >
             <Ionicons name="help-circle-outline" size={18} color={Colors.info} />
             <Text style={styles.infoLinkText}>Help & Support</Text>
@@ -325,7 +325,7 @@ export default function SettingsScreen(): React.ReactElement {
 
           <Pressable
             style={styles.infoLink}
-            onPress={() => Alert.alert('Privacy Policy', 'View at https://nexttrp.com/privacy')}
+            onPress={() => Alert.alert('Privacy Policy', 'View at https://toureez.com/privacy')}
           >
             <Ionicons name="shield-outline" size={18} color={Colors.info} />
             <Text style={styles.infoLinkText}>Privacy Policy</Text>
@@ -334,7 +334,7 @@ export default function SettingsScreen(): React.ReactElement {
 
           <Pressable
             style={styles.infoLink}
-            onPress={() => Alert.alert('Terms of Service', 'View at https://nexttrp.com/terms')}
+            onPress={() => Alert.alert('Terms of Service', 'View at https://toureez.com/terms')}
           >
             <Ionicons name="document-text-outline" size={18} color={Colors.info} />
             <Text style={styles.infoLinkText}>Terms of Service</Text>

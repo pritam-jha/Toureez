@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file components/ui/Badge.tsx
- * @description NEXTTRP badge.
+ * @description Toureez badge.
  */
 
 import React from 'react';

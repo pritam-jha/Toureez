@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/booking/confirmation.tsx
  * @description Step 4 of 4 — Booking Confirmed. Sage green design system.
  * Animated checkmark, booking reference, share, and navigation preserved.
@@ -129,8 +129,8 @@ export default function ConfirmationScreen(): React.ReactElement {
     const travelDate = new Date(booking.travel_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
     try {
       await Share.share({
-        message: `My trip is confirmed!\n\nBooking Reference: ${booking.booking_reference}\nTravel Date: ${travelDate}\nTravelers: ${booking.num_travelers}\nAmount: ${formatINR(booking.total_amount)}\n\nBooked via NEXTTRP - Travel More, Spend Less`,
-        title: 'My NEXTTRP Booking',
+        message: `My trip is confirmed!\n\nBooking Reference: ${booking.booking_reference}\nTravel Date: ${travelDate}\nTravelers: ${booking.num_travelers}\nAmount: ${formatINR(booking.total_amount)}\n\nBooked via Toureez - Travel More, Spend Less`,
+        title: 'My Toureez Booking',
       });
     } catch { /* User cancelled */ }
   }, [booking]);

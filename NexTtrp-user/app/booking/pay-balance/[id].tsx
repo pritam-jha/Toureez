@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/booking/pay-balance/[id].tsx
  * @description Pay the outstanding balance for a confirmed booking.
  * Mirrors app/booking/payment.tsx — same header, amount card, and
@@ -79,12 +79,12 @@ export default function PayBalanceScreen(): React.ReactElement {
       const RazorpayCheckout = (await import('react-native-razorpay')).default;
 
       const options = {
-        description:  'NEXTTRP Balance Payment',
+        description:  'Toureez Balance Payment',
         currency,
         key:          key_id,
         amount:       String(amount),
         order_id,
-        name:         'NEXTTRP',
+        name:         'Toureez',
         prefill: {
           email:    userEmail,
           contact:  user?.phone ?? '',
@@ -166,7 +166,7 @@ export default function PayBalanceScreen(): React.ReactElement {
           <Text style={styles.amountValue}>{formatINR(booking.balance_amount)}</Text>
           <View style={styles.securedRow}>
             <Ionicons name="shield-checkmark" size={14} color={Colors.success} />
-            <Text style={styles.securedText}>Secured by NEXTTRP</Text>
+            <Text style={styles.securedText}>Secured by Toureez</Text>
           </View>
           <Text style={styles.balanceNote}>Total trip cost: {formatINR(booking.total_amount)}</Text>
           <Text style={styles.balanceNote}>Already paid: {formatINR(booking.advance_amount)}</Text>
@@ -197,7 +197,7 @@ export default function PayBalanceScreen(): React.ReactElement {
         <View style={styles.infoBanner}>
           <Ionicons name="information-circle-outline" size={14} color={Colors.primary} />
           <Text style={styles.infoBannerText}>
-            Your payment is secured by Razorpay and covered by the NextTrip buyer guarantee.
+            Your payment is secured by Razorpay and covered by the Toureez buyer guarantee.
           </Text>
         </View>
 

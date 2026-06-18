@@ -1,8 +1,8 @@
-/**
+﻿/**
  * @file app/(auth)/callback.tsx
  * @description OAuth deep-link fallback screen.
  *
- * On some Android versions, the OS passes the nexttrp://auth/callback URL
+ * On some Android versions, the OS passes the toureez://auth/callback URL
  * through Expo Router's deep-link system instead of letting
  * WebBrowser.openAuthSessionAsync intercept it. Expo Router would then show
  * "Unmatched Route" because no file handled the path.

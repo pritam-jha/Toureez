@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file hooks/useAuth.ts
  * @description Auth state, auth mutations, and auth form controllers.
  */
@@ -211,12 +211,12 @@ function hydrateWishlist(setWishlist: (packageIds: string[]) => void): void {
 /**
  * Returns the deep-link URI that Supabase should redirect back to after OAuth.
  *
- * Result:  nexttrp://auth/callback
+ * Result:  toureez://auth/callback
  *
  * ⚠️  REQUIRED — Supabase Dashboard setup (one-time):
  *   1. Go to Authentication → URL Configuration in your Supabase project.
- *   2. Add  nexttrp://auth/callback  to the "Redirect URLs" allow-list.
- *      (A wildcard  nexttrp://**  also works and covers future paths.)
+ *   2. Add  toureez://auth/callback  to the "Redirect URLs" allow-list.
+ *      (A wildcard  toureez://**  also works and covers future paths.)
  *   3. Ensure "Site URL" is NOT localhost:3000 for production builds.
  *      For development you can leave it; what matters is the allow-list entry.
  *
@@ -225,7 +225,7 @@ function hydrateWishlist(setWishlist: (packageIds: string[]) => void): void {
  */
 function createRedirectUri(): string {
   return AuthSession.makeRedirectUri({
-    scheme: 'nexttrp',
+    scheme: 'toureez',
     path: 'auth/callback',
   });
 }
@@ -262,7 +262,7 @@ async function runGoogleOAuth(): Promise<User> {
     if (!authUrl) throw new Error('Google sign in failed to start.');
 
     // 2. Open the Supabase-generated URL in the system browser.
-    //    The browser will redirect back to nexttrp://auth/callback?code=...
+    //    The browser will redirect back to toureez://auth/callback?code=...
     //    openAuthSessionAsync intercepts that redirect before it hits Chrome
     //    and returns the full URL to us — no ERR_CONNECTION_REFUSED on mobile.
     const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUri, {
@@ -284,13 +284,13 @@ async function runGoogleOAuth(): Promise<User> {
 
     // 3. Guard against Supabase falling back to the Site URL.
     //    If the callback URL doesn't start with our scheme it means
-    //    nexttrp://auth/callback is NOT in the Supabase redirect allow-list.
+    //    toureez://auth/callback is NOT in the Supabase redirect allow-list.
     //    See the comment on createRedirectUri() for the dashboard steps.
-    if (!result.url.startsWith('nexttrp://')) {
+    if (!result.url.startsWith('toureez://')) {
       throw new Error(
         'Google sign in misconfigured: callback landed on an unexpected URL ' +
           `(${result.url}). ` +
-          'Add nexttrp://auth/callback to the Redirect URLs allow-list in ' +
+          'Add toureez://auth/callback to the Redirect URLs allow-list in ' +
           'your Supabase Dashboard → Authentication → URL Configuration.'
       );
     }

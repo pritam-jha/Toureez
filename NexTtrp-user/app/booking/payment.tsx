@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/booking/payment.tsx
  * @description Step 3 of 4 — Payment. Sage green design system.
  * All payment methods, mock flow, and Razorpay placeholder preserved.
@@ -164,12 +164,12 @@ export default function PaymentScreen(): React.ReactElement {
       const RazorpayCheckout = (await import('react-native-razorpay')).default;
 
       const options = {
-        description:  'NEXTTRP Package Booking',
+        description:  'Toureez Package Booking',
         currency,
         key:          key_id,
         amount:       String(amount),
         order_id,
-        name:         'NEXTTRP',
+        name:         'Toureez',
         prefill: {
           email:    userEmail,
           contact:  user?.phone ?? '',
@@ -247,7 +247,7 @@ export default function PaymentScreen(): React.ReactElement {
           <Text style={styles.amountValue}>{formatINR(amountToPay)}</Text>
           <View style={styles.securedRow}>
             <Ionicons name="shield-checkmark" size={14} color={Colors.success} />
-            <Text style={styles.securedText}>Secured by NEXTTRP</Text>
+            <Text style={styles.securedText}>Secured by Toureez</Text>
           </View>
           {form.paymentType === 'advance' && form.priceCalculation && (
             <Text style={styles.balanceNote}>Balance {formatINR(form.priceCalculation.balance_amount)} due before travel</Text>

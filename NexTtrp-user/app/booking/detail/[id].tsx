@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/booking/detail/[id].tsx
  * @description Authenticated booking detail and cancellation screen.
  */
@@ -438,7 +438,7 @@ export default function BookingDetailScreen(): React.ReactElement {
 
     try {
       await Share.share({
-        title: 'My NEXTTRP Booking',
+        title: 'My Toureez Booking',
         message:
           `Booking ${booking.booking_reference}\n` +
           `Travel date: ${formatDate(booking.travel_date, true)}\n` +

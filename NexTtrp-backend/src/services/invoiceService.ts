@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file services/invoiceService.ts
  * @description Generates a GST-compliant tax invoice PDF for a confirmed booking.
  */
@@ -11,7 +11,7 @@ import { GST_RATE } from './bookingService';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const PLATFORM_NAME = 'NextTrip Travel Technologies Pvt. Ltd.';
+const PLATFORM_NAME = 'Toureez Travel Technologies Pvt. Ltd.';
 const PLATFORM_GSTIN = process.env.PLATFORM_GSTIN ?? '29AABCT1332L000';
 const PLATFORM_PAN = process.env.PLATFORM_PAN ?? 'AABCT1332L';
 const PLATFORM_ADDRESS = process.env.PLATFORM_ADDRESS ?? 'Kolkata, West Bengal, India';
@@ -159,7 +159,7 @@ export async function generateBookingInvoice(
   const now = new Date();
   const yyyymm = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}`;
   const invoiceNumber = `${INVOICE_PREFIX}-${yyyymm}-${last6}`;
-  const filename = `NextTrip_Invoice_${invoiceNumber}.pdf`;
+  const filename = `Toureez_Invoice_${invoiceNumber}.pdf`;
 
   const amountPaid = payment['amount'] !== undefined ? readNumber(payment, 'amount') : advanceAmount;
   const paymentType = balanceAmount > 0 ? 'Advance' : 'Full';
@@ -383,7 +383,7 @@ async function renderInvoicePdf(data: InvoicePdfData): Promise<Buffer> {
       doc.font('Helvetica').fontSize(9).fillColor(COLOR_MUTED);
       doc.text(`HSN/SAC Code: ${HSN_SAC_CODE}`, left, doc.y);
       doc.font('Helvetica-Oblique').text('This is a computer-generated invoice. No signature required.', left, doc.y);
-      doc.font('Helvetica').text('For support: support@nexttrip.in', left, doc.y);
+      doc.font('Helvetica').text('For support: support@toureez.in', left, doc.y);
 
       doc.end();
     } catch (err) {

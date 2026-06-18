@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/(vendor)/payouts.tsx
  * @description Vendor payouts screen.
  *
@@ -518,7 +518,7 @@ export default function PayoutsScreen(): React.ReactElement {
           <Ionicons name="information-circle-outline" size={16} color={Colors.textSecondary} />
           <Text style={styles.infoText}>
             Payouts are typically processed within 7–10 business days after a booking is completed.
-            Contact support@nexttrp.com for payout inquiries.
+            Contact support@toureez.com for payout inquiries.
           </Text>
         </View>
       </ScrollView>

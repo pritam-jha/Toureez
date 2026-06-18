@@ -7,3 +7,7 @@ node_modules/
 *.log
 *.err.log
 *.out.log
+
+# Supabase CLI local state — contains link tokens / local DB data, never commit
+**/supabase/.branches
+**/supabase/.temp

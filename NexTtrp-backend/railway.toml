@@ -9,3 +9,9 @@ restartPolicyMaxRetries = 3
 
 [nixpacks]
 nodVersion = "22"
+
+# NODE_ENV and ENABLE_MOCK_PAYMENT must be set as Railway dashboard variables
+# (Variables tab on the service) — railway.toml does not support setting
+# environment variables. Set NODE_ENV=production and leave ENABLE_MOCK_PAYMENT
+# unset so the production guards in src/config.ts and src/routes/bookings.ts
+# stay active. src/startup-checks.ts logs the resolved state on every boot.

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/(admin)/system-health.tsx
  * System health monitor — pings the backend's /health endpoint to surface
  * service uptime, database connectivity, and request latency. Auto-refreshes
@@ -107,7 +107,7 @@ export default function SystemHealthScreen(): React.ReactElement {
         <Label style={styles.sectionTitle}>Checks</Label>
         <CheckRow
           label="API Server"
-          description={data?.service ?? 'nexttrp-backend'}
+          description={data?.service ?? 'toureez-backend'}
           status={data ? 'ok' : 'error'}
         />
         <View style={styles.divider} />

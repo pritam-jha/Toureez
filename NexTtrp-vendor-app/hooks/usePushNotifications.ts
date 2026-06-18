@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file hooks/usePushNotifications.ts
  * Registers for Expo push notifications in standalone/dev-client builds.
  *
@@ -16,7 +16,7 @@ import { apiClient } from '../lib/api/client';
 import { useAuthStore } from '../store/authStore';
 import { VENDOR_ROLE } from '../types';
 
-const TOKEN_KEY = '@nexttrp_vendor:push_token';
+const TOKEN_KEY = '@toureez_vendor:push_token';
 
 // In Expo Go, expo-notifications remote push is fully removed (SDK 53+).
 // Checking appOwnership prevents the module from being imported at all.
@@ -59,7 +59,7 @@ export function usePushNotifications(): void {
 
         if (Platform.OS === 'android') {
           await Notifications.setNotificationChannelAsync('default', {
-            name: 'NEXTTRP Vendor',
+            name: 'Toureez Vendor',
             importance: Notifications.AndroidImportance.MAX,
             lightColor: '#E8631A',
           });

@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file constants/colors.ts
- * @description NEXTTRP light brand palette.
+ * @description Toureez light brand palette.
  */
 
 export const Colors = {

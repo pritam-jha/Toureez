@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file components/search/SearchHeader.tsx
- * @description NEXTTRP search input row.
+ * @description Toureez search input row.
  */
 
 import React, { useCallback, useRef, useState } from 'react';

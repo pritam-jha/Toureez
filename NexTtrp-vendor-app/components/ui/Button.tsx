@@ -1,9 +1,9 @@
-/**
+﻿/**
  * @file components/ui/Button.tsx
  * @description Reusable button component for the Vendor Portal.
  *
  * Supports multiple variants, sizes, loading states, and icons.
- * Matches the Button component API from NexTtrp-user for ecosystem consistency.
+ * Matches the Button component API from Toureez-user for ecosystem consistency.
  */
 
 import React, { useCallback, useRef } from 'react';

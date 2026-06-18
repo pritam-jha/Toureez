@@ -1,4 +1,4 @@
-# NEXTTRP — Travel Package Comparison App
+﻿# Toureez — Travel Package Comparison App
 
 A full-stack travel package comparison app for India.
 
@@ -38,7 +38,7 @@ Look for `inet` under your WiFi adapter.
 
 ### 2. Set up the backend `.env`
 
-Create `NEXTTRP-backend/.env` (copy from `NEXTTRP-backend/.env.example`):
+Create `Toureez-backend/.env` (copy from `Toureez-backend/.env.example`):
 
 ```env
 PORT=3000
@@ -65,14 +65,14 @@ Replace `<YOUR_LAN_IP>` with the IP from Step 1.
 
 ### 3. Set up the frontend `.env`
 
-Create `NEXTTRP-frontend/.env` (copy from `NEXTTRP-frontend/.env.example`):
+Create `Toureez-frontend/.env` (copy from `Toureez-frontend/.env.example`):
 
 ```env
 EXPO_PUBLIC_SUPABASE_URL=https://rtyvmyvidkrwmeeeioww.supabase.co
 EXPO_PUBLIC_SUPABASE_ANON_KEY=<get from project owner>
 
 EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME=your-cloud-name
-EXPO_PUBLIC_CLOUDINARY_PRESET=NEXTTRP-unsigned
+EXPO_PUBLIC_CLOUDINARY_PRESET=Toureez-unsigned
 
 # Replace with YOUR machine's LAN IP — NOT localhost
 # localhost does not work on a physical Android/iOS device
@@ -87,11 +87,11 @@ Replace `<YOUR_LAN_IP>` with the IP from Step 1.
 
 ```bash
 # Backend
-cd NEXTTRP-backend
+cd Toureez-backend
 npm install
 
 # Frontend
-cd NEXTTRP-frontend
+cd Toureez-frontend
 npm install
 ```
 
@@ -100,18 +100,18 @@ npm install
 ### 5. Start the backend
 
 ```bash
-cd NEXTTRP-backend
+cd Toureez-backend
 npm run dev
 ```
 
-You should see: `NEXTTRP API server listening on port 3000`
+You should see: `Toureez API server listening on port 3000`
 
 ---
 
 ### 6. Start the frontend
 
 ```bash
-cd NEXTTRP-frontend
+cd Toureez-frontend
 npx expo start --clear
 ```
 
@@ -134,8 +134,8 @@ The skeleton loaders are the loading state for API calls. If they never resolve,
 ## Project Structure
 
 ```
-NEXTTRP/
-├── NEXTTRP-backend/          # Node.js/Express API
+Toureez/
+├── Toureez-backend/          # Node.js/Express API
 │   ├── src/
 │   │   ├── routes/       # API route handlers
 │   │   ├── services/     # Business logic
@@ -143,7 +143,7 @@ NEXTTRP/
 │   │   └── lib/          # Supabase client
 │   └── .env.example
 │
-└── NEXTTRP-frontend/         # Expo React Native app
+└── Toureez-frontend/         # Expo React Native app
     ├── app/              # Expo Router screens
     ├── components/       # UI components
     ├── hooks/            # TanStack Query hooks
@@ -157,7 +157,7 @@ NEXTTRP/
 
 ## Environment Variables Reference
 
-### Backend (`NEXTTRP-backend/.env`)
+### Backend (`Toureez-backend/.env`)
 
 | Variable | Description |
 |---|---|
@@ -167,7 +167,7 @@ NEXTTRP/
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role JWT key for backend-only admin access |
 | `ALLOWED_ORIGINS` | Comma-separated CORS origins |
 
-### Frontend (`NEXTTRP-frontend/.env`)
+### Frontend (`Toureez-frontend/.env`)
 
 | Variable | Description |
 |---|---|

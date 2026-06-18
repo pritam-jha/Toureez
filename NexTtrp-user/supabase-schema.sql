@@ -1,4 +1,4 @@
--- ============================================================
+﻿-- ============================================================
 -- EXTENSIONS
 -- ============================================================
 create schema if not exists extensions;
@@ -607,9 +607,9 @@ begin
   ) + 1
   into next_number
   from public.bookings
-  where booking_reference like format('NEXTTRP-%s-%%', booking_year);
+  where booking_reference like format('Toureez-%s-%%', booking_year);
 
-  new.booking_reference := format('NEXTTRP-%s-%s', booking_year, lpad(next_number::text, 5, '0'));
+  new.booking_reference := format('Toureez-%s-%s', booking_year, lpad(next_number::text, 5, '0'));
   return new;
 end;
 $$;
@@ -1499,10 +1499,10 @@ values (
   '00000000-0000-0000-0000-000000000000',
   'authenticated',
   'authenticated',
-  'seed-admin@nexttrp.in',
+  'seed-admin@toureez.in',
   now(),
   '{"provider":"email","providers":["email"]}'::jsonb,
-  '{"full_name":"NEXTTRP Seed Admin"}'::jsonb,
+  '{"full_name":"Toureez Seed Admin"}'::jsonb,
   false,
   now(),
   now(),
@@ -1535,7 +1535,7 @@ insert into public.users (
 )
 values (
   '00000000-0000-0000-0000-000000000001',
-  'NEXTTRP Seed Admin',
+  'Toureez Seed Admin',
   null,
   'admin'
 )
@@ -2515,8 +2515,8 @@ where c.id = company_stats.company_id;
 -- values
 --   (
 --     (select id from public.packages where title = 'Munnar Tea Valley Escape'),
---     'https://res.cloudinary.com/demo/image/upload/NEXTTRP/munnar-cover.jpg',
---     'NEXTTRP/munnar-cover',
+--     'https://res.cloudinary.com/demo/image/upload/Toureez/munnar-cover.jpg',
+--     'Toureez/munnar-cover',
 --     'Tea gardens in Munnar',
 --     true,
 --     1,
@@ -2524,8 +2524,8 @@ where c.id = company_stats.company_id;
 --   ),
 --   (
 --     (select id from public.packages where title = 'Munnar Tea Valley Escape'),
---     'https://res.cloudinary.com/demo/image/upload/NEXTTRP/munnar-viewpoint.jpg',
---     'NEXTTRP/munnar-viewpoint',
+--     'https://res.cloudinary.com/demo/image/upload/Toureez/munnar-viewpoint.jpg',
+--     'Toureez/munnar-viewpoint',
 --     'Viewpoint in Munnar',
 --     false,
 --     2,

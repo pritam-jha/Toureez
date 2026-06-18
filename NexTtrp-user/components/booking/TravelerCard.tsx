@@ -207,7 +207,7 @@ export function TravelerCard({
               <TouchableOpacity
                 key={opt.value}
                 style={[styles.pill, selected && styles.pillSelected]}
-                onPress={() => update({ id_type: opt.value })}
+                onPress={() => update({ id_type: opt.value, id_number: '' })}
                 activeOpacity={0.7}
                 accessibilityRole="radio"
                 accessibilityState={{ checked: selected }}
@@ -232,9 +232,13 @@ export function TravelerCard({
         <TextInput
           style={[styles.input, errors?.id_number ? styles.inputError : null]}
           value={traveler.id_number}
-          onChangeText={(text) =>
-            update({ id_number: text.toUpperCase() })
-          }
+          onChangeText={(text) => {
+            const cleaned =
+              traveler.id_type === 'aadhaar'
+                ? text.replace(/[^0-9]/g, '').slice(0, 12)
+                : text.toUpperCase();
+            update({ id_number: cleaned });
+          }}
           placeholder={
             traveler.id_type === 'aadhaar'
               ? '12-digit Aadhaar number'
@@ -243,6 +247,7 @@ export function TravelerCard({
               : 'License number'
           }
           placeholderTextColor={Colors.textTertiary}
+          keyboardType={traveler.id_type === 'aadhaar' ? 'number-pad' : 'default'}
           autoCapitalize="characters"
           autoCorrect={false}
           returnKeyType="done"

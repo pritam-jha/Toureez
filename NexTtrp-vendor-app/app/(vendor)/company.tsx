@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/(vendor)/company.tsx
  * @description Company profile edit screen.
  *
@@ -188,12 +188,12 @@ export default function CompanyScreen(): React.ReactElement {
             },
           ]}>
             {company.is_verified
-              ? 'Your company is verified and live on NEXTTRP.'
+              ? 'Your company is verified and live on Toureez.'
               : company.status === 'rejected'
                 ? company.rejection_reason
                   ? `Your company verification was rejected. Reason: ${company.rejection_reason}`
                   : 'Your company verification was rejected. Please contact support.'
-                : 'Your company is pending verification by the NEXTTRP team.'}
+                : 'Your company is pending verification by the Toureez team.'}
           </Text>
         </View>
 
@@ -258,9 +258,10 @@ export default function CompanyScreen(): React.ReactElement {
             <Input
               label="GST Number"
               value={gstNumber}
-              onChangeText={setGstNumber}
+              onChangeText={(text) => setGstNumber(text.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 15))}
               placeholder="e.g. 22AAAAA0000A1Z5"
               autoCapitalize="characters"
+              maxLength={15}
               leftIcon={<Ionicons name="card-outline" size={18} color={Colors.textSecondary} />}
             />
           </View>

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/_layout.tsx
  * @description Root layout — bootstraps Supabase auth listener, TanStack Query,
  * and routes the vendor to the correct screen based on their role.
@@ -146,7 +146,7 @@ function AppLayout(): React.ReactElement {
   }, [setLoading, setSession, clearUser, rootSegment]);
 
   if (isLoading) {
-    return <FullScreenLoader message="Loading NEXTTRP Vendor..." />;
+    return <FullScreenLoader message="Loading Toureez Vendor..." />;
   }
 
   return (

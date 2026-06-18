@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file constants/radius.ts
- * @description NEXTTRP radius scale.
+ * @description Toureez radius scale.
  */
 
 export const Radius = {

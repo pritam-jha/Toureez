@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file components/ErrorBoundary.tsx
  * @description Root error boundary for the traveller app.
  *
@@ -91,7 +91,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
 
           <Text style={styles.heading}>Something went wrong</Text>
           <Text style={styles.subheading}>
-            NEXTTRP ran into an unexpected problem. Your data is safe.
+            Toureez ran into an unexpected problem. Your data is safe.
           </Text>
 
           <View style={styles.messageBox}>

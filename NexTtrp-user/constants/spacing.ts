@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file constants/spacing.ts
- * @description NEXTTRP spacing scale.
+ * @description Toureez spacing scale.
  */
 
 export const Spacing = {

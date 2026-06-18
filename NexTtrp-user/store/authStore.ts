@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file store/authStore.ts
  * @description Zustand store for authentication state.
  *
@@ -25,8 +25,8 @@ export const selectUserRole = (state: AuthState): UserRole | undefined =>
 
 // Central mapping for post-login and cold-start role redirects.
 // This is the TRAVELLER app — only travelers are welcome here.
-// Vendors  → use NexTtrp-vendor-app
-// Admins   → use NexTtrp-admin-app
+// Vendors  → use Toureez-vendor-app
+// Admins   → use Toureez-admin-app
 // If either lands here, redirect to login so they can sign out.
 export const getHomeRouteForRole = (role: UserRole | null | undefined): Href => {
   if (role === VENDOR_ROLE) return '/(auth)/login' as Href; // no (vendor) group in this app

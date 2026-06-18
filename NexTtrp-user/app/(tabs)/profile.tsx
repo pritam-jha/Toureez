@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file app/(tabs)/profile.tsx
- * @description NEXTTRP profile screen.
+ * @description Toureez profile screen.
  */
 
 import React, { useCallback, useEffect, useState } from 'react';
@@ -264,7 +264,7 @@ export default function ProfileScreen(): React.ReactElement {
                   icon="chatbubble-outline"
                   label="App Feedback"
                   onPress={() =>
-                    void Linking.openURL('mailto:support@nexttrp.com?subject=App%20Feedback')
+                    void Linking.openURL('mailto:support@toureez.com?subject=App%20Feedback')
                   }
                 />
                 <MenuItem
@@ -273,9 +273,9 @@ export default function ProfileScreen(): React.ReactElement {
                   onPress={() =>
                     Alert.alert(
                       'Help & Support',
-                      'For any assistance, please email us at:\nsupport@nexttrp.com\n\nWe typically respond within 24 hours.',
+                      'For any assistance, please email us at:\nsupport@toureez.com\n\nWe typically respond within 24 hours.',
                       [
-                        { text: 'Send Email', onPress: () => void Linking.openURL('mailto:support@nexttrp.com?subject=Help%20Request') },
+                        { text: 'Send Email', onPress: () => void Linking.openURL('mailto:support@toureez.com?subject=Help%20Request') },
                         { text: 'OK', style: 'cancel' },
                       ]
                     )

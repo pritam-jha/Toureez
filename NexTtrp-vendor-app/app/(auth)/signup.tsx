@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/(auth)/signup.tsx
  * @description Vendor portal sign-up screen.
  *
@@ -243,7 +243,7 @@ export default function SignUpScreen(): React.ReactElement {
           <View style={styles.logoContainer}>
             <Ionicons name="briefcase" size={36} color={Colors.textWhite} />
           </View>
-          <Text style={styles.brandName}>NEXTTRP</Text>
+          <Text style={styles.brandName}>Toureez</Text>
           <Text style={styles.brandTagline}>Vendor Portal</Text>
         </View>
 
@@ -251,7 +251,7 @@ export default function SignUpScreen(): React.ReactElement {
         <View style={[styles.card, Shadows.md]}>
           <Text style={styles.heading}>Create Vendor Account</Text>
           <Text style={styles.subheading}>
-            Join NEXTTRP as a travel company and start reaching thousands of travelers.
+            Join Toureez as a travel company and start reaching thousands of travelers.
           </Text>
 
           <Input
@@ -333,7 +333,7 @@ export default function SignUpScreen(): React.ReactElement {
           <View style={styles.termsNote}>
             <Ionicons name="shield-checkmark-outline" size={13} color={Colors.textLight} />
             <Text style={styles.termsText}>
-              By creating an account you agree to NEXTTRP's{' '}
+              By creating an account you agree to Toureez's{' '}
               <Text style={styles.termsLink}>Terms of Service</Text> and{' '}
               <Text style={styles.termsLink}>Privacy Policy</Text>.
             </Text>

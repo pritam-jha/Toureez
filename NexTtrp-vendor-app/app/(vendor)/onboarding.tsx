@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/(vendor)/onboarding.tsx
  * @description Company onboarding screen — shown when the vendor has not yet
  * created their company profile.
@@ -101,7 +101,7 @@ export default function OnboardingScreen(): React.ReactElement {
           <View style={styles.logoContainer}>
             <Ionicons name="briefcase" size={32} color={Colors.textWhite} />
           </View>
-          <Text style={styles.brandName}>NEXTTRP</Text>
+          <Text style={styles.brandName}>Toureez</Text>
         </View>
 
         {/* Card */}
@@ -166,9 +166,10 @@ export default function OnboardingScreen(): React.ReactElement {
           <Input
             label="GST Number"
             value={gstNumber}
-            onChangeText={setGstNumber}
+            onChangeText={(text) => setGstNumber(text.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 15))}
             placeholder="e.g. 22AAAAA0000A1Z5"
             autoCapitalize="characters"
+            maxLength={15}
             hint="Optional — required for GST invoices."
             leftIcon={<Ionicons name="card-outline" size={18} color={Colors.textSecondary} />}
           />
@@ -185,7 +186,7 @@ export default function OnboardingScreen(): React.ReactElement {
           <View style={styles.note}>
             <Ionicons name="shield-checkmark-outline" size={14} color={Colors.textLight} />
             <Text style={styles.noteText}>
-              Your company profile will be reviewed by the NEXTTRP team before going live.
+              Your company profile will be reviewed by the Toureez team before going live.
             </Text>
           </View>
         </View>

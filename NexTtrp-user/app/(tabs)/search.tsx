@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file app/(tabs)/search.tsx
- * @description NEXTTRP package search screen.
+ * @description Toureez package search screen.
  */
 
 import React, {
@@ -42,7 +42,7 @@ import type { SearchScreenFilters, SortOption } from '../../hooks/useSearch';
 import type { ActiveFilterChip } from '../../components/search/ActiveFilters';
 
 function recentKey(userId: string): string {
-  return `@nexttrp:recent_searches:${userId}`;
+  return `@toureez:recent_searches:${userId}`;
 }
 
 const DESTINATION_DEBOUNCE_MS = 400;

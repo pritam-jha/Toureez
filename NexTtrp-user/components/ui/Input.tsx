@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file components/ui/Input.tsx
- * @description NEXTTRP input field.
+ * @description Toureez input field.
  */
 
 import React, { forwardRef, useState } from 'react';

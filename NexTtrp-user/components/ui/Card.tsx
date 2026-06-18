@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file components/ui/Card.tsx
- * @description NEXTTRP animated card.
+ * @description Toureez animated card.
  */
 
 import React from 'react';

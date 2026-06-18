@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file components/home/PackageCard.tsx
- * @description NEXTTRP trending package card.
+ * @description Toureez trending package card.
  */
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';

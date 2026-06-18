@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file app/(tabs)/index.tsx
- * @description NEXTTRP home screen.
+ * @description Toureez home screen.
  */
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';

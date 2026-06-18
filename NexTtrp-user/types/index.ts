@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file types/index.ts
- * @description Central type definitions for the NEXTTRP travel app.
+ * @description Central type definitions for the Toureez travel app.
  * All interfaces are defined here and imported across the codebase
  * to ensure a single source of truth for data shapes.
  */

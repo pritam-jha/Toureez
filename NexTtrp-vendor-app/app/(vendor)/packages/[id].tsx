@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/(vendor)/packages/[id].tsx
  * @description Package detail and edit screen.
  *
@@ -309,7 +309,7 @@ export default function PackageDetailScreen(): React.ReactElement {
   const handleSubmit = (): void => {
     Alert.alert(
       'Submit for Review',
-      'Once submitted, your package will be reviewed by the NEXTTRP team. You cannot edit it while it is pending.',
+      'Once submitted, your package will be reviewed by the Toureez team. You cannot edit it while it is pending.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -535,7 +535,7 @@ export default function PackageDetailScreen(): React.ReactElement {
               <View style={styles.liveNote}>
                 <Ionicons name="checkmark-circle" size={16} color={Colors.success} />
                 <Text style={styles.liveNoteText}>
-                  This package is live on NEXTTRP and accepting bookings.
+                  This package is live on Toureez and accepting bookings.
                 </Text>
               </View>
               {/* Allow vendor to move active package back to draft (hides it from travellers) */}
@@ -572,7 +572,7 @@ export default function PackageDetailScreen(): React.ReactElement {
             <View style={styles.pendingNote}>
               <Ionicons name="hourglass-outline" size={16} color={Colors.warning} />
               <Text style={styles.pendingNoteText}>
-                Under review by the NEXTTRP team. Editing is locked until reviewed.
+                Under review by the Toureez team. Editing is locked until reviewed.
               </Text>
             </View>
           )}

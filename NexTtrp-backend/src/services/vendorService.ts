@@ -400,6 +400,55 @@ export async function getVendorDashboard(ownerId: string): Promise<VendorDashboa
   };
 }
 
+export interface VendorMonthlyEarnings {
+  month: string;
+  revenue: number;
+  bookings: number;
+}
+
+/**
+ * Returns confirmed/completed booking revenue for the authenticated vendor,
+ * scoped to a single calendar month (used by the Earnings Overview month picker).
+ */
+export async function getVendorEarningsForMonth(
+  ownerId: string,
+  month: string,
+): Promise<VendorMonthlyEarnings> {
+  const companyId = await requireCompanyId(ownerId);
+
+  const [year, mon] = month.split('-').map(Number);
+  const rangeStart = new Date(year, mon - 1, 1).toISOString();
+  const rangeEnd = new Date(year, mon, 1).toISOString();
+
+  const { data, error } = await supabaseAdmin
+    .from('bookings')
+    .select('status, total_amount')
+    .eq('company_id', companyId)
+    .gte('created_at', rangeStart)
+    .lt('created_at', rangeEnd);
+
+  if (error !== null) throwDb('getVendorEarningsForMonth', error);
+
+  const rows = (data as unknown[] | null) ?? [];
+  let revenue = 0;
+  let bookingsCount = 0;
+
+  for (const row of rows) {
+    const r = toRecord(row);
+    const status = readString(r, 'status');
+    if (status === 'confirmed' || status === 'completed') {
+      revenue += readNumber(r, 'total_amount');
+      bookingsCount += 1;
+    }
+  }
+
+  return {
+    month,
+    revenue: Math.round(revenue * 100) / 100,
+    bookings: bookingsCount,
+  };
+}
+
 // ── Company ───────────────────────────────────────────────────────────────────
 
 /**

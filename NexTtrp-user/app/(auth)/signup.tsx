@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file app/(auth)/signup.tsx
- * @description NEXTTRP signup screen.
+ * @description Toureez signup screen.
  */
 
 import React, { useRef, useState } from 'react';
@@ -61,7 +61,7 @@ export default function SignUpScreen(): React.ReactElement {
           <View style={[styles.hero, heroInset]}>
             <View style={styles.heroGradientEnd} />
             <Ionicons name="airplane" size={24} color={Colors.textWhite} />
-            <Text style={styles.logoText}>NEXTTRP</Text>
+            <Text style={styles.logoText}>Toureez</Text>
             <Text style={styles.tagline}>Travel More, Spend Less</Text>
           </View>
 

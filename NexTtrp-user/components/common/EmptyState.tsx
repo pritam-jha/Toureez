@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file components/common/EmptyState.tsx
- * @description NEXTTRP empty state.
+ * @description Toureez empty state.
  */
 
 import React from 'react';

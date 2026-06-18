@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file store/wishlistStore.ts
  * @description Zustand store for local wishlist state with AsyncStorage persistence.
  *
@@ -125,7 +125,7 @@ export const useWishlistStore = create<WishlistState>()(
         get().wishlistedDestinationIds.has(destinationId),
     }),
     {
-      name: 'nexttrp-wishlist-storage',
+      name: 'toureez-wishlist-storage',
       storage: createJSONStorage(() => AsyncStorage),
       /**
        * Custom serialiser: converts Set → Array before writing to AsyncStorage.

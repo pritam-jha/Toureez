@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/(auth)/login.tsx
  * @description Vendor portal login screen.
  *
@@ -100,7 +100,7 @@ export default function LoginScreen(): React.ReactElement {
           <View style={styles.logoContainer}>
             <Ionicons name="briefcase" size={36} color={Colors.textWhite} />
           </View>
-          <Text style={styles.brandName}>NEXTTRP</Text>
+          <Text style={styles.brandName}>Toureez</Text>
           <Text style={styles.brandTagline}>Vendor Portal</Text>
         </View>
 
@@ -163,7 +163,7 @@ export default function LoginScreen(): React.ReactElement {
 
         {/* Sign-up link */}
         <View style={styles.signUpRow}>
-          <Text style={styles.signUpPrompt}>New to NEXTTRP Vendor?</Text>
+          <Text style={styles.signUpPrompt}>New to Toureez Vendor?</Text>
           <Pressable
             onPress={() => router.push('/(auth)/signup')}
             hitSlop={8}

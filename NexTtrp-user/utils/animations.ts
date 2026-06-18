@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file utils/animations.ts
- * @description Shared NEXTTRP Animated API hooks.
+ * @description Shared Toureez Animated API hooks.
  */
 
 import { useCallback, useEffect, useMemo, useRef } from 'react';

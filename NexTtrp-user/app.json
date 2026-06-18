@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "NEXTTRP",
-    "slug": "nexttrp-app",
+    "name": "Toureez",
+    "slug": "toureez-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -17,11 +17,11 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.nexttrp.app",
+      "bundleIdentifier": "com.toureez.app",
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "NEXTTRP needs access to your photo library to upload profile pictures.",
-        "NSCameraUsageDescription": "NEXTTRP needs access to your camera to take profile pictures.",
-        "NSPhotoLibraryAddUsageDescription": "NEXTTRP saves photos to your library."
+        "NSPhotoLibraryUsageDescription": "Toureez needs access to your photo library to upload profile pictures.",
+        "NSCameraUsageDescription": "Toureez needs access to your camera to take profile pictures.",
+        "NSPhotoLibraryAddUsageDescription": "Toureez saves photos to your library."
       }
     },
     "android": {
@@ -29,7 +29,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFF8F0"
       },
-      "package": "com.nexttrp.app",
+      "package": "com.toureez.app",
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.READ_MEDIA_IMAGES",
@@ -41,7 +41,7 @@
           "autoVerify": true,
           "data": [
             {
-              "scheme": "nexttrp"
+              "scheme": "toureez"
             }
           ],
           "category": [
@@ -79,13 +79,13 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "NEXTTRP needs access to your photo library to upload profile pictures.",
-          "cameraPermission": "NEXTTRP needs access to your camera to take profile pictures."
+          "photosPermission": "Toureez needs access to your photo library to upload profile pictures.",
+          "cameraPermission": "Toureez needs access to your camera to take profile pictures."
         }
       ],
       "@react-native-community/datetimepicker"
     ],
-    "scheme": "nexttrp",
+    "scheme": "toureez",
     "experiments": {
       "typedRoutes": true
     },

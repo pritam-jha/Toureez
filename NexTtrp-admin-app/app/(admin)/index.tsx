@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/(admin)/index.tsx
  * Admin Dashboard — Luxury SaaS dark-mode redesign.
  * Glassmorphism cards, neon accents, premium typography.
@@ -6,9 +6,12 @@
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Dimensions,
+  FlatList,
+  Modal,
+  Pressable,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -20,6 +23,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   useAdminDashboard,
+  useAdminEarningsForMonth,
   adminDashboardQueryKeys,
 } from '../../hooks/admin/useAdminDashboard';
 import { useAdminUnreadCount } from '../../hooks/admin/useAdminNotifications';
@@ -79,6 +83,23 @@ function formatINR(n: number): string {
 
 function todayStr(): string {
   return new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+const ALL_TIME = 'all' as const;
+type EarningsPeriod = string | typeof ALL_TIME;
+
+interface MonthOption { key: EarningsPeriod; label: string }
+
+function buildMonthOptions(): MonthOption[] {
+  const options: MonthOption[] = [{ key: ALL_TIME, label: 'All Time' }];
+  const now = new Date();
+  for (let i = 0; i < 12; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    const label = d.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+    options.push({ key, label: i === 0 ? `${label} (This Month)` : label });
+  }
+  return options;
 }
 
 // ── Stat card ─────────────────────────────────────────────────────────────────
@@ -157,6 +178,17 @@ export default function AdminDashboardScreen(): React.ReactElement {
   const { data: activity, isLoading: activityLoading } = useAdminAuditLogs({ page: 1, limit: 3 });
   const unread = useAdminUnreadCount();
 
+  const [earningsPeriod, setEarningsPeriod] = useState<EarningsPeriod>(ALL_TIME);
+  const [monthModalVisible, setMonthModalVisible] = useState(false);
+  const monthOptions = useMemo(buildMonthOptions, []);
+
+  const isAllTime = earningsPeriod === ALL_TIME;
+  const {
+    data: monthEarnings,
+    isLoading: monthEarningsLoading,
+    isFetching: monthEarningsFetching,
+  } = useAdminEarningsForMonth(isAllTime ? '' : earningsPeriod);
+
   const firstName = (user?.full_name ?? 'Admin').split(' ')[0] ?? 'Admin';
 
   const onRefresh = useCallback(() => {
@@ -194,7 +226,7 @@ export default function AdminDashboardScreen(): React.ReactElement {
             <View style={styles.logoIcon}>
               <MaterialCommunityIcons name="airplane" size={16} color={D.primary} />
             </View>
-            <Text style={styles.logoText}>NEXTTRP</Text>
+            <Text style={styles.logoText}>Toureez</Text>
             <View style={styles.adminBadge}>
               <Text style={styles.adminBadgeTxt}>Admin</Text>
             </View>
@@ -265,15 +297,62 @@ export default function AdminDashboardScreen(): React.ReactElement {
             <View>
               <Text style={styles.secTitle}>Revenue Overview</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 2 }}>
-                <Text style={styles.revAmount}>{formatINR(metrics?.total_revenue ?? 0)}</Text>
+                <Text style={styles.revAmount}>
+                  {isAllTime
+                    ? formatINR(metrics?.total_revenue ?? 0)
+                    : monthEarningsLoading || monthEarningsFetching
+                      ? '—'
+                      : formatINR(monthEarnings?.revenue ?? 0)}
+                </Text>
               </View>
             </View>
-            <View style={styles.periodPill}>
-              <Text style={styles.periodTxt}>This Month</Text>
+            <TouchableOpacity style={styles.periodPill} onPress={() => setMonthModalVisible(true)} activeOpacity={0.8}>
+              <Text style={styles.periodTxt} numberOfLines={1}>
+                {monthOptions.find((m) => m.key === earningsPeriod)?.label ?? 'All Time'}
+              </Text>
               <MaterialCommunityIcons name="chevron-down" size={13} color={D.textSec} />
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
+
+        {/* ── Month picker modal ─────────────────────────────────── */}
+        <Modal
+          visible={monthModalVisible}
+          animationType="slide"
+          transparent
+          onRequestClose={() => setMonthModalVisible(false)}
+        >
+          <Pressable style={styles.modalOverlay} onPress={() => setMonthModalVisible(false)}>
+            <Pressable style={styles.monthSheet} onPress={(e) => e.stopPropagation()}>
+              <View style={styles.monthSheetHeader}>
+                <Text style={styles.monthSheetTitle}>Select Period</Text>
+                <Pressable onPress={() => setMonthModalVisible(false)} hitSlop={8}>
+                  <MaterialCommunityIcons name="close" size={22} color={D.text} />
+                </Pressable>
+              </View>
+              <FlatList
+                data={monthOptions}
+                keyExtractor={(item) => item.key}
+                renderItem={({ item }) => {
+                  const selected = item.key === earningsPeriod;
+                  return (
+                    <Pressable
+                      style={[styles.monthRow, selected && styles.monthRowSelected]}
+                      onPress={() => {
+                        setEarningsPeriod(item.key);
+                        setMonthModalVisible(false);
+                      }}
+                    >
+                      <Text style={[styles.monthRowText, selected && styles.monthRowTextSelected]}>{item.label}</Text>
+                      {selected && <MaterialCommunityIcons name="check-circle" size={18} color={D.primary} />}
+                    </Pressable>
+                  );
+                }}
+                style={{ maxHeight: 360 }}
+              />
+            </Pressable>
+          </Pressable>
+        </Modal>
 
         {/* ── Quick actions ──────────────────────────────────────── */}
         <View style={styles.section}>
@@ -380,7 +459,7 @@ export default function AdminDashboardScreen(): React.ReactElement {
             <Text style={styles.footerLink}>Account</Text>
           </TouchableOpacity>
           <Text style={styles.footerDot}>·</Text>
-          <Text style={styles.footerVersion}>NEXTTRP Admin v1</Text>
+          <Text style={styles.footerVersion}>Toureez Admin v1</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -437,8 +516,18 @@ const styles = StyleSheet.create({
   revCard:   { backgroundColor: D.card, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: D.cardBorder, marginBottom: 16 },
   revHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 },
   revAmount: { fontSize: 26, fontWeight: '800', color: D.text, letterSpacing: -0.5 },
-  periodPill:{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: D.cardBorder, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 7 },
+  periodPill:{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: D.cardBorder, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 7, maxWidth: 150 },
   periodTxt: { fontSize: 12, color: D.textSec, fontWeight: '600' },
+
+  // Month picker modal
+  modalOverlay:       { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'flex-end' },
+  monthSheet:         { backgroundColor: D.card, borderTopLeftRadius: 20, borderTopRightRadius: 20, borderWidth: 1, borderColor: D.cardBorder, paddingBottom: 24 },
+  monthSheetHeader:   { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 18, borderBottomWidth: 1, borderBottomColor: D.divider },
+  monthSheetTitle:    { fontSize: 16, fontWeight: '700', color: D.text },
+  monthRow:           { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 18, paddingVertical: 14 },
+  monthRowSelected:   { backgroundColor: D.primaryDim },
+  monthRowText:       { fontSize: 14, color: D.textSec, fontWeight: '500' },
+  monthRowTextSelected: { color: D.primary, fontWeight: '700' },
 
   // Section
   section:  { marginBottom: 20 },

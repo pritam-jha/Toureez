@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/(vendor)/account.tsx
  * @description Account tab — user profile, company info, and navigation to
  * company, reviews, payouts, settings, and notifications.
@@ -240,8 +240,8 @@ export default function AccountScreen(): React.ReactElement {
         <MenuRow
           icon="help-circle-outline"
           label="Help & Support"
-          subtitle="FAQs, contact NEXTTRP team"
-          onPress={() => Alert.alert('Help & Support', 'Please email support@nexttrp.com for assistance.')}
+          subtitle="FAQs, contact Toureez team"
+          onPress={() => Alert.alert('Help & Support', 'Please email support@toureez.com for assistance.')}
           iconColor={Colors.info}
           iconBg={Colors.infoLight}
         />
@@ -263,7 +263,7 @@ export default function AccountScreen(): React.ReactElement {
       </View>
 
       {/* ── App version ──────────────────────────────────────────────── */}
-      <Text style={styles.version}>NEXTTRP Vendor Portal</Text>
+      <Text style={styles.version}>Toureez Vendor Portal</Text>
     </ScrollView>
   );
 }

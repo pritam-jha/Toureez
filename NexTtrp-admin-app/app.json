@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "NEXTTRP Admin",
-    "slug": "nexttrp-admin",
+    "name": "Toureez Admin",
+    "slug": "toureez-admin",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -17,21 +17,21 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.nexttrp.admin"
+      "bundleIdentifier": "com.toureez.admin"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#E8631A"
       },
-      "package": "com.nexttrp.admin"
+      "package": "com.toureez.admin"
     },
     "plugins": [
       "expo-router",
       "expo-font",
       "expo-splash-screen"
     ],
-    "scheme": "nexttrpadmin",
+    "scheme": "toureezadmin",
     "experiments": {
       "typedRoutes": true
     },

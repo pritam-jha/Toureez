@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/index.tsx
  * @description Cold-start redirect — single source of truth for the initial route.
  *
@@ -16,7 +16,7 @@ export default function Index(): React.ReactElement {
   const isLoading = useAuthStore((state) => state.isLoading);
 
   if (isLoading) {
-    return <FullScreenLoader message="Loading NEXTTRP Vendor..." />;
+    return <FullScreenLoader message="Loading Toureez Vendor..." />;
   }
 
   // FIXED: 2 - Vendor portal only admits company_owner role.

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file hooks/usePushNotifications.ts
  * @description Registers for Expo push notifications and saves the token to the backend.
  *
@@ -26,7 +26,7 @@ import { useAuthStore } from '../store/authStore';
 // the package from loading at all in Expo Go, silencing the warning entirely.
 const isExpoGo = Constants.executionEnvironment === 'storeClient';
 
-const TOKEN_STORAGE_KEY = '@nexttrp:push_token';
+const TOKEN_STORAGE_KEY = '@toureez:push_token';
 
 export function usePushNotifications(): void {
   const user = useAuthStore((s) => s.user);
@@ -62,7 +62,7 @@ export function usePushNotifications(): void {
 
         if (Platform.OS === 'android') {
           await Notifications.setNotificationChannelAsync('default', {
-            name: 'NEXTTRP',
+            name: 'Toureez',
             importance: Notifications.AndroidImportance.MAX,
             vibrationPattern: [0, 250, 250, 250],
             lightColor: '#E8631A',

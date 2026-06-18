@@ -257,3 +257,13 @@ export const AdminListAuditLogsQuerySchema = paginationSchema.extend({
   from_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   to_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
 });
+
+// ── Admin: Earnings query ─────────────────────────────────────────────────────
+
+/**
+ * Validates the query for GET /api/v1/admin/earnings.
+ * `month` must be in YYYY-MM format (e.g. "2026-06").
+ */
+export const AdminEarningsQuerySchema = z.object({
+  month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'month must be in YYYY-MM format'),
+});

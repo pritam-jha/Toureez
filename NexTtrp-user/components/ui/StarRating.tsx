@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file components/ui/StarRating.tsx
- * @description NEXTTRP star rating with display and interactive modes.
+ * @description Toureez star rating with display and interactive modes.
  */
 
 import React, { useCallback } from 'react';

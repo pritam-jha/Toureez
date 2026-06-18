@@ -1,7 +1,7 @@
-/**
+﻿/**
  * @file app/(vendor)/enquiries/[id].tsx
  * @description Vendor enquiry thread — reply to a traveler's question about
- * a package. All messages are relayed through NEXTTRP; no personal contact
+ * a package. All messages are relayed through Toureez; no personal contact
  * details are shared.
  */
 

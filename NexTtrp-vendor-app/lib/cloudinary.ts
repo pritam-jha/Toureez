@@ -1,10 +1,10 @@
-/**
+﻿/**
  * @file lib/cloudinary.ts
  * @description Cloudinary direct upload helper for package and company images.
  *
  * Images are uploaded directly from the client to Cloudinary (unsigned upload).
  * Only the resulting URL and public_id are sent to our backend for storage.
- * This matches the pattern used in NexTtrp-user.
+ * This matches the pattern used in Toureez-user.
  */
 
 import * as ImagePicker from 'expo-image-picker';
@@ -51,7 +51,7 @@ export async function uploadToCloudinary(localUri: string): Promise<CloudinaryUp
   // Guard against unconfigured placeholder values
   if (cloudName === 'your-cloud-name' || !cloudName) {
     throw new Error(
-      'Cloudinary is not configured. Open NexTtrp-vendor-app/.env and set EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME to your Cloudinary cloud name.',
+      'Cloudinary is not configured. Open Toureez-vendor-app/.env and set EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME to your Cloudinary cloud name.',
     );
   }
 
@@ -65,7 +65,7 @@ export async function uploadToCloudinary(localUri: string): Promise<CloudinaryUp
   } as unknown as Blob);
 
   formData.append('upload_preset', preset);
-  formData.append('folder', 'nexttrp/vendor');
+  formData.append('folder', 'toureez/vendor');
 
   const response = await fetch(
     `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,

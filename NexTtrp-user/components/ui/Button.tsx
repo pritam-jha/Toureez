@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file components/ui/Button.tsx
- * @description NEXTTRP button component.
+ * @description Toureez button component.
  */
 
 import React, { useCallback, useRef } from 'react';

@@ -1,8 +1,8 @@
-/**
+﻿/**
  * @file lib/supabase.ts
  * @description Supabase client singleton with AsyncStorage session persistence.
  *
- * Uses the same Supabase project as NexTtrp-user and NexTtrp-admin-app —
+ * Uses the same Supabase project as Toureez-user and Toureez-admin-app —
  * all three apps share the same auth.users table and public schema.
  *
  * IMPORTANT: Import `supabase` from this file only inside lib/api/* files.

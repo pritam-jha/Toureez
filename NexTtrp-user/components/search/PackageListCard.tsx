@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file components/search/PackageListCard.tsx
- * @description NEXTTRP full-width package result card.
+ * @description Toureez full-width package result card.
  */
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';

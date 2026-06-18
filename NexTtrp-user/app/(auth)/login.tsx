@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file app/(auth)/login.tsx
- * @description NEXTTRP login screen.
+ * @description Toureez login screen.
  */
 
 import React, { useRef, useState } from 'react';
@@ -57,7 +57,7 @@ export default function LoginScreen(): React.ReactElement {
           <View style={[styles.hero, heroInset]}>
             <View style={styles.heroGradientEnd} />
             <Ionicons name="airplane" size={24} color={Colors.textWhite} />
-            <Text style={styles.logoText}>NEXTTRP</Text>
+            <Text style={styles.logoText}>Toureez</Text>
             <Text style={styles.tagline}>Travel More, Spend Less</Text>
           </View>
 
@@ -152,7 +152,7 @@ export default function LoginScreen(): React.ReactElement {
             </View>
 
             <View style={styles.footer}>
-              <Text style={styles.footerText}>New to NEXTTRP?</Text>
+              <Text style={styles.footerText}>New to Toureez?</Text>
               <Link href="/(auth)/signup" asChild>
                 <TouchableOpacity accessibilityRole="link" disabled={isBusy}>
                   <Text style={styles.footerLink}> Create account</Text>

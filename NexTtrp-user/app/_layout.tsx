@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/_layout.tsx
  * @description Root layout, session resolver, auth listener, and auth gate.
  */
@@ -81,7 +81,7 @@ function AppLayout(): React.ReactElement {
 
     const isInAuthGroup = rootSegment === '(auth)';
     // Only (tabs) is a protected group in the traveller app.
-    // Vendors use NexTtrp-vendor-app; admins use NexTtrp-admin-app.
+    // Vendors use Toureez-vendor-app; admins use Toureez-admin-app.
     const isInProtectedGroup = rootSegment === '(tabs)';
 
     if (user && isInAuthGroup) {
@@ -157,7 +157,7 @@ function AppLayout(): React.ReactElement {
   }, [setLoading, setSession, setWishlist]);
 
   if (isLoading) {
-    return <FullScreenLoader message="Loading NEXTTRP..." />;
+    return <FullScreenLoader message="Loading Toureez..." />;
   }
 
   return (

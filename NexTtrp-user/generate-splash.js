@@ -1,5 +1,5 @@
-/**
- * NEXTTRP Splash Screen Generator
+﻿/**
+ * Toureez Splash Screen Generator
  * Generates a 1080×1920 splash.png from the logo file.
  * Uses: jimp-compact (already in node_modules)
  *
@@ -110,7 +110,7 @@ async function loadLogo(logoPath, targetSize) {
 // Main
 // ─────────────────────────────────────────────
 async function main() {
-  console.log('🎨  Generating NEXTTRP splash screen …\n');
+  console.log('🎨  Generating Toureez splash screen …\n');
 
   const LOGO_SIZE = 740;                              // logo badge diameter
   const logoX     = Math.round((W - LOGO_SIZE) / 2); // 170
@@ -137,7 +137,7 @@ async function main() {
 
   // 4. Load + process logo (remove white bg, resize)
   process.stdout.write('   [4/5] Processing logo … ');
-  const logoPath = path.join(__dirname, 'assets', 'splash-nexttrp.png');
+  const logoPath = path.join(__dirname, 'assets', 'splash-toureez.png');
   const logo     = await loadLogo(logoPath, LOGO_SIZE);
   bg.composite(logo, logoX, logoY);
   console.log('done');

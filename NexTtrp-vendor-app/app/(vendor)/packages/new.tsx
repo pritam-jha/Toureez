@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/(vendor)/packages/new.tsx
  * @description Create new package screen.
  *
@@ -30,7 +30,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { useCreatePackage } from '../../../hooks/useVendorPackages';
 import { useVendorCompany } from '../../../hooks/useVendorCompany';
-import { listLocations, listCategories } from '../../../lib/api/vendor';
+import { listLocations, listCategories, createLocation } from '../../../lib/api/vendor';
 import { Header } from '../../../components/ui/Header';
 import { Button } from '../../../components/ui/Button';
 import { Input } from '../../../components/ui/Input';
@@ -42,6 +42,8 @@ import { Shadows } from '../../../constants/shadows';
 
 interface LocationItem { id: string; city: string; state: string; is_popular: boolean }
 interface CategoryItem { id: string; name: string; label: string; icon: string }
+
+const REGION_OPTIONS = ['North India', 'South India', 'East India', 'West India', 'Central India'] as const;
 
 // ── Main screen ───────────────────────────────────────────────────────────────
 
@@ -75,6 +77,14 @@ export default function NewPackageScreen(): React.ReactElement {
   // Location picker modal
   const [locationModalVisible, setLocationModalVisible] = useState(false);
   const [locationSearch, setLocationSearch] = useState('');
+
+  // Add new destination form (shown inline in the picker modal)
+  const [addLocationVisible, setAddLocationVisible] = useState(false);
+  const [newCity, setNewCity] = useState('');
+  const [newState, setNewState] = useState('');
+  const [newRegion, setNewRegion] = useState<typeof REGION_OPTIONS[number] | ''>('');
+  const [newLocationError, setNewLocationError] = useState('');
+  const [addingLocation, setAddingLocation] = useState(false);
 
   // Validation errors
   const [titleError, setTitleError] = useState('');
@@ -117,7 +127,59 @@ export default function NewPackageScreen(): React.ReactElement {
     setLocationError('');
     setLocationModalVisible(false);
     setLocationSearch('');
+    setAddLocationVisible(false);
   }, []);
+
+  const closeLocationModal = useCallback(() => {
+    setLocationModalVisible(false);
+    setLocationSearch('');
+    setAddLocationVisible(false);
+    setNewCity('');
+    setNewState('');
+    setNewRegion('');
+    setNewLocationError('');
+  }, []);
+
+  const handleAddLocation = useCallback(async () => {
+    setNewLocationError('');
+    if (!newCity.trim() || newCity.trim().length < 2) {
+      setNewLocationError('Enter a valid city name.');
+      return;
+    }
+    if (!newState.trim() || newState.trim().length < 2) {
+      setNewLocationError('Enter a valid state name.');
+      return;
+    }
+    if (!newRegion) {
+      setNewLocationError('Select a region.');
+      return;
+    }
+
+    setAddingLocation(true);
+    try {
+      const res = await createLocation({
+        city: newCity.trim(),
+        state: newState.trim(),
+        region: newRegion,
+      });
+      if (res.error || !res.data) {
+        setNewLocationError(res.error ?? 'Failed to add destination.');
+        return;
+      }
+      const created = res.data;
+      setLocations((prev) =>
+        prev.some((l) => l.id === created.id) ? prev : [...prev, created],
+      );
+      handleSelectLocation(created);
+      setNewCity('');
+      setNewState('');
+      setNewRegion('');
+    } catch (err) {
+      setNewLocationError(err instanceof Error ? err.message : 'Failed to add destination.');
+    } finally {
+      setAddingLocation(false);
+    }
+  }, [newCity, newState, newRegion, handleSelectLocation]);
 
   // Show approval gate if company isn't approved yet
   if (!companyLoading && company !== null && company.status !== 'approved') {
@@ -128,7 +190,7 @@ export default function NewPackageScreen(): React.ReactElement {
           <Ionicons name="time-outline" size={56} color={Colors.warning} />
           <Text style={styles.gateTitle}>Approval Required</Text>
           <Text style={styles.gateBody}>
-            Your company profile must be approved by the NEXTTRP team before you can create packages.
+            Your company profile must be approved by the Toureez team before you can create packages.
             {'\n\n'}
             {company.status === 'rejected'
               ? 'Your application was rejected. Please update your company details and resubmit.'
@@ -336,64 +398,145 @@ export default function NewPackageScreen(): React.ReactElement {
         visible={locationModalVisible}
         animationType="slide"
         presentationStyle="pageSheet"
-        onRequestClose={() => setLocationModalVisible(false)}
+        onRequestClose={closeLocationModal}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Select Destination</Text>
-            <Pressable onPress={() => setLocationModalVisible(false)} hitSlop={8}>
+            <Pressable onPress={closeLocationModal} hitSlop={8}>
               <Ionicons name="close" size={24} color={Colors.navy} />
             </Pressable>
           </View>
 
-          {/* Search bar */}
-          <View style={styles.modalSearchWrapper}>
-            <Ionicons name="search-outline" size={16} color={Colors.textSecondary} style={styles.modalSearchIcon} />
-            <TextInput
-              style={styles.modalSearchInput}
-              placeholder="Search city or state…"
-              placeholderTextColor={Colors.textLight}
-              value={locationSearch}
-              onChangeText={setLocationSearch}
-              autoFocus
-              clearButtonMode="while-editing"
-            />
-          </View>
+          {addLocationVisible ? (
+            <ScrollView
+              style={styles.addLocationForm}
+              keyboardShouldPersistTaps="handled"
+              contentContainerStyle={styles.addLocationFormContent}
+            >
+              <Text style={styles.addLocationTitle}>Add a new destination</Text>
+              <Text style={styles.addLocationSubtitle}>
+                Can't find your destination? Add it here so it becomes available for future packages too.
+              </Text>
 
-          <FlatList
-            data={filteredLocations}
-            keyExtractor={(item) => item.id}
-            keyboardShouldPersistTaps="handled"
-            renderItem={({ item }) => (
-              <Pressable
-                style={({ pressed }) => [
-                  styles.locationRow,
-                  pressed && styles.locationRowPressed,
-                  selectedLocationId === item.id && styles.locationRowSelected,
-                ]}
-                onPress={() => handleSelectLocation(item)}
-              >
-                <Ionicons
-                  name={item.is_popular ? 'star' : 'location-outline'}
-                  size={16}
-                  color={item.is_popular ? Colors.warning : Colors.textSecondary}
-                  style={styles.locationRowIcon}
-                />
-                <View style={styles.locationRowText}>
-                  <Text style={styles.locationCity}>{item.city}</Text>
-                  <Text style={styles.locationState}>{item.state}</Text>
-                </View>
-                {selectedLocationId === item.id && (
-                  <Ionicons name="checkmark-circle" size={18} color={Colors.primary} />
-                )}
-              </Pressable>
-            )}
-            ListEmptyComponent={
-              <View style={styles.emptySearch}>
-                <Text style={styles.emptySearchText}>No locations found for "{locationSearch}"</Text>
+              <Input
+                label="City"
+                required
+                value={newCity}
+                onChangeText={setNewCity}
+                placeholder="e.g. Pondicherry"
+                autoCapitalize="words"
+              />
+              <Input
+                label="State"
+                required
+                value={newState}
+                onChangeText={setNewState}
+                placeholder="e.g. Puducherry"
+                autoCapitalize="words"
+              />
+
+              <Text style={styles.fieldLabel}>Region <Text style={styles.required}>*</Text></Text>
+              <View style={styles.categoryGrid}>
+                {REGION_OPTIONS.map((region) => {
+                  const isSelected = newRegion === region;
+                  return (
+                    <Pressable
+                      key={region}
+                      style={[styles.categoryChip, isSelected && styles.categoryChipActive]}
+                      onPress={() => setNewRegion(region)}
+                    >
+                      <Text style={[styles.categoryChipText, isSelected && styles.categoryChipTextActive]}>
+                        {region}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
               </View>
-            }
-          />
+
+              {newLocationError ? <Text style={styles.errorText}>{newLocationError}</Text> : null}
+
+              <View style={styles.addLocationActions}>
+                <Pressable
+                  style={styles.addLocationCancel}
+                  onPress={() => {
+                    setAddLocationVisible(false);
+                    setNewLocationError('');
+                  }}
+                >
+                  <Text style={styles.addLocationCancelText}>Cancel</Text>
+                </Pressable>
+                <Button
+                  label="Add Destination"
+                  onPress={() => void handleAddLocation()}
+                  loading={addingLocation}
+                  variant="primary"
+                />
+              </View>
+            </ScrollView>
+          ) : (
+            <>
+              {/* Search bar */}
+              <View style={styles.modalSearchWrapper}>
+                <Ionicons name="search-outline" size={16} color={Colors.textSecondary} style={styles.modalSearchIcon} />
+                <TextInput
+                  style={styles.modalSearchInput}
+                  placeholder="Search city or state…"
+                  placeholderTextColor={Colors.textLight}
+                  value={locationSearch}
+                  onChangeText={setLocationSearch}
+                  autoFocus
+                  clearButtonMode="while-editing"
+                />
+              </View>
+
+              <FlatList
+                data={filteredLocations}
+                keyExtractor={(item) => item.id}
+                keyboardShouldPersistTaps="handled"
+                renderItem={({ item }) => (
+                  <Pressable
+                    style={({ pressed }) => [
+                      styles.locationRow,
+                      pressed && styles.locationRowPressed,
+                      selectedLocationId === item.id && styles.locationRowSelected,
+                    ]}
+                    onPress={() => handleSelectLocation(item)}
+                  >
+                    <Ionicons
+                      name={item.is_popular ? 'star' : 'location-outline'}
+                      size={16}
+                      color={item.is_popular ? Colors.warning : Colors.textSecondary}
+                      style={styles.locationRowIcon}
+                    />
+                    <View style={styles.locationRowText}>
+                      <Text style={styles.locationCity}>{item.city}</Text>
+                      <Text style={styles.locationState}>{item.state}</Text>
+                    </View>
+                    {selectedLocationId === item.id && (
+                      <Ionicons name="checkmark-circle" size={18} color={Colors.primary} />
+                    )}
+                  </Pressable>
+                )}
+                ListEmptyComponent={
+                  <View style={styles.emptySearch}>
+                    <Text style={styles.emptySearchText}>No locations found for "{locationSearch}"</Text>
+                  </View>
+                }
+              />
+
+              <Pressable
+                style={styles.addLocationTrigger}
+                onPress={() => {
+                  setNewCity(locationSearch);
+                  setAddLocationVisible(true);
+                }}
+              >
+                <Ionicons name="add-circle-outline" size={18} color={Colors.primary} />
+                <Text style={styles.addLocationTriggerText}>Can't find it? Add a new destination</Text>
+              </Pressable>
+            </>
+          )}
         </View>
       </Modal>
     </KeyboardAvoidingView>
@@ -576,6 +719,55 @@ const styles = StyleSheet.create({
   },
   emptySearchText: {
     fontSize: 14,
+    color: Colors.textSecondary,
+  },
+
+  // ── Add new destination ─────────────────────────────────────────
+  addLocationTrigger: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 16,
+    borderTopWidth: 1,
+    borderTopColor: Colors.borderLight,
+  },
+  addLocationTriggerText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Colors.primary,
+  },
+  addLocationForm: { flex: 1 },
+  addLocationFormContent: {
+    padding: 20,
+    gap: 14,
+  },
+  addLocationTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: Colors.navy,
+  },
+  addLocationSubtitle: {
+    fontSize: 13,
+    color: Colors.textSecondary,
+    lineHeight: 18,
+    marginTop: -6,
+    marginBottom: 4,
+  },
+  addLocationActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 12,
+    marginTop: 8,
+  },
+  addLocationCancel: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  addLocationCancelText: {
+    fontSize: 14,
+    fontWeight: '600',
     color: Colors.textSecondary,
   },
 });

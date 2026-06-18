@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file lib/cloudinary.ts
  * @description Cloudinary upload utility using the unsigned upload preset.
  *
@@ -117,7 +117,7 @@ function parseCloudinaryUploadResult(
  */
 export async function uploadImage(
   localUri: string,
-  folder: string = 'nexttrp'
+  folder: string = 'toureez'
 ): Promise<ApiResponse<CloudinaryUploadResult>> {
   try {
     if (!localUri || localUri.trim().length === 0) {

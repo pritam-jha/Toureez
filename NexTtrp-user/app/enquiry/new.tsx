@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/enquiry/new.tsx
  * @description Composer for starting a new enquiry with a vendor about a package.
  * Messages are relayed through the backend — no personal contact details are shared.
@@ -91,7 +91,7 @@ export default function NewEnquiryScreen(): React.ReactElement {
           <View style={styles.infoBox}>
             <Ionicons name="shield-checkmark-outline" size={18} color={Colors.primary} />
             <Text style={styles.infoText}>
-              Your message is sent to the vendor through NEXTTRP. Your phone number and email are
+              Your message is sent to the vendor through Toureez. Your phone number and email are
               never shared.
             </Text>
           </View>

@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file app/package/[id].tsx
- * @description NEXTTRP package detail screen.
+ * @description Toureez package detail screen.
  */
 
 import React, { useCallback, useMemo, useState } from 'react';
@@ -150,7 +150,7 @@ function DetailContent({ pkg }: { pkg: PackageDetail }): React.ReactElement {
   const handleShare = useCallback(async () => {
     try {
       await Share.share({
-        message: `Check out ${pkg.title} on NEXTTRP - Travel More, Spend Less\nnexttrp://package/${pkg.id}`,
+        message: `Check out ${pkg.title} on Toureez - Travel More, Spend Less\ntoureez://package/${pkg.id}`,
         title: pkg.title,
       });
     } catch {

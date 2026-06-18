@@ -7,6 +7,9 @@
  * Route groups:
  *  GET  /me
  *  GET  /dashboard
+ *  GET  /earnings
+ *
+ *  POST               /locations
  *
  *  GET/POST/PATCH     /company
  *  POST               /company/documents
@@ -44,6 +47,7 @@ import { VENDOR_ROLE } from '../types';
 import {
   getVendorProfile,
   getVendorDashboard,
+  getVendorEarningsForMonth,
   getVendorCompany,
   createVendorCompany,
   updateVendorCompany,
@@ -75,6 +79,7 @@ import {
   updateVendorBookingStatus,
 } from '../services/vendorPackageService';
 import { getVendorAnalytics } from '../services/analyticsService';
+import { createLocation } from '../services/locationService';
 import {
   getVendorEnquiries,
   getVendorEnquiryDetail,
@@ -99,6 +104,8 @@ import {
   VendorUpdateBookingStatusSchema,
   CreatePayoutAccountSchema,
   VendorListNotificationsQuerySchema,
+  CreateLocationSchema,
+  VendorEarningsQuerySchema,
 } from '../utils/vendorValidation';
 import { EnquiryMessageSchema } from '../utils/validation';
 import { z } from 'zod';
@@ -138,6 +145,47 @@ vendorRouter.get('/dashboard', async (req, res, next) => {
     if (err instanceof AppError && err.statusCode === 404) {
       return notFound(res, 'Company');
     }
+    return next(err);
+  }
+});
+
+/**
+ * GET /api/v1/vendor/earnings?month=YYYY-MM
+ * Returns confirmed/completed booking revenue for a single calendar month,
+ * used by the Earnings Overview month picker on the vendor dashboard.
+ */
+vendorRouter.get('/earnings', async (req, res, next) => {
+  try {
+    const parsed = VendorEarningsQuerySchema.safeParse(req.query);
+    if (!parsed.success) {
+      return validationError(res, parsed.error.issues.map((i) => i.message).join(', '));
+    }
+    const earnings = await getVendorEarningsForMonth(req.user!.id, parsed.data.month);
+    return success(res, earnings);
+  } catch (err) {
+    if (err instanceof AppError && err.statusCode === 404) {
+      return notFound(res, 'Company');
+    }
+    return next(err);
+  }
+});
+
+// ── Locations ─────────────────────────────────────────────────────────────────
+
+/**
+ * POST /api/v1/vendor/locations
+ * Lets a vendor add a destination that isn't yet in the saved locations list.
+ * Returns the existing location if the same city/state already exists.
+ */
+vendorRouter.post('/locations', async (req, res, next) => {
+  try {
+    const parsed = CreateLocationSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return validationError(res, parsed.error.issues.map((i) => i.message).join(', '));
+    }
+    const location = await createLocation(parsed.data);
+    return success(res, location, 201);
+  } catch (err) {
     return next(err);
   }
 });

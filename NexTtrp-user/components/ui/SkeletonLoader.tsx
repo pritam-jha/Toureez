@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file components/ui/SkeletonLoader.tsx
- * @description NEXTTRP shimmer skeleton.
+ * @description Toureez shimmer skeleton.
  */
 
 import React from 'react';

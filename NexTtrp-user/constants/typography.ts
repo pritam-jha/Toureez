@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file constants/typography.ts
- * @description NEXTTRP type scale.
+ * @description Toureez type scale.
  */
 
 import { Platform } from 'react-native';

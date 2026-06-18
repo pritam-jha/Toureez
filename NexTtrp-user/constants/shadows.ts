@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file constants/shadows.ts
- * @description NEXTTRP shadow presets.
+ * @description Toureez shadow presets.
  */
 
 import type { ViewStyle } from 'react-native';

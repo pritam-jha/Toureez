@@ -1,11 +1,11 @@
-/**
+﻿/**
  * @file types/index.ts
- * @description Central type definitions for the NEXTTRP Vendor Portal.
+ * @description Central type definitions for the Toureez Vendor Portal.
  *
  * All interfaces are defined here and imported across the codebase to
  * ensure a single source of truth for data shapes.
  *
- * Mirrors the shared domain types from NexTtrp-user/types/index.ts
+ * Mirrors the shared domain types from Toureez-user/types/index.ts
  * with vendor-specific extensions.
  */
 

@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file constants/colors.ts
- * NEXTTRP Admin — luxury dark-mode palette.
+ * Toureez Admin — luxury dark-mode palette.
  * Background: #0B1426 · Cards: #111827 · Accent: #E8631A
  */
 export const Colors = {

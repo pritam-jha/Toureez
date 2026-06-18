@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file components/ui/Chip.tsx
- * @description NEXTTRP filter chip.
+ * @description Toureez filter chip.
  */
 
 import React from 'react';

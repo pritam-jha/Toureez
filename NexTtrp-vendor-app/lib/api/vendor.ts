@@ -61,6 +61,21 @@ export async function getVendorDashboard(): Promise<ApiResponse<VendorDashboardM
   return normalise(res);
 }
 
+export interface VendorMonthlyEarnings {
+  month: string;
+  revenue: number;
+  bookings: number;
+}
+
+/**
+ * Fetches confirmed/completed booking revenue for a single calendar month
+ * (format: "YYYY-MM"), used by the Earnings Overview month picker.
+ */
+export async function getVendorEarningsForMonth(month: string): Promise<ApiResponse<VendorMonthlyEarnings>> {
+  const res = await apiClient.get<VendorMonthlyEarnings>(`/vendor/earnings?month=${month}`);
+  return normalise(res);
+}
+
 // ── Company ───────────────────────────────────────────────────────────────────
 
 /**
@@ -416,6 +431,22 @@ export async function createPayoutAccount(input: {
   is_primary?: boolean;
 }): Promise<ApiResponse<VendorPayoutAccount>> {
   const res = await apiClient.post<VendorPayoutAccount>('/vendor/payout-accounts', input);
+  return normalise(res);
+}
+
+/**
+ * Adds a destination that isn't yet in the saved locations list.
+ * Returns the existing location instead if the same city/state already exists.
+ */
+export async function createLocation(input: {
+  city: string;
+  state: string;
+  region: 'North India' | 'South India' | 'East India' | 'West India' | 'Central India';
+}): Promise<ApiResponse<{ id: string; city: string; state: string; is_popular: boolean }>> {
+  const res = await apiClient.post<{ id: string; city: string; state: string; is_popular: boolean }>(
+    '/vendor/locations',
+    input,
+  );
   return normalise(res);
 }
 

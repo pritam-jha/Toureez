@@ -35,7 +35,7 @@ const WELCOME_MESSAGE: ChatBubbleData = {
   id: 'welcome',
   role: 'assistant',
   content:
-    "Hi! I'm your NextTrip travel assistant. Ask me about destinations, bookings, or travel tips and I'll do my best to help.",
+    "Hi! I'm your Toureez travel assistant. Ask me about destinations, bookings, or travel tips and I'll do my best to help.",
 };
 
 function ChatBubble({ message }: { message: ChatBubbleData }): React.ReactElement {

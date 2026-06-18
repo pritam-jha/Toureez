@@ -1,13 +1,13 @@
-/**
+﻿/**
  * @file services/chatService.ts
- * @description Talks to the Google Gemini API to power the NextTrip travel assistant.
+ * @description Talks to the Google Gemini API to power the Toureez travel assistant.
  */
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { AppError } from '../constants/errors';
 
 const SYSTEM_PROMPT =
-  'You are a helpful travel assistant for NextTrip, a travel booking platform. ' +
+  'You are a helpful travel assistant for Toureez, a travel booking platform. ' +
   'Help users with trip planning, booking queries, vendor recommendations, and travel advice. ' +
   'Keep answers short and friendly. Do not answer questions unrelated to travel.';
 

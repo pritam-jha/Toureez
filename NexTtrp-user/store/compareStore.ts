@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file store/compareStore.ts
  * @description Zustand store for the package comparison tray with AsyncStorage persistence.
  *
@@ -66,7 +66,7 @@ export const useCompareStore = create<CompareState>()(
         get().compareItems.some((item) => item.id === packageId),
     }),
     {
-      name: 'nexttrp-compare-storage',
+      name: 'toureez-compare-storage',
       storage: createJSONStorage(() => AsyncStorage),
     }
   )

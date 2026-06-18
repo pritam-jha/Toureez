@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file utils/logger.ts
  * @description Shared Pino logger instance for the entire backend.
  *
@@ -31,7 +31,7 @@ export const logger = pino(
       censor: '[REDACTED]',
     },
     // Consistent base fields on every log record.
-    base: { service: 'nexttrp-backend' },
+    base: { service: 'toureez-backend' },
   },
   isProduction
     ? undefined // plain JSON to stdout — let your log shipper handle it

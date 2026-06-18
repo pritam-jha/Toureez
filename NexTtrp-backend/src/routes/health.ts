@@ -1,4 +1,4 @@
-import { Router } from 'express';
+﻿import { Router } from 'express';
 import { supabaseAdmin } from '../lib/supabase';
 import { success } from '../utils/response';
 import { logger } from '../utils/logger';
@@ -37,7 +37,7 @@ healthRouter.get('/', async (_req, res) => {
   const overall: HealthCheck['status'] = dbStatus === 'error' ? 'degraded' : 'ok';
 
   const health: HealthCheck = {
-    service: 'nexttrp-backend',
+    service: 'toureez-backend',
     status: overall,
     uptime_seconds: Math.round(process.uptime()),
     timestamp: new Date().toISOString(),

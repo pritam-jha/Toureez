@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file components/common/Header.tsx
- * @description NEXTTRP light header.
+ * @description Toureez light header.
  */
 
 import React from 'react';
@@ -40,7 +40,7 @@ export const Header: React.FC<HeaderProps> = ({
   actions = [],
   style,
   showLogo = false,
-  logoText = 'NEXTTRP',
+  logoText = 'Toureez',
 }) => {
   const handleBack = (): void => {
     if (onBack) {

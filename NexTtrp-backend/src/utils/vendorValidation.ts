@@ -68,11 +68,18 @@ export const VendorImageParamsSchema = z.object({
  * Validates the body for POST /api/v1/vendor/company (initial company creation).
  * Only required fields are enforced here; optional enrichment fields default to null.
  */
+const gstNumberSchema = z
+  .string()
+  .trim()
+  .toUpperCase()
+  .regex(/^[A-Z0-9]{15}$/, 'GST number must be 15 alphanumeric characters')
+  .optional();
+
 export const CreateCompanySchema = z
   .object({
     name: trimmedString(2, 120),
     about: optionalTrimmed(10, 2000),
-    gst_number: optionalTrimmed(15, 15),
+    gst_number: gstNumberSchema,
     logo_url: z.string().trim().url().optional(),
     cover_url: z.string().trim().url().optional(),
   })
@@ -88,7 +95,7 @@ export const UpdateCompanySchema = z
   .object({
     name: optionalTrimmed(2, 120),
     about: optionalTrimmed(10, 2000),
-    gst_number: optionalTrimmed(15, 15),
+    gst_number: gstNumberSchema,
     logo_url: z.string().trim().url().optional(),
     cover_url: z.string().trim().url().optional(),
   })
@@ -269,6 +276,34 @@ export const VendorPackageImageSaveSchema = z
   .strict();
 
 export type VendorPackageImageSaveInput = z.infer<typeof VendorPackageImageSaveSchema>;
+
+// ── Locations ─────────────────────────────────────────────────────────────────
+
+/**
+ * Validates the body for POST /api/v1/vendor/locations.
+ * Lets a vendor add a destination that isn't yet in the saved locations list.
+ */
+export const CreateLocationSchema = z
+  .object({
+    city: trimmedString(2, 80),
+    state: trimmedString(2, 80),
+    region: z.enum(['North India', 'South India', 'East India', 'West India', 'Central India']),
+  })
+  .strict();
+
+// ── Earnings ──────────────────────────────────────────────────────────────────
+
+/**
+ * Validates the query for GET /api/v1/vendor/earnings.
+ * `month` must be in YYYY-MM format (e.g. "2026-06").
+ */
+export const VendorEarningsQuerySchema = z.object({
+  month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'month must be in YYYY-MM format'),
+});
+
+export type VendorEarningsQuery = z.infer<typeof VendorEarningsQuerySchema>;
+
+export type CreateLocationInput = z.infer<typeof CreateLocationSchema>;
 
 // ── Bookings ──────────────────────────────────────────────────────────────────
 

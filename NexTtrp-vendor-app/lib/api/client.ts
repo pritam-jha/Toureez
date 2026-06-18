@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file lib/api/client.ts
- * @description Typed HTTP client for the NEXTTRP Node.js/Express backend.
+ * @description Typed HTTP client for the Toureez Node.js/Express backend.
  *
  * Wraps fetch with:
  * - Automatic JSON serialisation / deserialisation

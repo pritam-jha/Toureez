@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Toureez &mdash; Discover curated travel packages across India. Book verified vendors, explore destinations, and travel smarter.">
+<meta property="og:title" content="Toureez &mdash; Travel Smarter Across India">
+<meta property="og:description" content="Discover curated travel packages from verified vendors. Explore India's best destinations with Toureez.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#E8631A">
+<title>Toureez &mdash; Travel Smarter Across India</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --primary:#E8631A;
+  --primary-light:#FF7D35;
+  --primary-dark:#C4501A;
+  --navy:#1A1A2E;
+  --navy-light:#2D2D4E;
+  --slate:#4A5568;
+  --muted:#718096;
+  --border:#E2E8F0;
+  --bg:#FAFAFA;
+  --white:#FFFFFF;
+  --success:#38A169;
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:20px;
+  --radius-xl:28px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.08);
+  --shadow-md:0 4px 16px rgba(0,0,0,.1);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.12);
+  --shadow-xl:0 16px 48px rgba(0,0,0,.15);
+  --nav-h:64px;
+  --font-sans:'Plus Jakarta Sans',sans-serif;
+  --font-body:'Inter',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);color:var(--navy);background:var(--white);line-height:1.6;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;border:none;background:none;font:inherit}
+ul{list-style:none}
+input,textarea,select{font:inherit}
+
+/* Utilities */
+.container{max-width:1160px;margin:0 auto;padding:0 24px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:var(--radius-sm);font-family:var(--font-sans);font-weight:600;font-size:.95rem;transition:all .2s;white-space:nowrap}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark);transform:translateY(-1px);box-shadow:0 4px 16px rgba(232,99,26,.35)}
+.btn-outline{background:transparent;color:var(--navy);border:2px solid var(--border)}
+.btn-outline:hover{border-color:var(--primary);color:var(--primary)}
+.section-tag{display:inline-block;background:rgba(232,99,26,.1);color:var(--primary);font-family:var(--font-sans);font-weight:700;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:100px;margin-bottom:12px}
+.section-title{font-family:var(--font-sans);font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;line-height:1.2;color:var(--navy)}
+.section-sub{color:var(--muted);font-size:1rem;margin-top:12px;max-width:520px}
+.page{display:none}
+.page.active{display:block}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);z-index:1000;transition:box-shadow .2s}
+nav.scrolled{box-shadow:var(--shadow-md)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:100%;gap:32px}
+.nav-logo{display:flex;align-items:center;gap:8px;font-family:var(--font-sans);font-weight:800;font-size:1.25rem;color:var(--navy)}
+.nav-logo-dot{width:8px;height:8px;background:var(--primary);border-radius:50%;display:inline-block}
+.nav-links{display:flex;align-items:center;gap:4px;flex:1;justify-content:center}
+.nav-links a{padding:8px 14px;border-radius:var(--radius-sm);font-family:var(--font-sans);font-weight:500;font-size:.9rem;color:var(--slate);transition:all .15s}
+.nav-links a:hover,.nav-links a.active{color:var(--primary);background:rgba(232,99,26,.07)}
+.nav-cta{display:flex;align-items:center;gap:12px}
+.nav-download{background:var(--primary);color:#fff;padding:9px 20px;border-radius:100px;font-family:var(--font-sans);font-weight:600;font-size:.875rem;transition:all .2s}
+.nav-download:hover{background:var(--primary-dark);transform:translateY(-1px);box-shadow:0 4px 14px rgba(232,99,26,.3)}
+.hamburger{display:none;flex-direction:column;gap:5px;padding:8px;border-radius:var(--radius-sm)}
+.hamburger span{width:22px;height:2px;background:var(--navy);border-radius:2px;transition:all .25s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobile-menu{display:none;position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;background:#fff;z-index:999;padding:24px;flex-direction:column;gap:4px;overflow-y:auto}
+.mobile-menu.open{display:flex}
+.mobile-menu a{padding:14px 16px;border-radius:var(--radius-sm);font-family:var(--font-sans);font-weight:600;font-size:1rem;color:var(--navy)}
+.mobile-menu a:hover{background:var(--bg);color:var(--primary)}
+.mobile-menu .mobile-cta{margin-top:16px}
+
+/* Hero */
+.hero{min-height:88vh;padding-top:calc(var(--nav-h) + 60px);padding-bottom:80px;display:flex;align-items:center;background:linear-gradient(135deg,#fff 0%,#FFF5EF 60%,#EEF2FF 100%);position:relative;overflow:hidden}
+.hero-bg-circle{position:absolute;border-radius:50%;pointer-events:none}
+.hero-bg-circle:nth-child(1){width:500px;height:500px;background:rgba(232,99,26,.06);top:-100px;right:-100px}
+.hero-bg-circle:nth-child(2){width:300px;height:300px;background:rgba(26,26,46,.04);bottom:0;left:-80px}
+.hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(232,99,26,.1);border:1px solid rgba(232,99,26,.2);border-radius:100px;padding:6px 14px;font-family:var(--font-sans);font-size:.8rem;font-weight:700;color:var(--primary);margin-bottom:20px}
+.hero-badge-dot{width:6px;height:6px;background:var(--primary);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+.hero h1{font-family:var(--font-sans);font-size:clamp(2rem,4.5vw,3.4rem);font-weight:800;line-height:1.15;color:var(--navy);margin-bottom:20px}
+.hero h1 span{color:var(--primary)}
+.hero-desc{color:var(--slate);font-size:1.05rem;line-height:1.7;margin-bottom:32px;max-width:460px}
+.hero-cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:40px}
+.hero-trust{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.hero-trust-item{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--muted)}
+.hero-trust-icon{color:var(--primary);font-weight:700;font-size:.9rem}
+.hero-visual{position:relative;display:flex;justify-content:center;align-items:center;height:460px}
+.hero-card{position:absolute;background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow-xl);padding:16px 20px;font-family:var(--font-sans)}
+.hero-card-main{width:280px;padding:20px;animation:floatA 6s ease-in-out infinite}
+.hero-card-sm1{width:180px;bottom:60px;left:0;animation:floatB 5s ease-in-out infinite;animation-delay:.5s}
+.hero-card-sm2{width:160px;top:40px;right:0;animation:floatC 7s ease-in-out infinite;animation-delay:1s}
+@keyframes floatA{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes floatB{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
+@keyframes floatC{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@media(prefers-reduced-motion:reduce){.hero-card{animation:none!important}.hero-badge-dot{animation:none!important}}
+.hero-card-img{width:100%;height:120px;border-radius:var(--radius-md);background:linear-gradient(135deg,#fed7aa,#fbbf24);margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-size:2.5rem}
+.hero-card-location{font-size:.75rem;color:var(--muted);margin-bottom:4px}
+.hero-card-title{font-weight:700;font-size:.95rem;color:var(--navy);margin-bottom:8px}
+.hero-card-row{display:flex;align-items:center;justify-content:space-between}
+.hero-card-price{font-weight:800;color:var(--primary);font-size:1rem}
+.hero-card-rating{display:flex;align-items:center;gap:4px;font-size:.8rem;color:var(--slate)}
+.stat-pill{display:flex;align-items:center;gap:10px}
+.stat-pill-icon{width:36px;height:36px;background:rgba(232,99,26,.12);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.stat-pill-text{font-size:.8rem}
+.stat-pill-text strong{display:block;font-weight:700;color:var(--navy);font-size:.95rem}
+.stat-pill-text span{color:var(--muted)}
+
+/* Stats bar */
+.stats-bar{background:var(--primary);padding:40px 0}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;text-align:center}
+.stats-grid-item{padding:8px 16px;border-right:1px solid rgba(255,255,255,.2)}
+.stats-grid-item:last-child{border-right:none}
+.stats-num{font-family:var(--font-sans);font-size:clamp(1.8rem,3vw,2.4rem);font-weight:800;color:#fff}
+.stats-label{font-size:.875rem;color:rgba(255,255,255,.75);margin-top:4px}
+
+/* How it works preview */
+.how-preview{padding:80px 0;background:#fff}
+.how-preview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
+.how-card{background:var(--bg);border-radius:var(--radius-lg);padding:32px 24px;transition:all .3s}
+.how-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.how-num{width:40px;height:40px;background:var(--primary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-sans);font-weight:800;font-size:.9rem;margin-bottom:20px}
+.how-card h3{font-family:var(--font-sans);font-weight:700;font-size:1.05rem;margin-bottom:10px;color:var(--navy)}
+.how-card p{color:var(--muted);font-size:.9rem;line-height:1.6}
+
+/* Featured packages */
+.featured{padding:80px 0;background:var(--bg)}
+.featured-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:48px;flex-wrap:wrap;gap:16px}
+.pkgs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.pkg-card{background:#fff;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);transition:all .3s}
+.pkg-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
+.pkg-img{height:200px;display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative;overflow:hidden;background:linear-gradient(135deg,#fed7aa,#fbbf24)}
+.pkg-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.pkg-img-emoji{position:relative;z-index:1}
+.pkg-badge{position:absolute;top:12px;left:12px;background:var(--primary);color:#fff;font-family:var(--font-sans);font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:100px;z-index:2}
+.pkg-body{padding:20px}
+.pkg-meta{display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted);margin-bottom:8px}
+.pkg-meta-sep{width:3px;height:3px;background:var(--muted);border-radius:50%}
+.pkg-title{font-family:var(--font-sans);font-weight:700;font-size:1rem;color:var(--navy);margin-bottom:12px;line-height:1.35}
+.pkg-footer{display:flex;align-items:center;justify-content:space-between}
+.pkg-price-from{font-size:.75rem;color:var(--muted)}
+.pkg-price-amt{font-weight:800;font-size:1.1rem;color:var(--primary)}
+.pkg-rating{display:flex;align-items:center;gap:4px;font-size:.82rem;color:var(--slate);font-weight:600}
+.shimmer{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:400% 100%;animation:shimmer 1.4s infinite}
+@keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+.pkg-sk-box{border-radius:6px}
+
+/* Download app */
+.download{padding:80px 0;background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 100%);position:relative;overflow:hidden}
+.download::before{content:'';position:absolute;width:400px;height:400px;background:rgba(232,99,26,.12);border-radius:50%;top:-100px;right:-80px;pointer-events:none}
+.download-inner{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.download-text h2{font-family:var(--font-sans);font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;color:#fff;line-height:1.2;margin-bottom:16px}
+.download-text p{color:rgba(255,255,255,.7);font-size:1rem;line-height:1.7;margin-bottom:32px}
+.store-btns{display:flex;gap:12px;flex-wrap:wrap}
+.store-btn{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:var(--radius-sm);padding:12px 20px;color:#fff;transition:all .2s;font-family:var(--font-sans)}
+.store-btn:hover{background:rgba(255,255,255,.18);transform:translateY(-2px)}
+.store-btn-icon{font-size:1.6rem}
+.store-btn-text{display:flex;flex-direction:column}
+.store-btn-sub{font-size:.7rem;opacity:.7}
+.store-btn-name{font-weight:700;font-size:.95rem}
+.download-visual{display:flex;justify-content:center;align-items:center;gap:20px}
+.phone-mock{width:130px;height:240px;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2);border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:3rem;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.phone-mock:nth-child(2){transform:scale(1.1);background:rgba(232,99,26,.2);border-color:rgba(232,99,26,.4)}
+
+/* How It Works page */
+.hiw-hero{padding:calc(var(--nav-h) + 60px) 0 60px;background:linear-gradient(135deg,#fff 0%,#FFF5EF 100%)}
+.hiw-hero h1{font-family:var(--font-sans);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;color:var(--navy)}
+.timeline{padding:80px 0}
+.timeline-inner{max-width:700px;margin:0 auto}
+.timeline-step{display:flex;gap:32px;margin-bottom:48px;position:relative}
+.timeline-step:not(:last-child)::before{content:'';position:absolute;left:19px;top:48px;bottom:-20px;width:2px;background:linear-gradient(to bottom,var(--primary),transparent)}
+.timeline-circle{width:40px;height:40px;min-width:40px;background:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-sans);font-weight:800;font-size:.9rem;box-shadow:0 0 0 4px rgba(232,99,26,.15)}
+.timeline-content h3{font-family:var(--font-sans);font-weight:700;font-size:1.1rem;color:var(--navy);margin-bottom:8px;margin-top:8px}
+.timeline-content p{color:var(--muted);font-size:.95rem;line-height:1.65}
+.payment-section{padding:60px 0;background:var(--bg)}
+.payment-table{width:100%;border-collapse:collapse;margin-top:32px;background:#fff;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm)}
+.payment-table th{background:var(--navy);color:#fff;font-family:var(--font-sans);font-weight:600;font-size:.875rem;padding:14px 20px;text-align:left}
+.payment-table td{padding:14px 20px;border-bottom:1px solid var(--border);font-size:.9rem;color:var(--slate)}
+.payment-table tr:last-child td{border-bottom:none}
+.payment-table tr:hover td{background:var(--bg)}
+.faq-section{padding:80px 0}
+.faq-list{max-width:720px;margin:40px auto 0}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:20px 0;cursor:pointer;font-family:var(--font-sans);font-weight:600;font-size:.975rem;color:var(--navy);gap:16px}
+.faq-q:hover{color:var(--primary)}
+.faq-arrow{width:20px;height:20px;min-width:20px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:all .25s;font-size:.7rem}
+.faq-item.open .faq-arrow{background:var(--primary);color:#fff;transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.faq-item.open .faq-a{max-height:300px}
+.faq-a-inner{padding-bottom:18px;color:var(--muted);font-size:.9rem;line-height:1.7}
+
+/* For Vendors page */
+.vendor-hero{padding:calc(var(--nav-h) + 60px) 0 80px;background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 100%);position:relative;overflow:hidden}
+.vendor-hero::before{content:'';position:absolute;width:500px;height:500px;background:rgba(232,99,26,.1);border-radius:50%;top:-150px;right:-100px}
+.vendor-hero h1{font-family:var(--font-sans);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;color:#fff;margin-bottom:16px}
+.vendor-hero p{color:rgba(255,255,255,.75);font-size:1.05rem;max-width:500px;line-height:1.7;margin-bottom:32px}
+.benefits{padding:80px 0;background:#fff}
+.benefits-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
+.benefit-card{padding:28px;border:1px solid var(--border);border-radius:var(--radius-lg);transition:all .3s}
+.benefit-card:hover{border-color:var(--primary);box-shadow:0 4px 20px rgba(232,99,26,.12);transform:translateY(-3px)}
+.benefit-icon{width:48px;height:48px;background:rgba(232,99,26,.1);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:16px}
+.benefit-card h3{font-family:var(--font-sans);font-weight:700;font-size:1rem;color:var(--navy);margin-bottom:8px}
+.benefit-card p{color:var(--muted);font-size:.88rem;line-height:1.6}
+.vendor-stats{background:var(--primary);padding:48px 0}
+.vendor-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;text-align:center}
+.vendor-stats-item{padding:8px 16px;border-right:1px solid rgba(255,255,255,.2)}
+.vendor-stats-item:last-child{border-right:none}
+.vendor-form-section{padding:80px 0;background:var(--bg)}
+.vendor-form-wrap{max-width:640px;margin:0 auto;background:#fff;border-radius:var(--radius-xl);padding:40px;box-shadow:var(--shadow-lg)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-family:var(--font-sans);font-weight:600;font-size:.875rem;color:var(--navy);margin-bottom:6px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:.95rem;color:var(--navy);transition:border-color .15s;background:#fff}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--primary)}
+.form-group .err{color:#E53E3E;font-size:.78rem;margin-top:4px;display:none}
+.form-group.has-error input,.form-group.has-error select,.form-group.has-error textarea{border-color:#E53E3E}
+.form-group.has-error .err{display:block}
+.form-success{display:none;text-align:center;padding:48px 24px}
+.form-success-icon{font-size:3.5rem;margin-bottom:16px}
+.form-success h3{font-family:var(--font-sans);font-weight:800;font-size:1.4rem;color:var(--navy);margin-bottom:10px}
+.form-success p{color:var(--muted);font-size:.95rem}
+.form-success.show{display:block}
+.form-body.hide{display:none}
+
+/* About page */
+.about-hero{padding:calc(var(--nav-h) + 60px) 0 60px;background:linear-gradient(135deg,#fff 0%,#FFF5EF 100%)}
+.about-hero h1{font-family:var(--font-sans);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;color:var(--navy)}
+.mission{padding:80px 0}
+.mission-inner{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.mission-visual{background:linear-gradient(135deg,#FFF5EF,#EEF2FF);border-radius:var(--radius-xl);height:360px;display:flex;align-items:center;justify-content:center;font-size:6rem}
+.values{padding:80px 0;background:var(--bg)}
+.values-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:48px}
+.value-card{background:#fff;border-radius:var(--radius-lg);padding:28px 20px;text-align:center;box-shadow:var(--shadow-sm);transition:all .3s}
+.value-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.value-icon{font-size:2.2rem;margin-bottom:14px}
+.value-card h3{font-family:var(--font-sans);font-weight:700;font-size:.95rem;color:var(--navy);margin-bottom:8px}
+.value-card p{color:var(--muted);font-size:.83rem;line-height:1.6}
+.story{padding:80px 0;background:var(--navy)}
+.story-inner h2{font-family:var(--font-sans);font-weight:800;font-size:clamp(1.6rem,3vw,2.2rem);color:#fff;margin-bottom:20px}
+.story-inner p{color:rgba(255,255,255,.7);font-size:1rem;line-height:1.8;max-width:640px}
+
+/* Contact page */
+.contact-hero{padding:calc(var(--nav-h) + 60px) 0 60px;background:linear-gradient(135deg,#fff 0%,#FFF5EF 100%)}
+.contact-hero h1{font-family:var(--font-sans);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;color:var(--navy)}
+.contact-section{padding:80px 0}
+.contact-inner{display:grid;grid-template-columns:1fr 1.5fr;gap:48px}
+.contact-info-cards{display:flex;flex-direction:column;gap:16px}
+.contact-card{background:var(--bg);border-radius:var(--radius-lg);padding:24px;display:flex;gap:16px;align-items:flex-start}
+.contact-card-icon{width:44px;height:44px;background:rgba(232,99,26,.12);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:1.2rem;min-width:44px}
+.contact-card h4{font-family:var(--font-sans);font-weight:700;font-size:.9rem;color:var(--navy);margin-bottom:4px}
+.contact-card p{color:var(--muted);font-size:.85rem}
+.contact-form-wrap{background:#fff;border-radius:var(--radius-xl);padding:40px;box-shadow:var(--shadow-lg)}
+.contact-success{display:none;background:rgba(56,161,105,.08);border:1px solid rgba(56,161,105,.3);border-radius:var(--radius-sm);padding:16px 20px;color:var(--success);font-family:var(--font-sans);font-weight:600;font-size:.9rem;margin-bottom:20px}
+.contact-success.show{display:block}
+
+/* Footer */
+footer{background:var(--navy);padding:64px 0 32px}
+.footer-inner{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.footer-brand p{color:rgba(255,255,255,.55);font-size:.875rem;line-height:1.7;margin-top:12px;max-width:260px}
+.footer-col h4{font-family:var(--font-sans);font-weight:700;font-size:.875rem;color:#fff;margin-bottom:16px;text-transform:uppercase;letter-spacing:.05em}
+.footer-col ul{display:flex;flex-direction:column;gap:10px}
+.footer-col ul li a{color:rgba(255,255,255,.55);font-size:.875rem;transition:color .15s}
+.footer-col ul li a:hover{color:#fff}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-bottom p{color:rgba(255,255,255,.4);font-size:.82rem}
+.footer-bottom-links{display:flex;gap:20px}
+.footer-bottom-links a{color:rgba(255,255,255,.4);font-size:.82rem;transition:color .15s}
+.footer-bottom-links a:hover{color:rgba(255,255,255,.75)}
+
+/* Scroll reveal */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:none}
+
+/* Responsive */
+@media(max-width:900px){
+  .hero-inner{grid-template-columns:1fr;gap:40px}
+  .hero-visual{display:none}
+  .how-preview-grid{grid-template-columns:1fr 1fr}
+  .pkgs-grid{grid-template-columns:1fr 1fr}
+  .download-inner{grid-template-columns:1fr;gap:40px}
+  .mission-inner{grid-template-columns:1fr;gap:40px}
+  .values-grid{grid-template-columns:1fr 1fr}
+  .contact-inner{grid-template-columns:1fr}
+  .footer-inner{grid-template-columns:1fr 1fr;gap:32px}
+  .benefits-grid{grid-template-columns:1fr 1fr}
+  .stats-grid{grid-template-columns:1fr 1fr;gap:16px 0}
+  .stats-grid-item:nth-child(2){border-right:none}
+  .vendor-stats-grid{grid-template-columns:1fr}
+  .vendor-stats-item{border-right:none;border-bottom:1px solid rgba(255,255,255,.2);padding:16px}
+  .vendor-stats-item:last-child{border-bottom:none}
+}
+@media(max-width:640px){
+  .nav-links,.nav-cta{display:none}
+  .hamburger{display:flex}
+  .how-preview-grid{grid-template-columns:1fr}
+  .pkgs-grid{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .footer-inner{grid-template-columns:1fr}
+  .values-grid{grid-template-columns:1fr 1fr}
+  .benefits-grid{grid-template-columns:1fr}
+  .hero-cta-row{flex-direction:column;align-items:flex-start}
+  .download-visual{display:none}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .stats-grid-item{border-right:none;border-bottom:1px solid rgba(255,255,255,.2);padding:16px 8px}
+  .stats-grid-item:nth-child(odd){border-right:1px solid rgba(255,255,255,.2)}
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav id="main-nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#home" class="nav-logo" onclick="navigate('home',event)">
+        <span class="nav-logo-dot"></span>
+        Toureez
+      </a>
+      <ul class="nav-links">
+        <li><a href="#home" onclick="navigate('home',event)" data-page="home">Home</a></li>
+        <li><a href="#how-it-works" onclick="navigate('how-it-works',event)" data-page="how-it-works">How It Works</a></li>
+        <li><a href="#vendors" onclick="navigate('vendors',event)" data-page="vendors">For Vendors</a></li>
+        <li><a href="#about" onclick="navigate('about',event)" data-page="about">About</a></li>
+        <li><a href="#contact" onclick="navigate('contact',event)" data-page="contact">Contact</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="#vendors" onclick="navigate('vendors',event)" class="nav-download">Become a Vendor</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#home" onclick="navigate('home',event);closeMenu()">Home</a>
+  <a href="#how-it-works" onclick="navigate('how-it-works',event);closeMenu()">How It Works</a>
+  <a href="#vendors" onclick="navigate('vendors',event);closeMenu()">For Vendors</a>
+  <a href="#about" onclick="navigate('about',event);closeMenu()">About</a>
+  <a href="#contact" onclick="navigate('contact',event);closeMenu()">Contact</a>
+  <a href="#vendors" onclick="navigate('vendors',event);closeMenu()" class="btn btn-primary mobile-cta">Become a Vendor</a>
+</div>
+
+<!-- PAGE: HOME -->
+<div id="page-home" class="page active">
+
+  <section class="hero">
+    <div class="hero-bg-circle"></div>
+    <div class="hero-bg-circle"></div>
+    <div class="container">
+      <div class="hero-inner">
+        <div class="hero-text">
+          <div class="hero-badge">
+            <span class="hero-badge-dot"></span>
+            Trusted by 10,000+ travellers
+          </div>
+          <h1>Discover India's Most <span>Beautiful</span> Journeys</h1>
+          <p class="hero-desc">Curated travel packages from verified local vendors. Explore mountains, beaches, heritage &mdash; all in one place.</p>
+          <div class="hero-cta-row">
+            <a href="#how-it-works" onclick="navigate('how-it-works',event)" class="btn btn-primary">Explore Packages &rarr;</a>
+            <a href="#vendors" onclick="navigate('vendors',event)" class="btn btn-outline">List Your Packages</a>
+          </div>
+          <div class="hero-trust">
+            <div class="hero-trust-item"><span class="hero-trust-icon">&#10003;</span> Verified Vendors</div>
+            <div class="hero-trust-item"><span class="hero-trust-icon">&#10003;</span> Secure Payments</div>
+            <div class="hero-trust-item"><span class="hero-trust-icon">&#10003;</span> Instant Booking</div>
+          </div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="hero-card hero-card-main">
+            <div class="hero-card-img">&#127956;</div>
+            <div class="hero-card-location">&#128205; Manali, Himachal Pradesh</div>
+            <div class="hero-card-title">Himalayan Adventure Package</div>
+            <div class="hero-card-row">
+              <div class="hero-card-price">&#8377;8,999<span style="font-size:.75rem;font-weight:500;color:var(--muted)">/person</span></div>
+              <div class="hero-card-rating">&#11088; 4.9 (128)</div>
+            </div>
+          </div>
+          <div class="hero-card hero-card-sm1">
+            <div class="stat-pill">
+              <div class="stat-pill-icon">&#10003;</div>
+              <div class="stat-pill-text">
+                <strong>Verified</strong>
+                <span>Vendor</span>
+              </div>
+            </div>
+          </div>
+          <div class="hero-card hero-card-sm2">
+            <div class="stat-pill">
+              <div class="stat-pill-icon">&#127881;</div>
+              <div class="stat-pill-text">
+                <strong>Just booked!</strong>
+                <span>Goa Beach Trip</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-bar">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stats-grid-item reveal"><div class="stats-num">500+</div><div class="stats-label">Travel Packages</div></div>
+        <div class="stats-grid-item reveal"><div class="stats-num">10K+</div><div class="stats-label">Happy Travellers</div></div>
+        <div class="stats-grid-item reveal"><div class="stats-num">200+</div><div class="stats-label">Verified Vendors</div></div>
+        <div class="stats-grid-item reveal"><div class="stats-num">50+</div><div class="stats-label">Destinations</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="how-preview">
+    <div class="container">
+      <div style="text-align:center">
+        <span class="section-tag">Simple Process</span>
+        <h2 class="section-title">Travel Planning Made Easy</h2>
+        <p class="section-sub" style="margin:12px auto 0">From discovery to departure in just a few taps.</p>
+      </div>
+      <div class="how-preview-grid">
+        <div class="how-card reveal"><div class="how-num">1</div><h3>Browse Packages</h3><p>Explore hundreds of curated travel packages across India. Filter by destination, budget, or duration.</p></div>
+        <div class="how-card reveal"><div class="how-num">2</div><h3>Book Securely</h3><p>Pay a small advance or full amount via UPI, cards, or net banking. All payments are 100% secure.</p></div>
+        <div class="how-card reveal"><div class="how-num">3</div><h3>Travel &amp; Review</h3><p>Your vendor handles everything. Come back and share your experience to help other travellers.</p></div>
+      </div>
+      <div style="text-align:center;margin-top:40px">
+        <a href="#how-it-works" onclick="navigate('how-it-works',event)" class="btn btn-outline">See Full Details &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="featured">
+    <div class="container">
+      <div class="featured-header">
+        <div>
+          <span class="section-tag">Featured</span>
+          <h2 class="section-title">Top Picks for You</h2>
+        </div>
+        <a href="#how-it-works" onclick="navigate('how-it-works',event)" class="btn btn-outline" style="align-self:flex-end">View All &rarr;</a>
+      </div>
+      <div class="pkgs-grid" id="pkgs-grid"></div>
+    </div>
+  </section>
+
+  <section class="download">
+    <div class="container">
+      <div class="download-inner">
+        <div class="download-text">
+          <span class="section-tag" style="background:rgba(255,255,255,.15);color:#fff">Mobile App</span>
+          <h2>Take Toureez Everywhere You Go</h2>
+          <p>Book, track, and manage your travels from your pocket. Get real-time notifications and exclusive app-only deals.</p>
+          <div class="store-btns">
+            <div class="store-btn">
+              <span class="store-btn-icon">&#63743;</span>
+              <div class="store-btn-text"><span class="store-btn-sub">Download on the</span><span class="store-btn-name">App Store</span></div>
+            </div>
+            <div class="store-btn">
+              <span class="store-btn-icon">&#9654;</span>
+              <div class="store-btn-text"><span class="store-btn-sub">Get it on</span><span class="store-btn-name">Google Play</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="download-visual" aria-hidden="true">
+          <div class="phone-mock">&#128506;</div>
+          <div class="phone-mock">&#9992;</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- PAGE: HOW IT WORKS -->
+<div id="page-how-it-works" class="page">
+
+  <section class="hiw-hero">
+    <div class="container">
+      <span class="section-tag">How It Works</span>
+      <h1>Everything You Need to Know</h1>
+      <p class="section-sub">Simple, transparent, and hassle-free travel booking.</p>
+    </div>
+  </section>
+
+  <section class="timeline">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:56px">
+        <span class="section-tag">For Travellers</span>
+        <h2 class="section-title">Your Journey in 4 Steps</h2>
+      </div>
+      <div class="timeline-inner">
+        <div class="timeline-step reveal">
+          <div class="timeline-circle">1</div>
+          <div class="timeline-content">
+            <h3>Discover &amp; Compare</h3>
+            <p>Browse packages by destination, category, duration, and budget. Read verified reviews from real travellers and compare what's included in each package.</p>
+          </div>
+        </div>
+        <div class="timeline-step reveal">
+          <div class="timeline-circle">2</div>
+          <div class="timeline-content">
+            <h3>Choose Your Package</h3>
+            <p>Select travel dates, group size, and pricing tier. See a full breakdown of what's included &mdash; accommodation, meals, transport, guides, and more.</p>
+          </div>
+        </div>
+        <div class="timeline-step reveal">
+          <div class="timeline-circle">3</div>
+          <div class="timeline-content">
+            <h3>Pay Securely</h3>
+            <p>Book with a small advance (as low as 30%) or pay in full. We support UPI, credit/debit cards, and net banking. Your money is protected until your trip begins.</p>
+          </div>
+        </div>
+        <div class="timeline-step reveal">
+          <div class="timeline-circle">4</div>
+          <div class="timeline-content">
+            <h3>Travel &amp; Share</h3>
+            <p>Your vendor coordinates every detail. After the trip, share your experience through a verified review to help the Toureez community.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="payment-section">
+    <div class="container">
+      <span class="section-tag">Payments &amp; Cancellations</span>
+      <h2 class="section-title">Clear, Fair Policies</h2>
+      <table class="payment-table">
+        <thead><tr><th>Scenario</th><th>Refund</th><th>Timeline</th></tr></thead>
+        <tbody>
+          <tr><td>Cancel 30+ days before trip</td><td>Full refund minus 5% processing</td><td>5&ndash;7 business days</td></tr>
+          <tr><td>Cancel 15&ndash;29 days before trip</td><td>75% refund</td><td>5&ndash;7 business days</td></tr>
+          <tr><td>Cancel 7&ndash;14 days before trip</td><td>50% refund</td><td>7&ndash;10 business days</td></tr>
+          <tr><td>Cancel less than 7 days</td><td>No refund</td><td>&mdash;</td></tr>
+          <tr><td>Vendor cancels trip</td><td>Full refund</td><td>3&ndash;5 business days</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="faq-section">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:8px">
+        <span class="section-tag">FAQ</span>
+        <h2 class="section-title">Common Questions</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Is my payment safe on Toureez? <span class="faq-arrow">&#9660;</span></div>
+          <div class="faq-a"><div class="faq-a-inner">Yes. All payments are processed through Razorpay, India's leading payment gateway, with PCI-DSS Level 1 certification. We never store your card details.</div></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">How do I know vendors are trustworthy? <span class="faq-arrow">&#9660;</span></div>
+          <div class="faq-a"><div class="faq-a-inner">Every vendor on Toureez goes through a manual verification process by our team before their packages are listed. We verify business registration, GST, and contact details.</div></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Can I pay in installments? <span class="faq-arrow">&#9660;</span></div>
+          <div class="faq-a"><div class="faq-a-inner">Yes! Many packages support advance booking &mdash; you pay a percentage upfront and settle the balance closer to your travel date. The exact advance amount is shown on each package's booking page.</div></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">What's included in a package? <span class="faq-arrow">&#9660;</span></div>
+          <div class="faq-a"><div class="faq-a-inner">Each package has a detailed inclusions and exclusions list. Common inclusions are accommodation, meals, transport, guides, and permits. Always check the package detail page before booking.</div></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">How do I contact my vendor? <span class="faq-arrow">&#9660;</span></div>
+          <div class="faq-a"><div class="faq-a-inner">After booking, you can message your vendor directly through the Toureez app's built-in enquiry system. You'll also receive the vendor's contact details in your booking confirmation.</div></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Is there a mobile app? <span class="faq-arrow">&#9660;</span></div>
+          <div class="faq-a"><div class="faq-a-inner">Yes! Toureez is available on both iOS and Android. Download it for real-time notifications, offline itinerary access, and app-exclusive deals.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- PAGE: FOR VENDORS -->
+<div id="page-vendors" class="page">
+
+  <section class="vendor-hero">
+    <div class="container" style="position:relative;z-index:1">
+      <span class="section-tag" style="background:rgba(255,255,255,.15);color:#fff">For Vendors</span>
+      <h1>Grow Your Travel Business with Toureez</h1>
+      <p>List your packages, reach thousands of verified travellers, and manage everything from one powerful dashboard.</p>
+      <a href="#apply" onclick="document.getElementById('vendor-form-section').scrollIntoView({behavior:'smooth'})" class="btn btn-primary">Apply to Join &rarr;</a>
+    </div>
+  </section>
+
+  <section class="benefits">
+    <div class="container">
+      <div style="text-align:center">
+        <span class="section-tag">Why Toureez</span>
+        <h2 class="section-title">Everything You Need to Succeed</h2>
+      </div>
+      <div class="benefits-grid">
+        <div class="benefit-card reveal"><div class="benefit-icon">&#128227;</div><h3>Massive Reach</h3><p>Access 10,000+ active travellers searching for packages like yours every month.</p></div>
+        <div class="benefit-card reveal"><div class="benefit-icon">&#128202;</div><h3>Powerful Dashboard</h3><p>Manage packages, track bookings, view earnings, and respond to enquiries all in one place.</p></div>
+        <div class="benefit-card reveal"><div class="benefit-icon">&#128179;</div><h3>Fast Payouts</h3><p>Receive payments directly to your bank account with transparent settlement timelines.</p></div>
+        <div class="benefit-card reveal"><div class="benefit-icon">&#11088;</div><h3>Verified Badge</h3><p>Our verification process signals trust to travellers, boosting your bookings and credibility.</p></div>
+        <div class="benefit-card reveal"><div class="benefit-icon">&#128241;</div><h3>Mobile App</h3><p>Manage your business on the go with the Toureez vendor app for iOS and Android.</p></div>
+        <div class="benefit-card reveal"><div class="benefit-icon">&#128737;</div><h3>Secure Platform</h3><p>Razorpay-powered payments and Supabase infrastructure keep your data and money safe.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="vendor-stats">
+    <div class="container">
+      <div class="vendor-stats-grid">
+        <div class="vendor-stats-item"><div class="stats-num">&#8377;2Cr+</div><div class="stats-label">Paid to Vendors</div></div>
+        <div class="vendor-stats-item"><div class="stats-num">200+</div><div class="stats-label">Active Vendors</div></div>
+        <div class="vendor-stats-item"><div class="stats-num">4.7&#9733;</div><div class="stats-label">Average Vendor Rating</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="vendor-form-section" id="vendor-form-section">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:40px">
+        <span class="section-tag">Apply Now</span>
+        <h2 class="section-title">Start Your Application</h2>
+        <p class="section-sub" style="margin:12px auto 0">Free to apply. Our team reviews applications within 48 hours.</p>
+      </div>
+      <div class="vendor-form-wrap">
+        <div class="form-body" id="vendor-form-body">
+          <form id="vendor-form" onsubmit="submitVendorForm(event)" novalidate>
+            <div class="form-row">
+              <div class="form-group" id="fg-name"><label for="v-name">Full Name *</label><input type="text" id="v-name" placeholder="Ravi Kumar" autocomplete="name"><div class="err">Please enter your full name</div></div>
+              <div class="form-group" id="fg-email"><label for="v-email">Email Address *</label><input type="email" id="v-email" placeholder="ravi@example.com" autocomplete="email"><div class="err">Please enter a valid email</div></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group" id="fg-phone"><label for="v-phone">Phone Number *</label><input type="tel" id="v-phone" placeholder="+91 98765 43210" autocomplete="tel"><div class="err">Please enter a valid 10-digit number</div></div>
+              <div class="form-group" id="fg-biz"><label for="v-biz">Business / Company Name *</label><input type="text" id="v-biz" placeholder="Mountain Trails Pvt Ltd"><div class="err">Please enter your business name</div></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group" id="fg-state">
+                <label for="v-state">State *</label>
+                <select id="v-state">
+                  <option value="">Select state</option>
+                  <option>Andhra Pradesh</option><option>Arunachal Pradesh</option><option>Assam</option>
+                  <option>Bihar</option><option>Chhattisgarh</option><option>Goa</option>
+                  <option>Gujarat</option><option>Haryana</option><option>Himachal Pradesh</option>
+                  <option>Jharkhand</option><option>Karnataka</option><option>Kerala</option>
+                  <option>Madhya Pradesh</option><option>Maharashtra</option><option>Manipur</option>
+                  <option>Meghalaya</option><option>Mizoram</option><option>Nagaland</option>
+                  <option>Odisha</option><option>Punjab</option><option>Rajasthan</option>
+                  <option>Sikkim</option><option>Tamil Nadu</option><option>Telangana</option>
+                  <option>Tripura</option><option>Uttar Pradesh</option><option>Uttarakhand</option>
+                  <option>West Bengal</option>
+                  <optgroup label="Union Territories">
+                    <option>Andaman and Nicobar Islands</option><option>Chandigarh</option>
+                    <option>Dadra and Nagar Haveli and Daman and Diu</option><option>Delhi</option>
+                    <option>Jammu and Kashmir</option><option>Ladakh</option>
+                    <option>Lakshadweep</option><option>Puducherry</option>
+                  </optgroup>
+                </select>
+                <div class="err">Please select your state</div>
+              </div>
+              <div class="form-group" id="fg-city"><label for="v-city">City *</label><input type="text" id="v-city" placeholder="Manali"><div class="err">Please enter your city</div></div>
+            </div>
+            <div class="form-group" id="fg-desc"><label for="v-desc">Tell us about your business *</label><textarea id="v-desc" rows="4" placeholder="Describe your travel services, destinations you cover, years of experience..."></textarea><div class="err">Please describe your business (min 20 characters)</div></div>
+            <div class="form-group"><label for="v-gst">GST Number (optional)</label><input type="text" id="v-gst" placeholder="22AAAAA0000A1Z5"></div>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:14px">Submit Application &rarr;</button>
+          </form>
+        </div>
+        <div class="form-success" id="vendor-success">
+          <div class="form-success-icon">&#127881;</div>
+          <h3>Application Received!</h3>
+          <p>Thank you for applying to join Toureez. Our team will review your application and get back to you within 48 hours at your registered email.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- PAGE: ABOUT -->
+<div id="page-about" class="page">
+
+  <section class="about-hero">
+    <div class="container">
+      <span class="section-tag">Our Story</span>
+      <h1>Building India's Travel Marketplace</h1>
+      <p class="section-sub">We connect passionate travellers with local experts who know their destinations best.</p>
+    </div>
+  </section>
+
+  <section class="mission">
+    <div class="container">
+      <div class="mission-inner">
+        <div>
+          <span class="section-tag">Mission</span>
+          <h2 class="section-title">Make Great Travel Accessible to Everyone</h2>
+          <p style="color:var(--muted);font-size:1rem;line-height:1.8;margin-top:16px">India has some of the world's most incredible destinations, but discovering them authentically is hard. Too often, travellers end up with generic packages from large operators that miss the local magic.</p>
+          <p style="color:var(--muted);font-size:1rem;line-height:1.8;margin-top:12px">Toureez was built to change that &mdash; by connecting travellers directly with local experts, small businesses, and passionate guides who know their region inside out.</p>
+        </div>
+        <div class="mission-visual reveal" aria-hidden="true">&#127748;</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="values">
+    <div class="container">
+      <div style="text-align:center">
+        <span class="section-tag">Values</span>
+        <h2 class="section-title">What We Stand For</h2>
+      </div>
+      <div class="values-grid">
+        <div class="value-card reveal"><div class="value-icon">&#129309;</div><h3>Trust First</h3><p>Every vendor is verified. Every payment is protected. We earn trust by doing the right thing.</p></div>
+        <div class="value-card reveal"><div class="value-icon">&#127807;</div><h3>Local Impact</h3><p>We prioritize small businesses and local guides who reinvest in their communities.</p></div>
+        <div class="value-card reveal"><div class="value-icon">&#128161;</div><h3>Transparency</h3><p>Clear pricing, no hidden fees, and honest reviews from verified travellers only.</p></div>
+        <div class="value-card reveal"><div class="value-icon">&#128640;</div><h3>Traveller First</h3><p>Every feature we build starts with: does this make the traveller's experience better?</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="story">
+    <div class="container">
+      <div class="story-inner">
+        <h2>From an Idea to India's Travel Marketplace</h2>
+        <p>Toureez started with a simple frustration &mdash; finding authentic, fairly-priced travel packages in India was unnecessarily hard. Local operators had no digital presence, travellers couldn't compare options easily, and payments felt risky.</p>
+        <p style="margin-top:16px">We built Toureez to solve all three problems at once: a platform where local travel businesses can grow digitally, travellers can book with confidence, and the whole experience feels seamless from search to review.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- PAGE: CONTACT -->
+<div id="page-contact" class="page">
+
+  <section class="contact-hero">
+    <div class="container">
+      <span class="section-tag">Get in Touch</span>
+      <h1>We'd Love to Hear From You</h1>
+      <p class="section-sub">Questions, feedback, or partnership enquiries &mdash; we're here to help.</p>
+    </div>
+  </section>
+
+  <section class="contact-section">
+    <div class="container">
+      <div class="contact-inner">
+        <div class="contact-info-cards">
+          <div class="contact-card reveal"><div class="contact-card-icon">&#128231;</div><div><h4>Email Us</h4><p>hello@toureez.in<br>support@toureez.in</p></div></div>
+          <div class="contact-card reveal"><div class="contact-card-icon">&#128205;</div><div><h4>Headquarters</h4><p>India</p></div></div>
+          <div class="contact-card reveal"><div class="contact-card-icon">&#9200;</div><div><h4>Support Hours</h4><p>Mon&ndash;Sat, 9 AM &ndash; 7 PM IST</p></div></div>
+          <div class="contact-card reveal"><div class="contact-card-icon">&#129309;</div><div><h4>Partnerships</h4><p>partners@toureez.in</p></div></div>
+        </div>
+        <div class="contact-form-wrap">
+          <h3 style="font-family:var(--font-sans);font-weight:700;font-size:1.2rem;color:var(--navy);margin-bottom:24px">Send a Message</h3>
+          <div class="contact-success" id="contact-success">&#10003; Message sent! We'll get back to you within 24 hours.</div>
+          <form id="contact-form" onsubmit="submitContactForm(event)" novalidate>
+            <div class="form-row">
+              <div class="form-group" id="cfg-name"><label for="c-name">Name *</label><input type="text" id="c-name" placeholder="Your name"><div class="err">Please enter your name</div></div>
+              <div class="form-group" id="cfg-email"><label for="c-email">Email *</label><input type="email" id="c-email" placeholder="you@example.com"><div class="err">Please enter a valid email</div></div>
+            </div>
+            <div class="form-group" id="cfg-subject"><label for="c-subject">Subject *</label><input type="text" id="c-subject" placeholder="How can we help?"><div class="err">Please enter a subject</div></div>
+            <div class="form-group" id="cfg-msg"><label for="c-msg">Message *</label><textarea id="c-msg" rows="5" placeholder="Your message..."></textarea><div class="err">Please enter a message</div></div>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:14px">Send Message &rarr;</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="nav-logo" style="color:#fff"><span class="nav-logo-dot"></span> Toureez</div>
+        <p>India's travel marketplace connecting travellers with verified local vendors for authentic, memorable experiences.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Travellers</h4>
+        <ul>
+          <li><a href="#home" onclick="navigate('home',event)">Browse Packages</a></li>
+          <li><a href="#how-it-works" onclick="navigate('how-it-works',event)">How It Works</a></li>
+          <li><a href="#how-it-works" onclick="navigate('how-it-works',event)">Cancellation Policy</a></li>
+          <li><a href="#contact" onclick="navigate('contact',event)">Support</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Vendors</h4>
+        <ul>
+          <li><a href="#vendors" onclick="navigate('vendors',event)">Join as Vendor</a></li>
+          <li><a href="#vendors" onclick="navigate('vendors',event)">Vendor Dashboard</a></li>
+          <li><a href="#contact" onclick="navigate('contact',event)">Partner With Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#about" onclick="navigate('about',event)">About Us</a></li>
+          <li><a href="#contact" onclick="navigate('contact',event)">Contact</a></li>
+          <li><a href="#" onclick="return false">Privacy Policy</a></li>
+          <li><a href="#" onclick="return false">Terms of Service</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Toureez. All rights reserved.</p>
+      <div class="footer-bottom-links">
+        <a href="#" onclick="return false">Privacy</a>
+        <a href="#" onclick="return false">Terms</a>
+        <a href="#contact" onclick="navigate('contact',event)">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+var currentPage = 'home';
+var pages = ['home','how-it-works','vendors','about','contact'];
+
+function navigate(page, e) {
+  if (e) e.preventDefault();
+  if (!pages.includes(page)) return;
+  pages.forEach(function(p) {
+    var el = document.getElementById('page-' + p);
+    if (el) el.classList.toggle('active', p === page);
+  });
+  document.querySelectorAll('[data-page]').forEach(function(a) {
+    a.classList.toggle('active', a.dataset.page === page);
+  });
+  currentPage = page;
+  history.pushState({page: page}, '', '#' + page);
+  window.scrollTo({top: 0, behavior: 'smooth'});
+  initReveal();
+}
+
+window.addEventListener('popstate', function(e) {
+  navigate((e.state && e.state.page) || 'home', null);
+});
+
+(function() {
+  var hash = window.location.hash.replace('#','');
+  if (pages.includes(hash)) navigate(hash, null);
+})();
+
+window.addEventListener('scroll', function() {
+  document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 10);
+}, {passive: true});
+
+function toggleMenu() {
+  var hb = document.getElementById('hamburger');
+  var mm = document.getElementById('mobile-menu');
+  hb.classList.toggle('open');
+  mm.classList.toggle('open');
+  document.body.style.overflow = mm.classList.contains('open') ? 'hidden' : '';
+}
+function closeMenu() {
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+var observer;
+function initReveal() {
+  if (typeof IntersectionObserver === 'undefined') {
+    document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('visible'); });
+    return;
+  }
+  if (observer) observer.disconnect();
+  observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(en) {
+      if (en.isIntersecting) { en.target.classList.add('visible'); observer.unobserve(en.target); }
+    });
+  }, {threshold: 0.12});
+  document.querySelectorAll('.reveal:not(.visible)').forEach(function(el) { observer.observe(el); });
+}
+document.addEventListener('DOMContentLoaded', initReveal);
+setTimeout(initReveal, 100);
+
+/* Featured packages */
+var FALLBACK = [
+  {title:'Manali Adventure Package',loc:'Manali, HP',days:'5D/4N',price:'8,999',rating:'4.9',badge:'Bestseller',color:'#fed7aa,#fb923c'},
+  {title:'Goa Beach &amp; Culture',loc:'Goa',days:'4D/3N',price:'6,499',rating:'4.8',badge:'Featured',color:'#a7f3d0,#34d399'},
+  {title:'Rajasthan Heritage Tour',loc:'Jaipur, RJ',days:'7D/6N',price:'12,999',rating:'4.7',badge:null,color:'#fde68a,#f59e0b'},
+  {title:'Kerala Backwaters',loc:'Alleppey, KL',days:'5D/4N',price:'9,499',rating:'4.9',badge:'Bestseller',color:'#bbf7d0,#22c55e'},
+  {title:'Spiti Valley Expedition',loc:'Spiti, HP',days:'8D/7N',price:'15,499',rating:'4.8',badge:null,color:'#bfdbfe,#60a5fa'},
+  {title:'Andaman Island Escape',loc:'Port Blair, AN',days:'6D/5N',price:'18,999',rating:'4.9',badge:'Featured',color:'#c7d2fe,#818cf8'},
+];
+
+function renderShimmer() {
+  var g = document.getElementById('pkgs-grid');
+  if (!g) return;
+  var h = '';
+  for (var i = 0; i < 6; i++) {
+    h += '<div class="pkg-card"><div class="pkg-img shimmer" style="background:none"></div>' +
+      '<div class="pkg-body">' +
+      '<div class="pkg-sk-box shimmer" style="height:12px;width:55%;margin-bottom:12px;border-radius:6px"></div>' +
+      '<div class="pkg-sk-box shimmer" style="height:18px;width:85%;margin-bottom:8px;border-radius:6px"></div>' +
+      '<div class="pkg-sk-box shimmer" style="height:18px;width:60%;margin-bottom:20px;border-radius:6px"></div>' +
+      '<div class="pkg-sk-box shimmer" style="height:22px;width:35%;border-radius:6px"></div>' +
+      '</div></div>';
+  }
+  g.innerHTML = h;
+}
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function renderPackages(pkgs) {
+  var g = document.getElementById('pkgs-grid');
+  if (!g) return;
+  if (!pkgs || !pkgs.length) { renderFallback(); return; }
+  var items = pkgs.slice(0, 6);
+  g.innerHTML = items.map(function(p) {
+    var cover = (p.cover_image && typeof p.cover_image === 'string') ? p.cover_image : null;
+    var loc = (p.location && p.location.city) ? p.location.city + ', ' + p.location.state : '';
+    var price = 0;
+    if (p.pricing && p.pricing.length) price = p.pricing[0].discounted_price || p.pricing[0].base_price || 0;
+    var rating = p.avg_rating ? p.avg_rating.toFixed(1) : '&#8212;';
+    var days = p.duration_days || '';
+    var badge = p.is_bestseller ? 'Bestseller' : (p.is_featured ? 'Featured' : null);
+    return '<div class="pkg-card">' +
+      '<div class="pkg-img">' +
+      (cover ? '<img src="' + esc(cover) + '" alt="' + esc(p.title||'') + '" loading="lazy" onerror="this.style.display=\'none\'">' : '') +
+      (badge ? '<span class="pkg-badge">' + esc(badge) + '</span>' : '') +
+      '</div>' +
+      '<div class="pkg-body">' +
+      '<div class="pkg-meta">' + (loc ? '&#128205; ' + esc(loc) : '') + (days ? '<span class="pkg-meta-sep"></span>' + days + 'D/' + (p.duration_nights||'') + 'N' : '') + '</div>' +
+      '<div class="pkg-title">' + esc(p.title || 'Travel Package') + '</div>' +
+      '<div class="pkg-footer"><div><div class="pkg-price-from">From</div><div class="pkg-price-amt">&#8377;' + (price ? price.toLocaleString('en-IN') : '&#8212;') + '</div></div>' +
+      '<div class="pkg-rating">&#11088; ' + rating + '</div></div>' +
+      '</div></div>';
+  }).join('');
+}
+
+function renderFallback() {
+  var g = document.getElementById('pkgs-grid');
+  if (!g) return;
+  g.innerHTML = FALLBACK.map(function(p) {
+    return '<div class="pkg-card">' +
+      '<div class="pkg-img" style="background:linear-gradient(135deg,' + p.color + ')">' +
+      (p.badge ? '<span class="pkg-badge">' + p.badge + '</span>' : '') +
+      '</div>' +
+      '<div class="pkg-body">' +
+      '<div class="pkg-meta">&#128205; ' + p.loc + '<span class="pkg-meta-sep"></span>' + p.days + '</div>' +
+      '<div class="pkg-title">' + p.title + '</div>' +
+      '<div class="pkg-footer"><div><div class="pkg-price-from">From</div><div class="pkg-price-amt">&#8377;' + p.price + '</div></div>' +
+      '<div class="pkg-rating">&#11088; ' + p.rating + '</div></div>' +
+      '</div></div>';
+  }).join('');
+}
+
+function loadPackages() {
+  renderShimmer();
+  var ctrl = new AbortController();
+  var tid = setTimeout(function() { ctrl.abort(); }, 5000);
+  fetch('https://toureez-production.up.railway.app/api/v1/packages/featured', {signal: ctrl.signal})
+    .then(function(r) { clearTimeout(tid); return r.json(); })
+    .then(function(json) { renderPackages((json && json.data) ? json.data : (Array.isArray(json) ? json : null)); })
+    .catch(function() { renderFallback(); });
+}
+document.addEventListener('DOMContentLoaded', loadPackages);
+
+function toggleFaq(el) {
+  var item = el.parentElement;
+  var isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(function(i) { i.classList.remove('open'); });
+  if (!isOpen) item.classList.add('open');
+}
+
+function submitVendorForm(e) {
+  e.preventDefault();
+  var valid = true;
+  function chk(id, fgId, fn) {
+    var v = document.getElementById(id);
+    var fg = document.getElementById(fgId);
+    var ok = fn(v ? v.value.trim() : '');
+    if (fg) fg.classList.toggle('has-error', !ok);
+    if (!ok) valid = false;
+  }
+  chk('v-name','fg-name', function(v){ return v.length >= 2; });
+  chk('v-email','fg-email', function(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); });
+  chk('v-phone','fg-phone', function(v){ return /^[6-9]\d{9}$/.test(v.replace(/[\s\+\-]/g,'')); });
+  chk('v-biz','fg-biz', function(v){ return v.length >= 2; });
+  chk('v-state','fg-state', function(v){ return v !== ''; });
+  chk('v-city','fg-city', function(v){ return v.length >= 2; });
+  chk('v-desc','fg-desc', function(v){ return v.length >= 20; });
+  if (!valid) return;
+  document.getElementById('vendor-form-body').classList.add('hide');
+  document.getElementById('vendor-success').classList.add('show');
+}
+
+function submitContactForm(e) {
+  e.preventDefault();
+  var valid = true;
+  function chk(id, fgId, fn) {
+    var v = document.getElementById(id);
+    var fg = document.getElementById(fgId);
+    var ok = fn(v ? v.value.trim() : '');
+    if (fg) fg.classList.toggle('has-error', !ok);
+    if (!ok) valid = false;
+  }
+  chk('c-name','cfg-name', function(v){ return v.length >= 2; });
+  chk('c-email','cfg-email', function(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); });
+  chk('c-subject','cfg-subject', function(v){ return v.length >= 2; });
+  chk('c-msg','cfg-msg', function(v){ return v.length >= 5; });
+  if (!valid) return;
+  document.getElementById('contact-success').classList.add('show');
+  document.getElementById('contact-form').reset();
+  setTimeout(function() { document.getElementById('contact-success').classList.remove('show'); }, 5000);
+}
+</script>
+</body>
+</html>

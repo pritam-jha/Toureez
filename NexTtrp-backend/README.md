@@ -1,6 +1,6 @@
-# NEXTTRP Backend
+﻿# Toureez Backend
 
-NEXTTRP Backend is the Node.js and Express API layer for an India-focused travel package comparison app. The Expo mobile app calls this backend for business logic, while Supabase provides PostgreSQL, Auth, and Storage; this service verifies Supabase JWTs, uses the Supabase service role key for trusted server-side data access, and exposes versioned routes under `/api/v1`.
+Toureez Backend is the Node.js and Express API layer for an India-focused travel package comparison app. The Expo mobile app calls this backend for business logic, while Supabase provides PostgreSQL, Auth, and Storage; this service verifies Supabase JWTs, uses the Supabase service role key for trusted server-side data access, and exposes versioned routes under `/api/v1`.
 
 ## Tech Stack
 

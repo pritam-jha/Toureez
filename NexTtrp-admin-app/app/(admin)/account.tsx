@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/(admin)/account.tsx
  * @description Admin profile and account screen.
  *
@@ -210,7 +210,7 @@ export default function AdminAccountScreen(): React.ReactElement {
           />
         </MenuSection>
 
-        <Text style={styles.version}>NEXTTRP Admin Portal</Text>
+        <Text style={styles.version}>Toureez Admin Portal</Text>
       </ScrollView>
     </SafeAreaView>
   );

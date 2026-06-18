@@ -1,8 +1,9 @@
 import { AppError, ERROR_MESSAGES } from '../constants/errors';
 // FIXED: 4 - Public location reads use the clearly named anon client.
-import { supabasePublic } from '../lib/supabase';
+import { supabasePublic, supabaseAdmin } from '../lib/supabase';
 import { logger } from '../utils/logger';
 import type { Location } from '../types';
+import type { CreateLocationInput } from '../utils/vendorValidation';
 
 const isRecord = (value: unknown): value is Record<string, unknown> => {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -78,4 +79,44 @@ export const getLocations = async (popular?: boolean): Promise<Location[]> => {
   }
 
   return ((data as unknown[] | null) ?? []).map(mapLocation);
+};
+
+/**
+ * Creates a vendor-submitted destination that isn't yet in the saved locations list.
+ * If a location with the same city/state/country already exists, returns it instead
+ * of erroring, since the vendor's intent is just "make sure this destination is selectable".
+ */
+export const createLocation = async (input: CreateLocationInput): Promise<Location> => {
+  const { data, error } = await supabaseAdmin
+    .from('locations')
+    .insert({
+      city: input.city,
+      state: input.state,
+      region: input.region,
+      country: 'India',
+      is_popular: false,
+      is_active: true,
+    })
+    .select('id, city, state, region, country, latitude, longitude, is_popular, is_active, created_at')
+    .single();
+
+  if (error !== null) {
+    if (error.code === '23505') {
+      const { data: existing, error: fetchError } = await supabasePublic
+        .from('locations')
+        .select('id, city, state, region, country, latitude, longitude, is_popular, is_active, created_at')
+        .eq('city', input.city)
+        .eq('state', input.state)
+        .eq('country', 'India')
+        .maybeSingle();
+
+      if (fetchError === null && existing !== null) {
+        return mapLocation(existing);
+      }
+    }
+
+    throwDatabaseError('createLocation', error);
+  }
+
+  return mapLocation(data);
 };

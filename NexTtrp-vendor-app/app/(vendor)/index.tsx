@@ -1,12 +1,14 @@
-/**
+﻿/**
  * @file app/(vendor)/index.tsx
  * Vendor Dashboard — Luxury dark-mode SaaS redesign.
  * Airbnb Host + Stripe + Linear inspired premium UI.
  */
 
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Dimensions,
+  FlatList,
+  Modal,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -19,7 +21,7 @@ import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useVendorDashboard } from '../../hooks/useVendorDashboard';
+import { useVendorDashboard, useVendorEarningsForMonth } from '../../hooks/useVendorDashboard';
 import { useVendorCompany } from '../../hooks/useVendorCompany';
 import { useUnreadNotificationCount } from '../../hooks/useVendorNotifications';
 import { useAuthStore } from '../../store/authStore';
@@ -77,6 +79,23 @@ function greet(): string {
 
 function dateStr(): string {
   return new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+const ALL_TIME = 'all' as const;
+type EarningsPeriod = string | typeof ALL_TIME;
+
+interface MonthOption { key: EarningsPeriod; label: string }
+
+function buildMonthOptions(): MonthOption[] {
+  const options: MonthOption[] = [{ key: ALL_TIME, label: 'All Time' }];
+  const now = new Date();
+  for (let i = 0; i < 12; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    const label = d.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+    options.push({ key, label: i === 0 ? `${label} (This Month)` : label });
+  }
+  return options;
 }
 
 function statusColor(s: string): string {
@@ -175,6 +194,17 @@ export default function DashboardScreen(): React.ReactElement {
   const { data: company, isLoading: companyLoading } = useVendorCompany();
   const unread = useUnreadNotificationCount();
 
+  const [earningsPeriod, setEarningsPeriod] = useState<EarningsPeriod>(ALL_TIME);
+  const [monthModalVisible, setMonthModalVisible] = useState(false);
+  const monthOptions = useMemo(buildMonthOptions, []);
+
+  const isAllTime = earningsPeriod === ALL_TIME;
+  const {
+    data: monthEarnings,
+    isLoading: monthEarningsLoading,
+    isFetching: monthEarningsFetching,
+  } = useVendorEarningsForMonth(isAllTime ? '' : earningsPeriod);
+
   React.useEffect(() => {
     if (!companyLoading && company === null) {
       router.replace('/(vendor)/onboarding');
@@ -209,7 +239,7 @@ export default function DashboardScreen(): React.ReactElement {
             <Ionicons name="airplane" size={14} color={D.primary} />
           </View>
           <View>
-            <Text style={styles.logoText}>NEXTTRP</Text>
+            <Text style={styles.logoText}>Toureez</Text>
             <Text style={styles.logoSub}>VENDOR</Text>
           </View>
         </View>
@@ -286,17 +316,69 @@ export default function DashboardScreen(): React.ReactElement {
         <View style={styles.earnHeader}>
           <View>
             <Text style={styles.secTitle}>Earnings Overview</Text>
-            <Text style={styles.earnTotal}>Total Earnings</Text>
+            <Text style={styles.earnTotal}>
+              {isAllTime ? 'Total Earnings' : `Earnings — ${monthOptions.find((m) => m.key === earningsPeriod)?.label ?? ''}`}
+            </Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 2 }}>
-              <Text style={styles.earnAmount}>{fmt(totalRevenue)}</Text>
+              <Text style={styles.earnAmount}>
+                {isAllTime
+                  ? fmt(totalRevenue)
+                  : monthEarningsLoading || monthEarningsFetching
+                    ? '—'
+                    : fmt(monthEarnings?.revenue ?? 0)}
+              </Text>
             </View>
+            {!isAllTime && !monthEarningsLoading && (
+              <Text style={styles.earnBookingsHint}>{monthEarnings?.bookings ?? 0} bookings this period</Text>
+            )}
           </View>
-          <View style={styles.periodPill}>
-            <Text style={styles.periodTxt}>This Month</Text>
+          <TouchableOpacity style={styles.periodPill} onPress={() => setMonthModalVisible(true)} activeOpacity={0.8}>
+            <Text style={styles.periodTxt} numberOfLines={1}>
+              {monthOptions.find((m) => m.key === earningsPeriod)?.label ?? 'All Time'}
+            </Text>
             <Ionicons name="chevron-down" size={12} color={D.textSec} />
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
+
+      {/* ── Month picker modal ─────────────────────────────────── */}
+      <Modal
+        visible={monthModalVisible}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setMonthModalVisible(false)}
+      >
+        <Pressable style={styles.modalOverlay} onPress={() => setMonthModalVisible(false)}>
+          <Pressable style={styles.monthSheet} onPress={(e) => e.stopPropagation()}>
+            <View style={styles.monthSheetHeader}>
+              <Text style={styles.monthSheetTitle}>Select Period</Text>
+              <Pressable onPress={() => setMonthModalVisible(false)} hitSlop={8}>
+                <Ionicons name="close" size={22} color={D.text} />
+              </Pressable>
+            </View>
+            <FlatList
+              data={monthOptions}
+              keyExtractor={(item) => item.key}
+              renderItem={({ item }) => {
+                const selected = item.key === earningsPeriod;
+                return (
+                  <Pressable
+                    style={[styles.monthRow, selected && styles.monthRowSelected]}
+                    onPress={() => {
+                      setEarningsPeriod(item.key);
+                      setMonthModalVisible(false);
+                    }}
+                  >
+                    <Text style={[styles.monthRowText, selected && styles.monthRowTextSelected]}>{item.label}</Text>
+                    {selected && <Ionicons name="checkmark-circle" size={18} color={D.primary} />}
+                  </Pressable>
+                );
+              }}
+              style={{ maxHeight: 360 }}
+            />
+          </Pressable>
+        </Pressable>
+      </Modal>
 
       {/* ── Quick actions ──────────────────────────────────────── */}
       <View style={styles.section}>
@@ -496,8 +578,19 @@ const styles = StyleSheet.create({
   earnHeader:  { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
   earnTotal:   { fontSize: 11, color: D.textSec, fontWeight: '500', marginTop: 2 },
   earnAmount:  { fontSize: 22, fontWeight: '800', color: D.text, letterSpacing: -0.4 },
-  periodPill:  { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: D.cardBorder, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 7 },
+  earnBookingsHint: { fontSize: 11, color: D.textMuted, marginTop: 4 },
+  periodPill:  { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: D.cardBorder, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 7, maxWidth: 150 },
   periodTxt:   { fontSize: 12, color: D.textSec, fontWeight: '600' },
+
+  // Month picker modal
+  modalOverlay:       { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'flex-end' },
+  monthSheet:         { backgroundColor: D.card, borderTopLeftRadius: 20, borderTopRightRadius: 20, borderWidth: 1, borderColor: D.cardBorder, paddingBottom: 24 },
+  monthSheetHeader:   { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 18, borderBottomWidth: 1, borderBottomColor: D.divider },
+  monthSheetTitle:    { fontSize: 16, fontWeight: '700', color: D.text },
+  monthRow:           { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 18, paddingVertical: 14 },
+  monthRowSelected:   { backgroundColor: D.primaryDim },
+  monthRowText:       { fontSize: 14, color: D.textSec, fontWeight: '500' },
+  monthRowTextSelected: { color: D.primary, fontWeight: '700' },
 
   // Section
   section:  { marginBottom: 20 },

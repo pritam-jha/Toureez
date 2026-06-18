@@ -207,7 +207,7 @@ export function useDownloadInvoice(): {
         const url = getInvoiceUrl(bookingId);
         const month = new Date().toISOString().slice(0, 7).replace('-', '');
         const last6 = bookingRef.slice(-6);
-        const filename = `NextTrip_Invoice_NT-INV-${month}-${last6}.pdf`;
+        const filename = `Toureez_Invoice_NT-INV-${month}-${last6}.pdf`;
         const localUri = `${FileSystem.documentDirectory}${filename}`;
 
         const downloadResult = await FileSystem.downloadAsync(url, localUri, {

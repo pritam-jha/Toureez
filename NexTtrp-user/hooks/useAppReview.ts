@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file hooks/useAppReview.ts
  * @description Requests an in-app store review after a completed booking.
  *
@@ -10,7 +10,7 @@ import { useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as StoreReview from 'expo-store-review';
 
-const STORAGE_KEY = '@nexttrp:last_review_request';
+const STORAGE_KEY = '@toureez:last_review_request';
 const MIN_INTERVAL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 export function useAppReview(): { requestReview: () => Promise<void> } {

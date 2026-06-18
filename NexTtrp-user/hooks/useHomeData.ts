@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file hooks/useHomeData.ts
- * @description TanStack Query hooks for the NEXTTRP home screen.
+ * @description TanStack Query hooks for the Toureez home screen.
  */
 
 import { useQuery } from '@tanstack/react-query';

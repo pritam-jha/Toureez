@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file components/package/PhotoGallery.tsx
  * @description Full-width horizontal image pager with dot indicators,
  * image counter, fullscreen modal, back button, and share button.
@@ -135,7 +135,7 @@ export function PhotoGallery({
   const handleShare = useCallback(async () => {
     try {
       await Share.share({
-        message: `Check out this travel package: ${packageTitle}\nnexttrp://package/${packageId}`,
+        message: `Check out this travel package: ${packageTitle}\ntoureez://package/${packageId}`,
         title: packageTitle,
       });
     } catch {

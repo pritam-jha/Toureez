@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file constants/config.ts
  * @description App-wide configuration constants.
  * All magic numbers, limits, and environment-driven values live here.
@@ -47,7 +47,7 @@ export const Config = {
   apiBaseUrl: requireEnv('EXPO_PUBLIC_API_BASE_URL'),
 
   // ── App metadata ──────────────────────────────────────────
-  appName: 'NEXTTRP',
+  appName: 'Toureez',
   appVersion: Constants.expoConfig?.version ?? '1.0.0',
 
   // ── Pagination ────────────────────────────────────────────

@@ -37,6 +37,19 @@ export async function getAdminDashboard(): Promise<BackendApiResponse<AdminDashb
   return apiClient.get<AdminDashboardMetrics>('/admin/dashboard');
 }
 
+export interface AdminMonthlyEarnings {
+  month: string;
+  revenue: number;
+}
+
+/**
+ * Fetches total paid-payment revenue for a single calendar month
+ * (format: "YYYY-MM"), used by the Revenue Overview month picker.
+ */
+export async function getAdminEarningsForMonth(month: string): Promise<BackendApiResponse<AdminMonthlyEarnings>> {
+  return apiClient.get<AdminMonthlyEarnings>(`/admin/earnings?month=${month}`);
+}
+
 // ── System health ─────────────────────────────────────────────────────────────
 
 /** Pings the backend's /health endpoint (service uptime + database connectivity). */

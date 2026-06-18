@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file app/(auth)/login.tsx
  * Enterprise admin sign-in screen.
  */
@@ -66,7 +66,7 @@ export default function LoginScreen(): React.ReactElement {
               <View style={styles.logoBox}>
                 <Text style={styles.logoGlyph}>✈</Text>
               </View>
-              <Text style={styles.appName}>NEXTTRP Admin</Text>
+              <Text style={styles.appName}>Toureez Admin</Text>
               <Text style={styles.appSubtitle}>
                 Platform Management Console
               </Text>
@@ -122,7 +122,7 @@ export default function LoginScreen(): React.ReactElement {
             </View>
 
             <Text style={styles.footer}>
-              This portal is restricted to NEXTTRP platform administrators.
+              This portal is restricted to Toureez platform administrators.
               {'\n'}Unauthorized access attempts are logged.
             </Text>
           </View>

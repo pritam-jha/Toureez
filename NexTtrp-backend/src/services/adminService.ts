@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file services/adminService.ts
  * @description All database operations for the admin portal.
  *
@@ -235,12 +235,12 @@ function isRpcNotFound(err: unknown): boolean {
  * Used automatically when get_admin_dashboard() RPC is not yet deployed.
  *
  * To enable the optimised single-query path, run:
- *   NexTtrp-backend/supabase/get_admin_dashboard.sql  in the Supabase SQL Editor.
+ *   Toureez-backend/supabase/get_admin_dashboard.sql  in the Supabase SQL Editor.
  */
 async function getDashboardFallback(): Promise<AdminDashboardMetrics> {
   logger.warn(
     'get_admin_dashboard RPC not found — falling back to parallel queries. ' +
-    'Deploy NexTtrp-backend/supabase/get_admin_dashboard.sql to Supabase to enable the optimised path.',
+    'Deploy Toureez-backend/supabase/get_admin_dashboard.sql to Supabase to enable the optimised path.',
   );
 
   const ms = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
@@ -298,7 +298,7 @@ async function getDashboardFallback(): Promise<AdminDashboardMetrics> {
 
 export async function getAdminDashboard(): Promise<AdminDashboardMetrics> {
   // Fast path: single DB round-trip via PL/pgSQL RPC.
-  // SQL: NexTtrp-backend/supabase/get_admin_dashboard.sql (run once in Supabase SQL Editor).
+  // SQL: Toureez-backend/supabase/get_admin_dashboard.sql (run once in Supabase SQL Editor).
   const { data, error } = await supabaseAdmin.rpc('get_admin_dashboard');
 
   if (error !== null) {
@@ -335,6 +335,42 @@ export async function getAdminDashboard(): Promise<AdminDashboardMetrics> {
     pending_reviews:        num('pending_reviews'),
     pending_payouts:        num('pending_payouts'),
   };
+}
+
+export interface AdminMonthlyEarnings {
+  month: string;
+  revenue: number;
+}
+
+/**
+ * Returns total paid-payment revenue across the platform for a single
+ * calendar month, used by the Revenue Overview month picker on the admin dashboard.
+ */
+export async function getAdminEarningsForMonth(month: string): Promise<AdminMonthlyEarnings> {
+  const [year, mon] = month.split('-').map(Number);
+  const rangeStart = new Date(year, mon - 1, 1).toISOString();
+  const rangeEnd = new Date(year, mon, 1).toISOString();
+
+  const { data, error } = await supabaseAdmin
+    .from('payments')
+    .select('total:amount.sum()')
+    .eq('status', 'paid')
+    .gte('created_at', rangeStart)
+    .lt('created_at', rangeEnd)
+    .maybeSingle();
+
+  if (error !== null) throwDb('getAdminEarningsForMonth', error);
+
+  const row: Record<string, unknown> = isRecord(data) ? data : {};
+  const v = row['total'];
+  const revenue =
+    typeof v === 'number' && Number.isFinite(v)
+      ? v
+      : typeof v === 'string'
+        ? Number.parseFloat(v) || 0
+        : 0;
+
+  return { month, revenue: Math.round(revenue * 100) / 100 };
 }
 
 // ── User management ───────────────────────────────────────────────────────────

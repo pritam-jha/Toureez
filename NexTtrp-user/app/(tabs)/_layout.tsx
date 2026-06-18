@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file app/(tabs)/_layout.tsx
- * @description NEXTTRP bottom tab navigator.
+ * @description Toureez bottom tab navigator.
  */
 
 import React from 'react';

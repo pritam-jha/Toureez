@@ -87,7 +87,7 @@ const buildBookingConfirmationHtml = (params: BookingConfirmationEmailParams): s
       </table>
       ${balanceNote}
       <p style="font-size: 13px; color: #9ca3af; margin: 32px 0 0;">
-        Booked with ${params.company_name} via NextTrip.
+        Booked with ${params.company_name} via Toureez.
       </p>
     </div>
   `;
@@ -100,10 +100,10 @@ const buildBookingConfirmationHtml = (params: BookingConfirmationEmailParams): s
 export async function sendBookingConfirmationEmail(params: BookingConfirmationEmailParams): Promise<void> {
   try {
     const resend = getResend();
-    const fromEmail = process.env.RESEND_FROM_EMAIL?.trim() || 'bookings@nexttrip.in';
+    const fromEmail = process.env.RESEND_FROM_EMAIL?.trim() || 'bookings@toureez.in';
 
     await resend.emails.send({
-      from: `NextTrip <${fromEmail}>`,
+      from: `Toureez <${fromEmail}>`,
       to: params.to,
       subject: `Booking Confirmed — ${params.booking_reference}`,
       html: buildBookingConfirmationHtml(params),

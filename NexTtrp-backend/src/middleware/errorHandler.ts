@@ -4,6 +4,7 @@ import { AppError, ERROR_MESSAGES } from '../constants/errors';
 import { IS_PRODUCTION } from '../config';
 import { error as errorResponse, validationError } from '../utils/response';
 import { logger } from '../utils/logger';
+import { Sentry } from '../lib/sentry';
 
 type ZodError = z.ZodError;
 
@@ -19,6 +20,19 @@ const logError = (err: unknown): void => {
 };
 
 /**
+ * Reports an error to Sentry. Skips client-error AppErrors (4xx) — those are
+ * expected control flow (validation failures, not-found, forbidden, etc.)
+ * and would just add noise. Genuine 5xx/unexpected errors are always sent.
+ * No-ops silently if SENTRY_DSN isn't configured (Sentry.init was never called).
+ */
+const reportToSentry = (err: unknown): void => {
+  if (err instanceof AppError && err.statusCode < 500) {
+    return;
+  }
+  Sentry.captureException(err);
+};
+
+/**
  * Converts thrown errors into standardized client-safe API responses.
  */
 export const errorHandler: ErrorRequestHandler = (err, _req, res, next) => {
@@ -27,6 +41,7 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, next) => {
   }
 
   logError(err);
+  reportToSentry(err);
 
   if (err instanceof z.ZodError) {
     return validationError(res, formatZodIssues(err));

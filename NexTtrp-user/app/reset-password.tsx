@@ -1,11 +1,11 @@
-/**
+﻿/**
  * @file app/reset-password.tsx
  * @description Handles the deep-link redirect from Supabase password-reset emails.
  *
  * Flow:
  *  1. User taps "Reset Password" in email
- *  2. Supabase redirects to  nexttrp://reset-password?code=...
- *     (or  nexttrp://reset-password#access_token=...&type=recovery)
+ *  2. Supabase redirects to  toureez://reset-password?code=...
+ *     (or  toureez://reset-password#access_token=...&type=recovery)
  *  3. Expo Router opens this screen
  *  4. User enters + confirms new password
  *  5. supabase.auth.updateUser({ password }) sets the new password

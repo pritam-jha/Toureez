@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "NEXTTRP Vendor",
-    "slug": "nexttrp-vendor",
+    "name": "Toureez Vendor",
+    "slug": "toureez-vendor",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "scheme": "nexttrpvendor",
+    "scheme": "toureezvendor",
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
@@ -15,11 +15,11 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.nexttrp.vendor",
+      "bundleIdentifier": "com.toureez.vendor",
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "NEXTTRP Vendor needs access to your photo library for package images.",
-        "NSCameraUsageDescription": "NEXTTRP Vendor needs access to your camera to capture package photos.",
-        "NSPhotoLibraryAddUsageDescription": "NEXTTRP Vendor saves package photos to your library."
+        "NSPhotoLibraryUsageDescription": "Toureez Vendor needs access to your photo library for package images.",
+        "NSCameraUsageDescription": "Toureez Vendor needs access to your camera to capture package photos.",
+        "NSPhotoLibraryAddUsageDescription": "Toureez Vendor saves package photos to your library."
       }
     },
     "android": {
@@ -27,7 +27,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#E8631A"
       },
-      "package": "com.nexttrp.vendor",
+      "package": "com.toureez.vendor",
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.READ_MEDIA_IMAGES",
@@ -39,7 +39,7 @@
           "autoVerify": true,
           "data": [
             {
-              "scheme": "nexttrpvendor"
+              "scheme": "toureezvendor"
             }
           ],
           "category": [
@@ -68,8 +68,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "NEXTTRP Vendor needs access to your photo library for package images.",
-          "cameraPermission": "NEXTTRP Vendor needs access to your camera to capture package photos."
+          "photosPermission": "Toureez Vendor needs access to your photo library for package images.",
+          "cameraPermission": "Toureez Vendor needs access to your camera to capture package photos."
         }
       ]
     ],
