@@ -20,14 +20,14 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: NexTtrp-backend/package-lock.json
+          cache-dependency-path: toureez-backend/package-lock.json
 
       - name: Install backend deps
-        working-directory: NexTtrp-backend
+        working-directory: toureez-backend
         run: npm ci --frozen-lockfile
 
       - name: Lint backend
-        working-directory: NexTtrp-backend
+        working-directory: toureez-backend
         run: npx eslint "src/**/*.ts" --max-warnings 0
 
 
@@ -43,14 +43,14 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: NexTtrp-backend/package-lock.json
+          cache-dependency-path: toureez-backend/package-lock.json
 
       - name: Install backend deps
-        working-directory: NexTtrp-backend
+        working-directory: toureez-backend
         run: npm ci --frozen-lockfile
 
       - name: Type-check backend
-        working-directory: NexTtrp-backend
+        working-directory: toureez-backend
         run: npx tsc --noEmit
 
   # ── Job 3: Build ─────────────────────────────────────────────────────────────
@@ -66,18 +66,18 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: NexTtrp-backend/package-lock.json
+          cache-dependency-path: toureez-backend/package-lock.json
 
       - name: Install backend deps
-        working-directory: NexTtrp-backend
+        working-directory: toureez-backend
         run: npm ci --frozen-lockfile
 
       - name: Build backend
-        working-directory: NexTtrp-backend
+        working-directory: toureez-backend
         run: npm run build
 
       - name: Verify dist/server.js exists
-        run: test -f NexTtrp-backend/dist/server.js
+        run: test -f toureez-backend/dist/server.js
 
   # ── Job 4: Test ──────────────────────────────────────────────────────────────
   test:
@@ -92,14 +92,14 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: NexTtrp-backend/package-lock.json
+          cache-dependency-path: toureez-backend/package-lock.json
 
       - name: Install backend deps
-        working-directory: NexTtrp-backend
+        working-directory: toureez-backend
         run: npm ci --frozen-lockfile
 
       - name: Run tests
-        working-directory: NexTtrp-backend
+        working-directory: toureez-backend
         run: npm test
 
   # ── Job 5: Security audit ────────────────────────────────────────────────────
@@ -114,12 +114,12 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: NexTtrp-backend/package-lock.json
+          cache-dependency-path: toureez-backend/package-lock.json
 
       - name: Install backend deps
-        working-directory: NexTtrp-backend
+        working-directory: toureez-backend
         run: npm ci --frozen-lockfile
 
       - name: npm audit (backend)
-        working-directory: NexTtrp-backend
+        working-directory: toureez-backend
         run: npm audit --audit-level=high

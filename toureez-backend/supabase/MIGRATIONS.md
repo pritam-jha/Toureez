@@ -10,7 +10,7 @@ and `supabase db push`.
 ## One-time setup (run once per machine)
 
 ```bash
-cd NexTtrp-backend
+cd toureez-backend
 npm install                       # installs the supabase CLI as a devDependency
 
 # Log in (opens a browser to authenticate with your Supabase account)

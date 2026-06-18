@@ -19,7 +19,7 @@ export const Config = {
   supabaseUrl: requireEnv('EXPO_PUBLIC_SUPABASE_URL'),
   supabaseAnonKey: requireEnv('EXPO_PUBLIC_SUPABASE_ANON_KEY'),
   apiBaseUrl: requireEnv('EXPO_PUBLIC_API_BASE_URL'),
-  appName: 'XYZ Admin',
+  appName: 'Toureez Admin',
   appVersion: Constants.expoConfig?.version ?? '1.0.0',
   queryStaleTimeMs: 5 * 60 * 1000,
   queryCacheTimeMs: 10 * 60 * 1000,

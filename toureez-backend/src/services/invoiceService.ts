@@ -256,7 +256,7 @@ async function renderInvoicePdf(data: InvoicePdfData): Promise<Buffer> {
       const left = doc.page.margins.left;
 
       // ── Header ──────────────────────────────────────────────────────────────
-      doc.font('Helvetica-Bold').fontSize(22).fillColor(COLOR_BRAND).text('NEXTTRIP', left, doc.y);
+      doc.font('Helvetica-Bold').fontSize(22).fillColor(COLOR_BRAND).text('TOUREEZ', left, doc.y);
 
       doc.moveDown(0.3);
       doc.font('Helvetica-Bold').fontSize(13).fillColor(COLOR_BODY).text('TAX INVOICE', left, doc.y, {

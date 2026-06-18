@@ -1,6 +1,6 @@
 /**
  * @file types/admin.ts
- * @description Admin-specific type definitions for the XYZ admin portal.
+ * @description Admin-specific type definitions for the Toureez admin portal.
  *
  * These extend the shared domain types from types/index.ts and are
  * scoped to admin-portal screens and hooks.

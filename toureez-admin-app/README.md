@@ -1,11 +1,11 @@
-# XYZ Admin App
+# Toureez Admin App
 
-Standalone React Native (Expo) admin portal for the XYZ platform.
+Standalone React Native (Expo) admin portal for the Toureez platform.
 
 ## Setup
 
 ```bash
-cd xyz-admin-app
+cd toureez-admin-app
 npm install
 
 # Copy env file and fill in your values
@@ -19,8 +19,8 @@ EXPO_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 EXPO_PUBLIC_API_BASE_URL=http://localhost:4000/api/v1
 ```
 
-> Use the **same** Supabase URL and anon key as `xyz-frontend`.  
-> Use the **same** backend API URL pointing to `xyz-backend`.
+> Use the **same** Supabase URL and anon key as `toureez-user`.  
+> Use the **same** backend API URL pointing to `toureez-backend`.
 
 ## Run
 
