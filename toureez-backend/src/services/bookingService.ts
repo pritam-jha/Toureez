@@ -743,7 +743,10 @@ function daysUntilTravel(travelDate: string): number {
     now.getUTCDate()
   );
 
-  if (!Number.isFinite(travelDay)) return 0;
+  if (!Number.isFinite(travelDay)) {
+    logger.warn({ travelDate }, 'daysUntilTravel: unparseable travel_date, defaulting to 0-day (no refund) window');
+    return 0;
+  }
   return Math.ceil((travelDay - today) / MS_PER_DAY);
 }
 

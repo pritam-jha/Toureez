@@ -79,8 +79,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "fefa804c-a565-47be-be8a-a6d1376252e1"
+        "projectId": "74d87df7-c1e8-440d-a68d-996b4ae18e90"
       }
-    }
+    },
+    "owner": "pritam1202"
   }
 }

@@ -119,7 +119,13 @@ export async function verifyBalancePayment(params: {
   const body     = `${params.razorpay_order_id}|${params.razorpay_payment_id}`;
   const expected = crypto.createHmac('sha256', keySecret).update(body).digest('hex');
 
-  if (expected !== params.razorpay_signature) {
+  const expectedBuffer = Buffer.from(expected, 'hex');
+  const signatureBuffer = Buffer.from(params.razorpay_signature ?? '', 'hex');
+  const signatureValid =
+    expectedBuffer.length === signatureBuffer.length &&
+    crypto.timingSafeEqual(expectedBuffer, signatureBuffer);
+
+  if (!signatureValid) {
     logger.warn({ bookingId: params.booking_id }, 'Razorpay balance signature mismatch');
     throw new AppError('Payment verification failed — invalid signature', 400);
   }
@@ -144,6 +150,18 @@ export async function verifyBalancePayment(params: {
   const totalAmount   = readNumber(row, 'total_amount');
   if (balanceAmount <= 0) {
     throw new AppError('Balance already paid', 409);
+  }
+
+  // Idempotency: skip if this payment was already recorded (retry/duplicate call)
+  const { data: existingPayment } = await supabaseAdmin
+    .from('payments')
+    .select('id')
+    .eq('razorpay_payment_id', params.razorpay_payment_id)
+    .maybeSingle();
+
+  if (existingPayment !== null) {
+    logger.info({ bookingId: params.booking_id }, 'Razorpay balance payment already recorded — skipping duplicate');
+    return { booking_id: params.booking_id, payment_id: params.razorpay_payment_id, status: 'paid' };
   }
 
   // Insert payment record

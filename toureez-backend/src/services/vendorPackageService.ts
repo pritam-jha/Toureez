@@ -1250,7 +1250,7 @@ export async function duplicateVendorPackage(
       transport: d.transport,
     }));
 
-    const { error: itinErr } = await supabaseAdmin.from('package_itinerary').insert(itineraryRows);
+    const { error: itinErr } = await supabaseAdmin.from('itineraries').insert(itineraryRows);
     if (itinErr !== null) throwDb('duplicateVendorPackage.itinerary', itinErr);
   }
 

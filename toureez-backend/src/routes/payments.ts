@@ -35,7 +35,13 @@ paymentsRouter.post(
         .update(req.body)
         .digest('hex');
 
-      if (expected !== signature) {
+      const expectedBuffer = Buffer.from(expected, 'hex');
+      const signatureBuffer = Buffer.from(typeof signature === 'string' ? signature : '', 'hex');
+      const signatureValid =
+        expectedBuffer.length === signatureBuffer.length &&
+        crypto.timingSafeEqual(expectedBuffer, signatureBuffer);
+
+      if (!signatureValid) {
         logger.warn('Razorpay webhook: invalid signature');
         return res.status(400).json({ error: 'Invalid signature' });
       }

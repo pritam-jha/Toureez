@@ -132,7 +132,13 @@ export async function verifyRazorpayPayment(params: {
   const body      = `${params.razorpay_order_id}|${params.razorpay_payment_id}`;
   const expected  = crypto.createHmac('sha256', keySecret).update(body).digest('hex');
 
-  if (expected !== params.razorpay_signature) {
+  const expectedBuffer = Buffer.from(expected, 'hex');
+  const signatureBuffer = Buffer.from(params.razorpay_signature ?? '', 'hex');
+  const signatureValid =
+    expectedBuffer.length === signatureBuffer.length &&
+    crypto.timingSafeEqual(expectedBuffer, signatureBuffer);
+
+  if (!signatureValid) {
     logger.warn({ bookingId: params.booking_id }, 'Razorpay signature mismatch');
     throw new AppError('Payment verification failed — invalid signature', 400);
   }
@@ -158,6 +164,19 @@ export async function verifyRazorpayPayment(params: {
   const row = toRecord(booking);
   if (readString(row, 'user_id') !== params.user_id) {
     throw new AppError('Forbidden', 403);
+  }
+
+  // Idempotency: this payment may already have been recorded by the webhook
+  // (or by a retried/duplicated client call) — skip re-processing if so.
+  const { data: existingPayment } = await supabaseAdmin
+    .from('payments')
+    .select('id')
+    .eq('razorpay_payment_id', params.razorpay_payment_id)
+    .maybeSingle();
+
+  if (existingPayment !== null) {
+    logger.info({ bookingId: params.booking_id }, 'Razorpay payment already recorded — skipping duplicate');
+    return { booking_id: params.booking_id, payment_id: readString(toRecord(existingPayment), 'id'), status: 'confirmed' };
   }
 
   const paymentType   = readString(row, 'payment_type');
