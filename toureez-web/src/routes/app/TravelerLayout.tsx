@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { signOut } from '../../lib/api/auth';
 import { useAuthStore } from '../../store/authStore';
 
@@ -16,6 +16,7 @@ const links = [
 
 export default function TravelerLayout() {
   const navigate = useNavigate();
+  const location = useLocation();
   const user = useAuthStore((s) => s.user);
   const clearUser = useAuthStore((s) => s.clearUser);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -25,6 +26,8 @@ export default function TravelerLayout() {
     clearUser();
     navigate('/auth/login');
   }
+
+  const loginHref = `/auth/login?redirect=${encodeURIComponent(location.pathname + location.search)}`;
 
   return (
     <div className="site">
@@ -41,8 +44,19 @@ export default function TravelerLayout() {
             ))}
           </nav>
           <div className="site-actions">
-            <NavLink to="/app/profile" className="btn btn-outline btn-pill site-actions-profile">{user?.fullName ?? 'Profile'}</NavLink>
-            <button className="btn btn-primary btn-pill" onClick={handleLogout}>Log out</button>
+            {user ? (
+              <>
+                <NavLink to="/app/profile" className="btn btn-outline btn-pill site-actions-profile">{user.fullName ?? 'Profile'}</NavLink>
+                <button className="btn btn-primary btn-pill" onClick={handleLogout}>Log out</button>
+              </>
+            ) : (
+              <>
+                <NavLink to={loginHref} className="btn btn-outline btn-pill">Log In</NavLink>
+                <NavLink to={`/auth/signup?redirect=${encodeURIComponent(location.pathname + location.search)}`} className="btn btn-primary btn-pill">
+                  Sign Up
+                </NavLink>
+              </>
+            )}
             <button className="hamburger-btn" aria-label="Menu" onClick={() => setMenuOpen((v) => !v)}>☰</button>
           </div>
         </div>

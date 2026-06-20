@@ -117,28 +117,24 @@ export default function App() {
             <Route path="/auth/reset-password" element={<ResetPassword />} />
             <Route path="/auth/callback" element={<Callback />} />
 
-            <Route
-              path="/app"
-              element={
-                <RequireRole roles={['traveler']}>
-                  <TravelerLayout />
-                </RequireRole>
-              }
-            >
+            <Route path="/app" element={<TravelerLayout />}>
+              {/* Public — browsable without logging in */}
               <Route index element={<Home />} />
               <Route path="search" element={<Search />} />
               <Route path="package/:id" element={<PackageDetail />} />
-              <Route path="bookings" element={<Bookings />} />
-              <Route path="bookings/:id" element={<BookingDetail />} />
-              <Route path="booking/:packageId" element={<BookingFlow />} />
-              <Route path="wishlist" element={<Wishlist />} />
               <Route path="compare" element={<Compare />} />
-              <Route path="enquiries" element={<Enquiries />} />
-              <Route path="enquiries/:id" element={<EnquiryDetail />} />
-              <Route path="notifications" element={<NotificationsScreen />} />
-              <Route path="chat" element={<Chat />} />
-              <Route path="profile" element={<Profile />} />
-              <Route path="review/:bookingId" element={<ReviewForm />} />
+
+              {/* Requires login */}
+              <Route path="bookings" element={<RequireRole roles={['traveler']}><Bookings /></RequireRole>} />
+              <Route path="bookings/:id" element={<RequireRole roles={['traveler']}><BookingDetail /></RequireRole>} />
+              <Route path="booking/:packageId" element={<RequireRole roles={['traveler']}><BookingFlow /></RequireRole>} />
+              <Route path="wishlist" element={<RequireRole roles={['traveler']}><Wishlist /></RequireRole>} />
+              <Route path="enquiries" element={<RequireRole roles={['traveler']}><Enquiries /></RequireRole>} />
+              <Route path="enquiries/:id" element={<RequireRole roles={['traveler']}><EnquiryDetail /></RequireRole>} />
+              <Route path="notifications" element={<RequireRole roles={['traveler']}><NotificationsScreen /></RequireRole>} />
+              <Route path="chat" element={<RequireRole roles={['traveler']}><Chat /></RequireRole>} />
+              <Route path="profile" element={<RequireRole roles={['traveler']}><Profile /></RequireRole>} />
+              <Route path="review/:bookingId" element={<RequireRole roles={['traveler']}><ReviewForm /></RequireRole>} />
             </Route>
 
             <Route

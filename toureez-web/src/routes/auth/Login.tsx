@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { signIn, signInWithGoogle } from '../../lib/api/auth';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/authStore';
@@ -13,6 +13,7 @@ const ROLE_HOME: Record<UserRole, string> = {
 
 export default function Login() {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const setSession = useAuthStore((s) => s.setSession);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,7 +35,9 @@ export default function Login() {
 
     const { data: { session } } = await supabase.auth.getSession();
     setSession(user, session);
-    navigate(ROLE_HOME[user.role]);
+
+    const redirect = params.get('redirect');
+    navigate(redirect ? decodeURIComponent(redirect) : ROLE_HOME[user.role]);
   }
 
   return (
@@ -71,7 +74,7 @@ export default function Login() {
         <div className="auth-links">
           <Link to="/auth/forgot-password">Forgot password?</Link>
           <span>·</span>
-          <Link to="/auth/signup">Create an account</Link>
+          <Link to={`/auth/signup${params.get('redirect') ? `?redirect=${params.get('redirect')}` : ''}`}>Create an account</Link>
         </div>
       </div>
     </div>

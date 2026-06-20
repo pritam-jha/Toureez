@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { signUp } from '../../lib/api/auth';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/authStore';
@@ -7,6 +7,7 @@ import { Config } from '../../constants/config';
 
 export default function Signup() {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const setSession = useAuthStore((s) => s.setSession);
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -38,7 +39,9 @@ export default function Signup() {
 
     const { data: { session } } = await supabase.auth.getSession();
     setSession(user, session);
-    navigate('/app');
+
+    const redirect = params.get('redirect');
+    navigate(redirect ? decodeURIComponent(redirect) : '/app');
   }
 
   return (
@@ -92,7 +95,7 @@ export default function Signup() {
         </form>
 
         <div className="auth-links">
-          <Link to="/auth/login">Already have an account? Log in</Link>
+          <Link to={`/auth/login${params.get('redirect') ? `?redirect=${params.get('redirect')}` : ''}`}>Already have an account? Log in</Link>
         </div>
       </div>
     </div>
