@@ -1172,9 +1172,20 @@ export async function listAllCategories(params: {
 }
 
 export async function createCategory(input: AdminCreateCategoryInput): Promise<Category> {
+  let displayOrder = input.display_order;
+  if (!displayOrder) {
+    const { data: maxRow } = await supabaseAdmin
+      .from('categories')
+      .select('display_order')
+      .order('display_order', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    displayOrder = readNumber(toRecord(maxRow ?? {}), 'display_order') + 1;
+  }
+
   const { data, error } = await supabaseAdmin
     .from('categories')
-    .insert(input)
+    .insert({ ...input, display_order: displayOrder })
     .select()
     .single();
 
@@ -1252,7 +1263,10 @@ export async function createLocation(input: AdminCreateLocationInput): Promise<L
     .select()
     .single();
 
-  if (error !== null) throwDb('createLocation', error);
+  if (error !== null) {
+    if (error.code === '23505') throw new AppError('Location already exists', 409);
+    throwDb('createLocation', error);
+  }
   if (data === null) throw new AppError(ERROR_MESSAGES.DATABASE_ERROR, 500);
   return mapLocation(toRecord(data));
 }

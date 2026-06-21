@@ -8,11 +8,12 @@ export default function Locations() {
   const query = useQuery({ queryKey: ['admin', 'locations'], queryFn: adminApi.listLocations });
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
+  const [region, setRegion] = useState('North India');
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ['admin', 'locations'] });
   const createMutation = useMutation({
-    mutationFn: () => adminApi.createLocation({ city, state }),
-    onSuccess: () => { setCity(''); setState(''); invalidate(); },
+    mutationFn: () => adminApi.createLocation({ city, state, region }),
+    onSuccess: () => { setCity(''); setState(''); setRegion(''); invalidate(); },
   });
   const deleteMutation = useMutation({ mutationFn: (id: string) => adminApi.deleteLocation(id), onSuccess: invalidate });
   const toggleFeaturedMutation = useMutation({
@@ -27,7 +28,14 @@ export default function Locations() {
       <div className="search-filters">
         <input placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} />
         <input placeholder="State" value={state} onChange={(e) => setState(e.target.value)} />
-        <button className="btn btn-primary" disabled={createMutation.isPending || !city} onClick={() => createMutation.mutate()}>
+        <select value={region} onChange={(e) => setRegion(e.target.value)}>
+          <option value="North India">North India</option>
+          <option value="South India">South India</option>
+          <option value="East India">East India</option>
+          <option value="West India">West India</option>
+          <option value="Central India">Central India</option>
+        </select>
+        <button className="btn btn-primary" disabled={createMutation.isPending || !city || !state || !region} onClick={() => createMutation.mutate()}>
           Add Location
         </button>
       </div>
@@ -40,7 +48,7 @@ export default function Locations() {
         <Card key={l.id} className="list-card">
           <div>
             <strong>{l.city}</strong>
-            <span className="muted"> {l.state}</span>
+            <span className="muted"> {l.state} · {l.region}</span>
           </div>
           <div className="detail-actions">
             <button

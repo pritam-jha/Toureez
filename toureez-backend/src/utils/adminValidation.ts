@@ -191,11 +191,13 @@ export type AdminUpdateCategoryInput = z.infer<typeof AdminUpdateCategorySchema>
 
 // ── Admin: Location CRUD ──────────────────────────────────────────────────────
 
+const REGIONS = ['North India', 'South India', 'East India', 'West India', 'Central India'] as const;
+
 export const AdminCreateLocationSchema = z
   .object({
     city: trimmedString(1, 120),
     state: trimmedString(1, 120),
-    region: trimmedString(1, 120),
+    region: z.enum(REGIONS),
     country: z.string().trim().min(1).max(120).default('India'),
     latitude: z.number().min(-90).max(90).nullable().optional(),
     longitude: z.number().min(-180).max(180).nullable().optional(),
@@ -208,7 +210,7 @@ export const AdminUpdateLocationSchema = z
   .object({
     city: optionalTrimmed(1, 120),
     state: optionalTrimmed(1, 120),
-    region: optionalTrimmed(1, 120),
+    region: z.enum(REGIONS).optional(),
     country: optionalTrimmed(1, 120),
     latitude: z.number().min(-90).max(90).nullable().optional(),
     longitude: z.number().min(-180).max(180).nullable().optional(),

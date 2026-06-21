@@ -74,10 +74,10 @@ export async function searchPackages(params: SearchPackagesParams) {
     min_price: params.minPrice,
     max_price: params.maxPrice,
     min_rating: params.minRating,
-    featured: params.featured,
+    is_featured: params.featured,
     sort: params.sort,
     page: params.page,
-    page_size: params.pageSize,
+    limit: params.pageSize,
   });
 }
 

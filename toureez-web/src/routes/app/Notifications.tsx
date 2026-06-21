@@ -28,7 +28,7 @@ export default function Notifications() {
       {query.data?.data && query.data.data.length === 0 && <EmptyState message="No notifications." />}
 
       {query.data?.data?.map((n) => (
-        <Card key={n.id} className={`list-card ${n.read ? '' : 'unread'}`} onClick={() => markReadMutation.mutate(n.id)}>
+        <Card key={n.id} className={`list-card ${n.is_read ? "" : "unread"}`} onClick={() => markReadMutation.mutate(n.id)}>
           <div>
             <strong>{n.title}</strong>
             <p className="muted">{n.body}</p>

@@ -85,11 +85,13 @@ function LocationFormModal({
   const textFields: Array<{ key: keyof FormState; label: string; placeholder: string; help: string; keyboard?: 'default' | 'decimal-pad' }> = [
     { key: 'city', label: 'City', placeholder: 'e.g. Varanasi', help: 'City name' },
     { key: 'state', label: 'State', placeholder: 'e.g. Uttar Pradesh', help: 'Indian state' },
-    { key: 'region', label: 'Region', placeholder: 'e.g. North India', help: 'Geographic region' },
     { key: 'country', label: 'Country', placeholder: 'India', help: '' },
     { key: 'latitude', label: 'Latitude', placeholder: '25.3176', help: 'Optional — decimal degrees', keyboard: 'decimal-pad' },
     { key: 'longitude', label: 'Longitude', placeholder: '82.9739', help: 'Optional — decimal degrees', keyboard: 'decimal-pad' },
   ];
+
+  // Backend enforces region as exactly one of these values (DB check constraint) — must not be free text.
+  const REGION_OPTIONS = ['North India', 'South India', 'East India', 'West India', 'Central India'] as const;
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
@@ -123,6 +125,29 @@ function LocationFormModal({
                 />
               </View>
             ))}
+
+            <View style={styles.field}>
+              <Text style={styles.fieldLabel}>Region</Text>
+              <Text style={styles.fieldHelp}>Geographic region</Text>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 8 }}>
+                {REGION_OPTIONS.map((option) => (
+                  <TouchableOpacity
+                    key={option}
+                    onPress={() => set('region')(option)}
+                    style={{
+                      paddingVertical: 8,
+                      paddingHorizontal: 14,
+                      borderRadius: 20,
+                      borderWidth: 1,
+                      borderColor: form.region === option ? Colors.accent : Colors.border,
+                      backgroundColor: form.region === option ? Colors.accent : 'transparent',
+                    }}
+                  >
+                    <Text style={{ color: form.region === option ? Colors.surface : Colors.text }}>{option}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
 
             <View style={styles.switchRow}>
               <View style={{ flex: 1 }}>

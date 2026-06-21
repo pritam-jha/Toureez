@@ -18,7 +18,13 @@ export default function Dashboard() {
         <Card className="metric-card"><span>Total Users</span><strong>{m.total_users}</strong></Card>
         <Card className="metric-card"><span>Total Vendors</span><strong>{m.total_vendors}</strong></Card>
         <Card className="metric-card"><span>Total Bookings</span><strong>{m.total_bookings}</strong></Card>
-        <Card className="metric-card"><span>Revenue (month)</span><strong>₹{m.revenue_month}</strong></Card>
+        <Card className="metric-card"><span>Revenue (this month)</span><strong>₹{m.revenue_this_month}</strong></Card>
+      </div>
+      <div className="metric-grid">
+        <Card className="metric-card"><span>Pending Vendors</span><strong>{m.pending_vendors}</strong></Card>
+        <Card className="metric-card"><span>Pending Packages</span><strong>{m.pending_packages}</strong></Card>
+        <Card className="metric-card"><span>Pending Reviews</span><strong>{m.pending_reviews}</strong></Card>
+        <Card className="metric-card"><span>Pending Payouts</span><strong>₹{m.pending_payouts}</strong></Card>
       </div>
     </div>
   );

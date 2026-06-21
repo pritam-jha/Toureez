@@ -2,6 +2,29 @@ import { z } from 'zod';
 
 const indianMobileRegex = /^(?:\+91|91)?[6-9]\d{9}$/;
 
+/**
+ * Validates that a URL is actually served from Cloudinary's CDN, not an
+ * arbitrary external host. Use for every field that stores a Cloudinary
+ * asset URL (avatar, logo, document, package image) — without this check
+ * a user/vendor could submit any URL and have it trusted as vetted media.
+ */
+export const cloudinaryUrl = (message = 'URL must be served from Cloudinary (https://res.cloudinary.com)') =>
+  z
+    .string()
+    .trim()
+    .url()
+    .refine((url) => {
+      try {
+        const parsed = new URL(url);
+        return (
+          parsed.protocol === 'https:' &&
+          (parsed.hostname === 'res.cloudinary.com' || parsed.hostname.endsWith('.cloudinary.com'))
+        );
+      } catch {
+        return false;
+      }
+    }, message);
+
 const optionalTrimmedString = (minLength = 1, maxLength = 255): z.ZodOptional<z.ZodString> =>
   z.string().trim().min(minLength).max(maxLength).optional();
 
@@ -77,6 +100,7 @@ export const SearchFiltersSchema = z
     min_rating: optionalNumberFromQuery(z.coerce.number().min(0).max(5)),
     amenities: amenitiesFromQuery,
     is_featured: optionalBooleanFromQuery,
+    sort: z.enum(['best_match', 'price_asc', 'price_desc', 'rating', 'newest']).optional().default('best_match'),
     page: z
       .preprocess((value) => (value === undefined || value === '' ? 1 : value), z.coerce.number().int().min(1))
       .default(1),
@@ -119,7 +143,7 @@ export const UpdateProfileSchema = z
     phone: z.string().trim().regex(indianMobileRegex, 'Invalid Indian mobile number').optional(),
     city: z.string().trim().min(1).max(120).optional(),
     state: z.string().trim().min(1).max(120).optional(),
-    avatar_url: z.string().trim().url().optional(),
+    avatar_url: cloudinaryUrl().optional(),
   })
   .strict();
 

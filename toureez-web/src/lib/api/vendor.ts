@@ -13,11 +13,20 @@ export interface VendorProfile {
 }
 
 export interface DashboardMetrics {
-  total_bookings_month: number;
-  revenue_month: number;
+  total_packages: number;
   active_packages: number;
-  pending_approvals: number;
-  [key: string]: unknown;
+  pending_packages: number;
+  draft_packages: number;
+  total_bookings: number;
+  confirmed_bookings: number;
+  pending_bookings: number;
+  cancelled_bookings: number;
+  total_revenue: number;
+  this_month_revenue: number;
+  avg_rating: number;
+  total_reviews: number;
+  pending_payouts: number;
+  recent_bookings: unknown[];
 }
 
 export interface Company {

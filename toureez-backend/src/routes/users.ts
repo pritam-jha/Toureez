@@ -71,7 +71,7 @@ usersRouter.delete('/device-token', strictLimiter, async (req, res, next) => {
     if (req.user === undefined) throw new AppError(ERROR_MESSAGES.AUTH_REQUIRED, 401);
     const parsed = DeviceTokenSchema.safeParse(req.body);
     if (!parsed.success) return validationError(res, parsed.error.flatten().fieldErrors);
-    await removeDeviceToken(parsed.data.token);
+    await removeDeviceToken(req.user.id, parsed.data.token);
     return success(res, { removed: true });
   } catch (caughtError) {
     return next(caughtError);

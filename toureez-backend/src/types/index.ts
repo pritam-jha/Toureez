@@ -197,6 +197,7 @@ export interface SearchFilters {
   min_rating?: number;
   amenities?: string[];
   is_featured?: boolean;
+  sort?: 'best_match' | 'price_asc' | 'price_desc' | 'rating' | 'newest';
   page?: number;
   limit?: number;
 }

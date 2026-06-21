@@ -19,10 +19,16 @@ export default function Dashboard() {
       />
 
       <div className="metric-grid">
-        <Card className="metric-card"><span>Bookings (month)</span><strong>{m.total_bookings_month}</strong></Card>
-        <Card className="metric-card"><span>Revenue (month)</span><strong>₹{m.revenue_month}</strong></Card>
+        <Card className="metric-card"><span>Total Bookings</span><strong>{m.total_bookings}</strong></Card>
+        <Card className="metric-card"><span>Revenue (this month)</span><strong>₹{m.this_month_revenue}</strong></Card>
         <Card className="metric-card"><span>Active Packages</span><strong>{m.active_packages}</strong></Card>
-        <Card className="metric-card"><span>Pending Approvals</span><strong>{m.pending_approvals}</strong></Card>
+        <Card className="metric-card"><span>Pending Packages</span><strong>{m.pending_packages}</strong></Card>
+      </div>
+      <div className="metric-grid">
+        <Card className="metric-card"><span>Avg Rating</span><strong>★ {m.avg_rating} ({m.total_reviews})</strong></Card>
+        <Card className="metric-card"><span>Pending Payouts</span><strong>₹{m.pending_payouts}</strong></Card>
+        <Card className="metric-card"><span>Confirmed Bookings</span><strong>{m.confirmed_bookings}</strong></Card>
+        <Card className="metric-card"><span>Cancelled Bookings</span><strong>{m.cancelled_bookings}</strong></Card>
       </div>
 
       <div className="detail-actions">

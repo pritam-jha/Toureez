@@ -43,11 +43,12 @@ export async function saveDeviceToken(
 /**
  * Removes a device token on logout so the user no longer receives push notifications.
  */
-export async function removeDeviceToken(token: string): Promise<void> {
+export async function removeDeviceToken(userId: string, token: string): Promise<void> {
   const { error } = await supabaseAdmin
     .from('device_tokens')
     .delete()
-    .eq('token', token);
+    .eq('token', token)
+    .eq('user_id', userId);
 
   if (error !== null) throwDb('removeDeviceToken', error);
 }

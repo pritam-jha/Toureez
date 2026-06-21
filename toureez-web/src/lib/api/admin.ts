@@ -8,10 +8,18 @@ import type { Payout } from './vendor';
 
 export interface AdminDashboardMetrics {
   total_users: number;
+  new_users_this_month: number;
   total_vendors: number;
+  pending_vendors: number;
+  total_packages: number;
+  pending_packages: number;
+  active_packages: number;
   total_bookings: number;
-  revenue_month: number;
-  [key: string]: unknown;
+  bookings_this_month: number;
+  total_revenue: number;
+  revenue_this_month: number;
+  pending_reviews: number;
+  pending_payouts: number;
 }
 
 export interface AdminUser {

@@ -12,6 +12,7 @@
  */
 
 import { z } from 'zod';
+import { cloudinaryUrl } from './validation';
 
 // ── Shared primitives ──────────────────────────────────────────────────────────
 
@@ -80,8 +81,8 @@ export const CreateCompanySchema = z
     name: trimmedString(2, 120),
     about: optionalTrimmed(10, 2000),
     gst_number: gstNumberSchema,
-    logo_url: z.string().trim().url().optional(),
-    cover_url: z.string().trim().url().optional(),
+    logo_url: cloudinaryUrl().optional(),
+    cover_url: cloudinaryUrl().optional(),
   })
   .strict();
 
@@ -96,8 +97,8 @@ export const UpdateCompanySchema = z
     name: optionalTrimmed(2, 120),
     about: optionalTrimmed(10, 2000),
     gst_number: gstNumberSchema,
-    logo_url: z.string().trim().url().optional(),
-    cover_url: z.string().trim().url().optional(),
+    logo_url: cloudinaryUrl().optional(),
+    cover_url: cloudinaryUrl().optional(),
   })
   .strict();
 
@@ -110,7 +111,7 @@ export type UpdateCompanyInput = z.infer<typeof UpdateCompanySchema>;
 export const UploadCompanyDocumentSchema = z
   .object({
     document_type: z.enum(['trade_license', 'gst_certificate', 'pan_card', 'other']),
-    url: z.string().trim().url('Must be a valid Cloudinary URL'),
+    url: cloudinaryUrl('Must be a valid Cloudinary URL'),
     public_id: z.string().trim().min(1).max(500),
     label: optionalTrimmed(1, 100),
   })

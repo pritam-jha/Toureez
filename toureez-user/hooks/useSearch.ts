@@ -27,15 +27,15 @@ export type SortOption =
   | 'best_match'
   | 'price_asc'
   | 'price_desc'
-  | 'rating_desc'
-  | 'popular';
+  | 'rating'
+  | 'newest';
 
 export const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: 'best_match', label: 'Best Match' },
   { value: 'price_asc', label: 'Price: Low to High' },
   { value: 'price_desc', label: 'Price: High to Low' },
-  { value: 'rating_desc', label: 'Highest Rated' },
-  { value: 'popular', label: 'Most Popular' },
+  { value: 'rating', label: 'Highest Rated' },
+  { value: 'newest', label: 'Newest' },
 ];
 
 // ── Duration bucket helpers ───────────────────────────────────────────────────

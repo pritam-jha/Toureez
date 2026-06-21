@@ -4,6 +4,7 @@ export interface Location {
   id: string;
   city: string;
   state?: string;
+  region?: string;
   image_url?: string;
   is_popular?: boolean;
   [key: string]: unknown;

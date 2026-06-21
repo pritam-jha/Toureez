@@ -519,11 +519,73 @@ export const searchPackages = async (filters: SearchFilters): Promise<PaginatedR
     query = query.eq('is_featured', filters.is_featured);
   }
 
-  const { data, error, count } = await query
-    .order('is_featured', { ascending: false })
-    .order('avg_rating', { ascending: false })
-    .order('created_at', { ascending: false })
-    .range(from, to);
+  const sort = filters.sort ?? 'best_match';
+
+  // Price sort needs the package_pricing table, which isn't a column on
+  // packages — fetch the full matching candidate set (no DB-level sort),
+  // join in price, sort in memory, then slice the page.
+  if (sort === 'price_asc' || sort === 'price_desc') {
+    const { data: candidateRows, error: candidateError } = await query.select('id');
+    if (candidateError !== null) throwDatabaseError('searchPackages.candidates', candidateError);
+
+    const candidateIds = ((candidateRows as unknown[] | null) ?? [])
+      .map((row) => readString(toRecord(row), 'id'))
+      .filter((id) => id !== '');
+
+    if (candidateIds.length === 0) {
+      return emptyPaginatedResponse<PackageListItem>(page, limit);
+    }
+
+    const { data: pricingRows, error: pricingError } = await supabasePublic
+      .from('package_pricing')
+      .select('package_id, base_price, discounted_price')
+      .in('package_id', candidateIds)
+      .eq('is_active', true);
+
+    if (pricingError !== null) throwDatabaseError('searchPackages.pricing', pricingError);
+
+    const minPriceByPackage = new Map<string, number>();
+    for (const row of (pricingRows as unknown[] | null) ?? []) {
+      const record = toRecord(row);
+      const packageId = readString(record, 'package_id');
+      const price = readNumber(record, 'discounted_price') || readNumber(record, 'base_price');
+      const existing = minPriceByPackage.get(packageId);
+      if (existing === undefined || price < existing) minPriceByPackage.set(packageId, price);
+    }
+
+    const sortedIds = candidateIds
+      .filter((id) => minPriceByPackage.has(id))
+      .sort((a, b) => {
+        const diff = (minPriceByPackage.get(a) ?? 0) - (minPriceByPackage.get(b) ?? 0);
+        return sort === 'price_asc' ? diff : -diff;
+      });
+
+    const total = sortedIds.length;
+    const pageIds = sortedIds.slice(from, to + 1);
+
+    if (pageIds.length === 0) {
+      return { items: [], total, page, limit, has_more: false };
+    }
+
+    const items = await getPackageListItemsByIds(pageIds, 'min');
+    const itemsById = new Map(items.map((item) => [item.id, item]));
+    const orderedItems = pageIds.map((id) => itemsById.get(id)).filter((item): item is PackageListItem => item !== undefined);
+
+    return { items: orderedItems, total, page, limit, has_more: page * limit < total };
+  }
+
+  if (sort === 'rating') {
+    query = query.order('avg_rating', { ascending: false }).order('created_at', { ascending: false });
+  } else if (sort === 'newest') {
+    query = query.order('created_at', { ascending: false });
+  } else {
+    query = query
+      .order('is_featured', { ascending: false })
+      .order('avg_rating', { ascending: false })
+      .order('created_at', { ascending: false });
+  }
+
+  const { data, error, count } = await query.range(from, to);
 
   if (error !== null) {
     throwDatabaseError('searchPackages', error);
