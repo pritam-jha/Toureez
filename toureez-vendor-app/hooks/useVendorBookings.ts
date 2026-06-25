@@ -85,12 +85,12 @@ export function useVendorBooking(bookingId: string): UseQueryResult<VendorBookin
 
 interface UpdateStatusVars {
   bookingId: string;
-  status: 'confirmed' | 'cancelled';
+  status: 'confirmed' | 'cancelled' | 'completed';
   note?: string;
 }
 
 /**
- * Mutation to update a booking's status (confirm or cancel).
+ * Mutation to update a booking's status (confirm, cancel, or mark completed).
  * Invalidates booking list and dashboard on success.
  */
 export function useUpdateBookingStatus(): UseMutationResult<VendorBookingDetail, Error, UpdateStatusVars> {

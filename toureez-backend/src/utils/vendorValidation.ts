@@ -22,12 +22,22 @@ const trimmedString = (min: number, max: number) =>
 const optionalTrimmed = (min: number, max: number) =>
   trimmedString(min, max).optional();
 
-const paginationSchema = z.object({
+export const paginationSchema = z.object({
   page: z
     .preprocess((v) => (v === undefined || v === '' ? 1 : v), z.coerce.number().int().min(1))
     .default(1),
   limit: z
     .preprocess((v) => (v === undefined || v === '' ? 20 : v), z.coerce.number().int().min(1).max(100))
+    .default(20),
+});
+
+/** Same shape but capped at 50 — used by endpoints that previously enforced that cap inline. */
+export const narrowPaginationSchema = z.object({
+  page: z
+    .preprocess((v) => (v === undefined || v === '' ? 1 : v), z.coerce.number().int().min(1))
+    .default(1),
+  limit: z
+    .preprocess((v) => (v === undefined || v === '' ? 20 : v), z.coerce.number().int().min(1).max(50))
     .default(20),
 });
 

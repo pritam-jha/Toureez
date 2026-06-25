@@ -25,7 +25,6 @@ import { useVendorStore } from '../../../store/vendorStore';
 import { PackageCard } from '../../../components/vendor/PackageCard';
 import { EmptyState } from '../../../components/ui/EmptyState';
 import { ListLoader } from '../../../components/ui/LoadingSpinner';
-import { PackageStatusBadge } from '../../../components/ui/Badge';
 import { Colors } from '../../../constants/colors';
 import { Shadows } from '../../../constants/shadows';
 import type { PackageStatus, VendorPackageListItem } from '../../../types';

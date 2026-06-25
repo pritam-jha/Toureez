@@ -325,11 +325,11 @@ export async function getBooking(bookingId: string): Promise<ApiResponse<VendorB
 }
 
 /**
- * Updates a booking's status (confirmed | cancelled).
+ * Updates a booking's status (confirmed | cancelled | completed).
  */
 export async function updateBookingStatus(
   bookingId: string,
-  status: 'confirmed' | 'cancelled',
+  status: 'confirmed' | 'cancelled' | 'completed',
   note?: string,
 ): Promise<ApiResponse<VendorBookingDetail>> {
   const res = await apiClient.patch<VendorBookingDetail>(`/vendor/bookings/${bookingId}/status`, {

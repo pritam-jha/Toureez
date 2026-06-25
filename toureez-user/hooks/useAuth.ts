@@ -458,6 +458,7 @@ export function useSignIn(): UseSignInReturn {
 export function useSignUp(): UseSignUpReturn {
   // FIXED: 7 - Signup stores the role-bearing profile with the session when available.
   const setSession = useAuthStore((state) => state.setSession);
+  const setUser = useAuthStore((state) => state.setUser);
   const [fullName, setFullNameValue] = useState('');
   const [phone, setPhoneValue] = useState('');
   const [city, setCityValue] = useState('');

@@ -182,7 +182,7 @@ export default function NewPackageScreen(): React.ReactElement {
   }, [newCity, newState, newRegion, handleSelectLocation]);
 
   // Show approval gate if company isn't approved yet
-  if (!companyLoading && company !== null && company.status !== 'approved') {
+  if (!companyLoading && company != null && company.status !== 'approved') {
     return (
       <View style={styles.flex}>
         <Header title="New Package" showBack onBack={handleBack} />

@@ -106,6 +106,7 @@ import {
   VendorListNotificationsQuerySchema,
   CreateLocationSchema,
   VendorEarningsQuerySchema,
+  narrowPaginationSchema,
 } from '../utils/vendorValidation';
 import { EnquiryMessageSchema } from '../utils/validation';
 import { z } from 'zod';
@@ -583,10 +584,10 @@ vendorRouter.patch('/bookings/:id/status', strictLimiter, async (req, res, next)
  */
 vendorRouter.get('/reviews', async (req, res, next) => {
   try {
-    const page = Math.max(1, Number(req.query['page']) || 1);
-    const limit = Math.min(50, Math.max(1, Number(req.query['limit']) || 20));
+    const parsed = narrowPaginationSchema.safeParse(req.query);
+    if (!parsed.success) return validationError(res, parsed.error.flatten().fieldErrors);
 
-    const result = await getVendorReviews(req.user!.id, { page, limit });
+    const result = await getVendorReviews(req.user!.id, parsed.data);
     return success(res, result);
   } catch (err) {
     if (err instanceof AppError && err.statusCode === 404) return notFound(res, 'Company');
@@ -671,10 +672,10 @@ vendorRouter.patch('/enquiries/:id/status', strictLimiter, async (req, res, next
  */
 vendorRouter.get('/payouts', async (req, res, next) => {
   try {
-    const page = Math.max(1, Number(req.query['page']) || 1);
-    const limit = Math.min(50, Math.max(1, Number(req.query['limit']) || 20));
+    const parsed = narrowPaginationSchema.safeParse(req.query);
+    if (!parsed.success) return validationError(res, parsed.error.flatten().fieldErrors);
 
-    const result = await getVendorPayouts(req.user!.id, { page, limit });
+    const result = await getVendorPayouts(req.user!.id, parsed.data);
     return success(res, result);
   } catch (err) {
     if (err instanceof AppError && err.statusCode === 404) return notFound(res, 'Company');

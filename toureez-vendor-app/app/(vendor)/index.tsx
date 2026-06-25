@@ -24,7 +24,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useVendorDashboard, useVendorEarningsForMonth } from '../../hooks/useVendorDashboard';
 import { useVendorCompany } from '../../hooks/useVendorCompany';
 import { useUnreadNotificationCount } from '../../hooks/useVendorNotifications';
-import { useAuthStore } from '../../store/authStore';
 import type { RecentBookingSummary } from '../../types';
 
 const { width: SW } = Dimensions.get('window');
@@ -189,8 +188,7 @@ function BookingRow({ booking }: { booking: RecentBookingSummary }): React.React
 
 export default function DashboardScreen(): React.ReactElement {
   const insets = useSafeAreaInsets();
-  const user = useAuthStore((s) => s.user);
-  const { data: dashboard, isLoading, isError, refetch, isFetching } = useVendorDashboard();
+  const { data: dashboard, isLoading, refetch, isFetching } = useVendorDashboard();
   const { data: company, isLoading: companyLoading } = useVendorCompany();
   const unread = useUnreadNotificationCount();
 
@@ -218,7 +216,6 @@ export default function DashboardScreen(): React.ReactElement {
 
   const avgRating = dashboard?.avg_rating ?? 0;
   const totalRevenue = dashboard?.total_revenue ?? 0;
-  const thisMonthRevenue = dashboard?.this_month_revenue ?? 0;
   const totalBookings = dashboard?.total_bookings ?? 0;
   const activePackages = dashboard?.active_packages ?? 0;
   const recentBookings = dashboard?.recent_bookings ?? [];

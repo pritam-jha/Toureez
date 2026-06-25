@@ -38,6 +38,13 @@ export async function pickAndUploadImage(options?: {
   const asset = result.assets[0];
   if (!asset) return null;
 
+  if (asset.mimeType && !Config.acceptedImageTypes.includes(asset.mimeType as typeof Config.acceptedImageTypes[number])) {
+    throw new Error('Only JPG, PNG, or WebP images are allowed.');
+  }
+  if (asset.fileSize && asset.fileSize > Config.maxImageSizeBytes) {
+    throw new Error(`Image must be smaller than ${Math.round(Config.maxImageSizeBytes / (1024 * 1024))}MB.`);
+  }
+
   return uploadToCloudinary(asset.uri);
 }
 

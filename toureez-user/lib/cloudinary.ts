@@ -145,7 +145,14 @@ export async function uploadImage(
       heif: 'image/heif',
     };
 
-    const mimeType = mimeTypeMap[fileExtension] ?? 'image/jpeg';
+    // Reject anything outside this allow-list rather than silently
+    // defaulting to image/jpeg — Cloudinary's unsigned image/upload endpoint
+    // will still accept SVG (which can carry inline script) unless the
+    // client refuses to send it in the first place.
+    const mimeType = mimeTypeMap[fileExtension];
+    if (!mimeType) {
+      return { data: null, error: 'Only JPG, PNG, WEBP, or HEIC/HEIF images are allowed.' };
+    }
 
     // Build multipart form data for the upload
     const formData = new FormData();

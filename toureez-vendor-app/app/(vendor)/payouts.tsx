@@ -9,7 +9,6 @@
 import React, { useState } from 'react';
 import {
   Alert,
-  FlatList,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -31,7 +30,6 @@ import { useScreenBack } from '../../hooks/useScreenBack';
 import { Header } from '../../components/ui/Header';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
-import { EmptyState } from '../../components/ui/EmptyState';
 import { ListLoader } from '../../components/ui/LoadingSpinner';
 import { Colors } from '../../constants/colors';
 import { Shadows } from '../../constants/shadows';
@@ -440,7 +438,7 @@ const modalStyles = StyleSheet.create({
 
 export default function PayoutsScreen(): React.ReactElement {
   const [showModal, setShowModal] = useState(false);
-  const { data: payoutsData, isLoading: payoutsLoading, refetch } = useVendorPayouts(1);
+  const { data: payoutsData, isLoading: payoutsLoading } = useVendorPayouts(1);
   const { data: accounts, isLoading: accountsLoading } = useVendorPayoutAccounts();
   const onBack = useScreenBack();
 

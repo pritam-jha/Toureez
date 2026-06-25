@@ -17,13 +17,23 @@ const trimmedString = (min: number, max: number) =>
 const optionalTrimmed = (min: number, max: number) =>
   trimmedString(min, max).optional();
 
-const paginationSchema = z.object({
+export const paginationSchema = z.object({
   page: z
     .preprocess((v) => (v === undefined || v === '' ? 1 : v), z.coerce.number().int().min(1))
     .default(1),
   limit: z
     .preprocess((v) => (v === undefined || v === '' ? 20 : v), z.coerce.number().int().min(1).max(100))
     .default(20),
+});
+
+/** Same shape as paginationSchema but with a higher max limit, for admin list endpoints that intentionally allow larger pages (e.g. categories). */
+export const wideLimitPaginationSchema = z.object({
+  page: z
+    .preprocess((v) => (v === undefined || v === '' ? 1 : v), z.coerce.number().int().min(1))
+    .default(1),
+  limit: z
+    .preprocess((v) => (v === undefined || v === '' ? 100 : v), z.coerce.number().int().min(1).max(200))
+    .default(100),
 });
 
 export const AdminUuidParamSchema = z.object({

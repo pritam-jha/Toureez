@@ -1,16 +1,31 @@
 {
-  "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    "allowJs": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "lib": ["DOM", "ESNext"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "target": "ESNext",
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
     "noImplicitReturns": true,
     "exactOptionalPropertyTypes": false,
     "paths": {
       "@/*": [
         "./*"
+      ],
+      "expo-auth-session/src/*": [
+        "./node_modules/expo-auth-session/build/*"
+      ],
+      "expo-clipboard/src/*": [
+        "./node_modules/expo-clipboard/build/*"
       ]
     }
   },
@@ -20,5 +35,13 @@
     ".expo/types/**/*.d.ts",
     "expo-env.d.ts",
     ".expo/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "jest.config.js",
+    "android",
+    "ios"
   ]
 }

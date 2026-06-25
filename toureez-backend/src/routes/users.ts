@@ -87,8 +87,8 @@ usersRouter.delete('/account', strictLimiter, async (req, res, next) => {
   try {
     if (req.user === undefined) throw new AppError(ERROR_MESSAGES.AUTH_REQUIRED, 401);
 
-    const body = req.body as { confirm?: unknown };
-    if (body.confirm !== 'DELETE') {
+    const parsed = z.object({ confirm: z.literal('DELETE') }).strict().safeParse(req.body);
+    if (!parsed.success) {
       throw new AppError('Send { "confirm": "DELETE" } to permanently delete your account.', 400);
     }
 

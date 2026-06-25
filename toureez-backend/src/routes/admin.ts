@@ -87,6 +87,7 @@ import {
   AdminUpdatePayoutStatusSchema,
   AdminListAuditLogsQuerySchema,
   AdminEarningsQuerySchema,
+  wideLimitPaginationSchema,
 } from '../utils/adminValidation';
 
 export const adminRouter = Router();
@@ -808,9 +809,9 @@ adminRouter.patch('/reviews/:id/verify', strictLimiter, async (req, res, next) =
  */
 adminRouter.get('/categories', async (req, res, next) => {
   try {
-    const page = Math.max(1, Number(req.query['page']) || 1);
-    const limit = Math.min(200, Math.max(1, Number(req.query['limit']) || 100));
-    const categories = await listAllCategories({ page, limit });
+    const parsed = wideLimitPaginationSchema.safeParse(req.query);
+    if (!parsed.success) return validationError(res, parsed.error.flatten().fieldErrors);
+    const categories = await listAllCategories(parsed.data);
     return success(res, categories);
   } catch (err) {
     return next(err);

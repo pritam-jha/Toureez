@@ -8,6 +8,12 @@ const indianMobileRegex = /^(?:\+91|91)?[6-9]\d{9}$/;
  * asset URL (avatar, logo, document, package image) — without this check
  * a user/vendor could submit any URL and have it trusted as vetted media.
  */
+// Extensions that must never be trusted as "vetted media" even if Cloudinary
+// served them — SVG/HTML can carry executable script, and Cloudinary's
+// unsigned upload preset doesn't stop a client from uploading them with an
+// image/* override.
+const DANGEROUS_ASSET_EXTENSIONS = /\.(svg|html?|php|exe|js|mjs|jsp|asp|aspx)(\?.*)?$/i;
+
 export const cloudinaryUrl = (message = 'URL must be served from Cloudinary (https://res.cloudinary.com)') =>
   z
     .string()
@@ -23,7 +29,8 @@ export const cloudinaryUrl = (message = 'URL must be served from Cloudinary (htt
       } catch {
         return false;
       }
-    }, message);
+    }, message)
+    .refine((url) => !DANGEROUS_ASSET_EXTENSIONS.test(url), 'This file type is not allowed');
 
 const optionalTrimmedString = (minLength = 1, maxLength = 255): z.ZodOptional<z.ZodString> =>
   z.string().trim().min(minLength).max(maxLength).optional();

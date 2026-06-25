@@ -47,6 +47,7 @@ import { VerifiedBadge } from '../../components/reviews/VerifiedBadge';
 import { Toast } from '../../components/ui/Toast';
 import { Colors } from '../../constants/colors';
 import { uploadImage } from '../../lib/cloudinary';
+import { Config } from '../../constants/config';
 import {
   computeOverallRating,
   hasAtLeastOneRating,
@@ -395,6 +396,15 @@ export default function WriteReviewScreen(): React.ReactElement {
 
     const asset = result.assets[0];
     if (!asset?.uri) return;
+
+    if (asset.fileSize && asset.fileSize > Config.maxImageSizeBytes) {
+      setToast({
+        visible: true,
+        message: `Image must be smaller than ${Math.round(Config.maxImageSizeBytes / (1024 * 1024))}MB.`,
+        type: 'error',
+      });
+      return;
+    }
 
     setIsUploadingImage(true);
     const { data, error } = await uploadImage(asset.uri, 'reviews');

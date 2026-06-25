@@ -165,6 +165,11 @@ export function useUploadAvatar(): UseUploadAvatarReturn {
         return;
       }
 
+      if (asset.fileSize && asset.fileSize > Config.maxImageSizeBytes) {
+        setUploadError(`Image must be smaller than ${Math.round(Config.maxImageSizeBytes / (1024 * 1024))}MB.`);
+        return;
+      }
+
       setUploading(true);
 
       // 3. Upload to Cloudinary

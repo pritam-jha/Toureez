@@ -9,7 +9,7 @@
 import React, { useState } from 'react';
 import {
   Alert,
-  Pressable,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -179,8 +179,7 @@ export default function BookingDetailScreen(): React.ReactElement {
         style={styles.scroll}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
-        refreshing={isFetching}
-        onScrollEndDrag={() => void refetch()}
+        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={() => void refetch()} />}
       >
         {/* Status header */}
         <View style={[styles.statusCard, Shadows.card]}>
